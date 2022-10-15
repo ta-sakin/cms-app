@@ -13,7 +13,8 @@ import {
 import axios from "axios";
 import { RecaptchaVerifier } from "firebase/auth";
 
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
+import PhoneInput from "react-phone-number-input";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ButtonSpin from "../components/shared/ButtonSpin";
@@ -32,11 +33,12 @@ const Login = () => {
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState("");
-  const { getVerificationCode, setLoadCaptcha, loadCaptcha } = useAuth();
+  const { getVerificationCode } = useAuth();
   const [confirmResponse, setConfirmResponse] = useState("");
   const [show, setShow] = useState(false);
   const { currentUser } = useAuth();
   const navigate = useNavigate();
+
   useEffect(() => {
     window.recaptchaVerifier = new RecaptchaVerifier(
       "recaptcha-container",
@@ -45,12 +47,13 @@ const Login = () => {
     );
   }, []);
 
-  const handleChange = (e) => {
-    setPhone(e.target.value);
-  };
+  // const handleChange = (e) => {
+  //   setPhone(e.target.value);
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(phone);
     if (!phone) {
       setError("Enter phone number");
       return;
@@ -80,13 +83,13 @@ const Login = () => {
       const data = await checkUser();
       if (!data) return;
       const confirmationResult = await getVerificationCode(phone);
+      setConfirmResponse(confirmationResult);
       localStorage.setItem("phone", phone);
       toast.info("OTP Sent", {
         theme: "colored",
       });
       setError("");
       setLoading(false);
-      setConfirmResponse(confirmationResult);
       setShow(true);
     } catch (error) {
       setLoading(false);
@@ -111,77 +114,54 @@ const Login = () => {
         )}
       </div>
       <div className={`${!show ? "block" : "hidden"}`}>
-        <ThemeProvider theme={theme}>
-          <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <Box
-              sx={{
-                marginTop: 8,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                {/* <LockOutlinedIcon /> */}
-              </Avatar>
-              <Typography component="h1" variant="h5">
-                Sign in
-              </Typography>
-              <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{ mt: 3 }}
-              >
-                <FormControl sx={{ width: "40ch" }}>
-                  <TextField
-                    variant="outlined"
-                    value={phone}
-                    onChange={handleChange}
-                    required
-                    // fullWidth
-                    id="phone"
-                    label="Phone Number(+880)"
-                    name="phone"
-                    autoComplete="phone"
-                  />
-                </FormControl>
-                <div id="recaptcha-container"></div>
-                {!loading ? (
-                  <button
-                    type="submit"
-                    id="sign-in-button"
-                    className="w-full mt-4 py-2 font-medium text-white bg-black hover:bg-gray-900 rounded-lg border-gray-900 hover:shadow inline-flex space-x-2 items-center justify-center"
-                  >
-                    <span>SIGN IN</span>
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    className="w-full mt-4 py-2 font-medium text-white bg-black rounded-lg border-black hover:shadow inline-flex space-x-2 items-center justify-center disabled"
-                    disabled
-                  >
-                    <ButtonSpin />
-                  </button>
-                )}
-                <Grid container justifyContent="flex-end">
-                  <Grid item>
-                    <Link
-                      to="/signup"
-                      variant="body2"
-                      className="text-sm cursor-pointer underline mt-1 block hover:text-blue-800"
-                    >
-                      Don't have an account? Sign up
-                    </Link>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Box>
+        <div className="max-w-md mx-auto my-20 bg-white rounded-xl shadow-lg shadow-slate-300 py-8 px-16">
+          <h1 className="text-2xl text-center font-bold mb-3">Login</h1>
+          <form onSubmit={handleSubmit}>
+            <div className="flex flex-col space-y-3">
+              <label htmlFor="phone">
+                <p className="text-sm text-slate-700 pb-2">Phone</p>
+                <PhoneInput
+                  defaultCountry="BD"
+                  placeholder="Enter phone number"
+                  value={phone}
+                  onChange={setPhone}
+                  className="border-[1px] p-2 border-gray-400 hover:border-gray-800 rounded-md py-[16px]"
+                  // style={{ input: { appearance: "none" } }}
+                />
+              </label>
+              <div id="recaptcha-container"></div>
+              {!loading ? (
+                <button
+                  type="submit"
+                  id="sign-in-button"
+                  className="w-full py-2 font-medium text-white bg-black hover:bg-gray-900 rounded-lg border-gray-900 hover:shadow inline-flex space-x-2 items-center justify-center"
+                >
+                  <span>LOGIN</span>
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="w-full py-2 font-medium text-white bg-black rounded-lg border-black hover:shadow inline-flex space-x-2 items-center justify-center disabled"
+                  disabled
+                >
+                  <ButtonSpin />
+                </button>
+              )}
+              <p className="text-center text-sm">
+                Don't have an account?{" "}
+                <Link
+                  to="/register"
+                  className="text-black font-medium inline-flex space-x-1 items-center"
+                >
+                  <span className="font-semibold text-sm hover:underline hover:text-indigo-600">
+                    Register{" "}
+                  </span>
+                </Link>
+              </p>
+            </div>
             {error && <Error error={error} />}
-            {/* <Copyright sx={{ mt: 5 }} /> */}
-          </Container>
-        </ThemeProvider>
+          </form>
+        </div>
       </div>
     </div>
   );

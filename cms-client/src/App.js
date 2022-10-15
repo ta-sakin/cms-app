@@ -12,8 +12,8 @@ function App() {
   return (
     <div id="app" className="font-poppins">
       <Routes>
-        <Route path="/signup" element={<Register />}></Route>
-        <Route path="/signin" element={<Login />}></Route>
+        <Route path="/register" element={<Register />}></Route>
+        <Route path="/login" element={<Login />}></Route>
         <Route path="/" element={<Home />}></Route>
       </Routes>
       <ToastContainer

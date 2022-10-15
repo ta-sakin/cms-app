@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import OtpInput from "react18-input-otp";
 import ButtonSpin from "../components/shared/ButtonSpin";
+import Error from "../components/shared/Error";
 import { useAuth } from "../context/AuthContext";
 import auth from "../firebase.init";
 import useToken from "../hooks/useToken";
@@ -32,7 +33,7 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
 
   const handleVerification = async () => {
     if (!otp || (otp + "").length < 6) {
-      setError("Invalid Verification Code");
+      setError("invalid verification code");
       return;
     }
     setLoading(true);
@@ -119,10 +120,7 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
           errorStyle={error ? "border-red-500" : ""}
         />
       </div>
-      <div
-        id="recaptcha-container"
-        className="mt-4 pl-3 max-w-sm mx-auto"
-      ></div>
+      <div id="recaptcha-container"></div>
 
       <div className="flex justify-evenly mt-8 px-2">
         {!loading ? (
@@ -147,15 +145,7 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
           </>
         )}
       </div>
-      {error && (
-        <div className="bg-red-600 max-w-sm mx-auto mt-4">
-          <p className="text-white text-sm text-center py-2 capitalize">
-            {error?.includes("auth")
-              ? error.split("/")[1].split("-").join(" ")
-              : error}
-          </p>
-        </div>
-      )}
+      <div className="px-16">{error && <Error error={error} />}</div>
     </div>
   );
 };

@@ -1,18 +1,20 @@
-import React, { Fragment, useState } from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
+import React, { useEffect, useRef, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 // import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  CssBaseline,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import wardsList from "../wardsList";
 import OtpInput from "react18-input-otp";
 // import OtpForm from "./OtpForm";
@@ -20,143 +22,138 @@ import OtpForm from "./OtpForm";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
-import "./signupStyle.css";
+import "./phoneInputStyle.css";
 import auth from "../firebase.init";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ButtonSpin from "../components/shared/ButtonSpin";
-const theme = createTheme();
+import { toast } from "react-toastify";
+import Error from "../components/shared/Error";
+import axios from "axios";
 
-export default function Signup() {
-  const [ward, setWard] = useState("");
-  const { signInWithPhone } = useAuth();
-  const [otp, setOtp] = useState("");
+const theme = createTheme({
+  typography: {
+    fontFamily: ["Poppins"].join(","),
+  },
+});
+const defaulValues = {
+  name: "",
+  email: "",
+  phone: "",
+  ward: "",
+  address: "",
+};
+const Register = () => {
+  const { getVerificationCode, currentUser, setLoadCaptcha, loadCaptcha } =
+    useAuth();
   const [show, setShow] = useState(false);
-  const [data, setData] = useState({});
-  const [number, setNumber] = useState();
-  const [confirmResponse, setConfirmResponse] = useState({});
-
   const [loading, setLoading] = useState(false);
+  const [userInput, setUserInput] = useState(defaulValues);
+  const [error, setError] = useState("");
+  const [confirmResponse, setConfirmResponse] = useState("");
   const navigate = useNavigate();
-  const [error, setError] = useState();
-  const [info, setInfo] = useState({
-    name: "",
-    email: "",
-    phone: number,
-    ward: "",
-    address: "",
-  });
+  const [phone, setPhone] = useState("");
+  const { name, email, ward, address } = userInput;
 
-  const [errors, setErrors] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    ward: "",
-    address: "",
-    emptyError: "",
-  });
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     console.log("set");
+  //     window.recaptchaVerifier = new RecaptchaVerifier(
+  //       "recaptcha-container",
+  //       { size: "invisible" },
+  //       auth
+  //     );
+  //   }, 500);
+  // }, []);
 
-  const handleName = (e) => {
-    if (e.target.name) {
-      setInfo({ ...info, name: e.target.value });
-      setErrors({ ...errors, name: "" });
+  const handleChange = (e) => {
+    setUserInput({
+      ...userInput,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { name, email, ward, address } = userInput;
+    console.log("userInput", phone, userInput);
+    if (
+      name === "" ||
+      email === "" ||
+      phone === "" ||
+      ward === "" ||
+      address === ""
+    ) {
+      setError("Empty field!");
+      return;
     }
-  };
-  // const handlePhone = (e) => {
-  //   setNumber(e.target.value);
-  //   if (e.target.phone) {
-  //     setInfo({ ...info, phone: e.target.value });
-  //     setErrors({ ...errors, phone: "" });
-  //   }
-  // };
-
-  const handleEmail = (e) => {
-    const verifyEmail = /\S+@\S+\.\S+/.test(e.target.value);
-    if (verifyEmail) {
-      setInfo({ ...info, email: e.target.value });
-      setErrors({ ...errors, email: "" });
-    } else {
-      setErrors({ ...errors, email: "Invalid email" });
-      setInfo({ ...info, email: "" });
+    if ((phone + "")[0] !== "+") {
+      setError("Invalid phone! add country code");
+      return;
     }
-  };
 
-  // const handleChangeOtp = (enteredOtp) => {
-  //   setOtp(enteredOtp);
-  // };
-  const getVerificationCode = () => {
-    window.recaptchaVerifier = new RecaptchaVerifier(
-      "recaptcha-container",
-      {
-        size: "invisible",
-        callback: (response) => {
-          // reCAPTCHA solved, allow signInWithPhoneNumber.
-          handleSignUp();
-        },
-      },
-      auth
-    );
-  };
-  const handleSignUp = async (event) => {
-    event.preventDefault();
-
+    setError("");
+    const userData = JSON.stringify({
+      name: name,
+      email: email,
+      phone: phone,
+      ward: ward,
+      address: address,
+    });
     try {
-      if (!info.name) {
-        setErrors({ ...errors, name: "Enter your name" });
-      } else if (!info.email) {
-        setErrors({ ...errors, email: "Enter your email" });
-      } else if (!number) {
-        setErrors({ ...errors, phone: "Enter your phone" });
-      } else if (!info.ward) {
-        setErrors({ ...errors, ward: "Select your ward" });
-      } else if (!info.address) {
-        setErrors({ ...errors, address: "Enter your address" });
-      } else {
-        setLoading(true);
-        // await signup(info.email, info.password, info.name);
-        navigate("/");
+      setLoading(true);
+      async function checkUser() {
+        try {
+          const { data } = await axios.post(
+            "http://localhost:5000/auth/checkUser",
+            { phone: phone }
+          );
+          return data;
+        } catch (error) {
+          if (error.response.status === 400) {
+            setError(error.response.data.message);
+          }
+          setLoading(false);
+          return;
+        }
       }
-    } catch (err) {
+      const data = await checkUser();
+      if (!data) return;
+      const confirmationResult = await getVerificationCode(phone);
+      localStorage.setItem("userData", userData);
+
+      toast.info("OTP Sent", {
+        theme: "colored",
+      });
       setLoading(false);
-      setError(err);
+      setConfirmResponse(confirmationResult);
+      setShow(true);
+    } catch (error) {
+      setLoading(false);
+      if (error?.code?.includes("argument" || "internal")) {
+        setError("Something went wrong!");
+      } else {
+        setError(error.code);
+      }
+      window.recaptchaVerifier.render().then(function (widgetId) {
+        // eslint-disable-next-line no-undef
+        grecaptcha.reset(widgetId);
+      });
+      // captchaResponse.clear();
     }
-    // try {
-    //   const confirmationResult = await signInWithPhone(data.get("phone"));
-    //   console.log(confirmationResult);
-    //   if (confirmationResult) {
-    //     setShow(true);
-    //     setConfirmResponse(confirmationResult);
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
-    // setData({
-    //   fullName: data.get("fullName"),
-    //   email: data.get("email"),
-    //   password: data.get("password"),
-    //   phone: data.get("phone"),
-    //   ward: ward,
-    // });
   };
-
-  // const handleChange = (event) => {
-  //   setWard(event.target.value);
-  // };
-  // console.log(show);
-  // console.log(info);
-
   return (
     // <div>
-    //   <div className={`${show ? "block" : "hidden"}`}>
+    // <div className={`${show ? "block" : "hidden"}`}>
+    //   {confirmResponse && (
     //     <OtpForm
-    //       confirmationResult={confirmResponse}
-    //       signInWithPhone={signInWithPhone}
-    //       phone={data.phone}
-    //       getVerificationCode={getVerificationCode}
+    //       confirmResponse={confirmResponse}
+    //       name={userInput.name}
     //     />
-    //   </div>
-    //   <div className={`${!show ? "block" : "hidden"}`}>
+    //   )}
+    // </div>
+
+    // <div className={`${!show ? "block" : "hidden"}`}>
     //     <ThemeProvider theme={theme}>
     //       <Container component="main" maxWidth="xs">
     //         <CssBaseline />
@@ -183,19 +180,21 @@ export default function Signup() {
     //             <Grid container spacing={2}>
     //               <Grid item xs={12}>
     //                 <TextField
-    //                   autoComplete="given-name"
-    //                   name="fullName"
+    //                   value={name}
+    //                   onChange={handleChange}
+    //                   autoComplete="name"
+    //                   name="name"
     //                   required
     //                   fullWidth
-    //                   id="fullName"
+    //                   id="name"
     //                   label="Full Name"
     //                   autoFocus
-    //                   error={data.fullName === ""}
-    //                   helperText={data.fullName === "" ? "Empty field!" : " "}
     //                 />
     //               </Grid>
     //               <Grid item xs={12}>
     //                 <TextField
+    //                   value={email}
+    //                   onChange={handleChange}
     //                   required
     //                   fullWidth
     //                   id="email"
@@ -205,208 +204,203 @@ export default function Signup() {
     //                 />
     //               </Grid>
     //               <Grid item xs={12}>
-    // <PhoneInput
-    //   defaultCountry="BD"
-    //   placeholder="Enter phone number"
-    //   value={number}
-    //   onChange={setNumber}
-    //   className="border-[1px] border-gray-400 hover:border-gray-800 rounded-md py-[16px]"
-    //   // style={{ input: { appearance: "none" } }}
-    // />
     //                 <TextField
+    //                   value={phone}
+    //                   onChange={handleChange}
     //                   required
     //                   fullWidth
     //                   id="phone"
-    //                   label="Phone Number"
+    //                   label="Phone Number(+880)"
     //                   name="phone"
     //                   autoComplete="phone"
-    //                 ></TextField>
+    //                 />
     //               </Grid>
     //               <Grid item xs={12}>
     //                 <FormControl fullWidth>
     //                   <InputLabel id="demo-simple-select-label">
     //                     Ward
     //                   </InputLabel>
-    // <Select
-    //   labelId="demo-simple-select-label"
-    //   id="demo-simple-select"
-    //   value={ward}
-    //   label="ward"
-    //   required
-    //   onChange={handleChange}
-    // >
-    //   {Object.keys(wardsList)?.map((key) => (
-    //     <MenuItem value={wardsList[key]}>
-    //       {wardsList[key]}
-    //     </MenuItem>
-    //   ))}
-    // </Select>
+    //                   <Select
+    //                     labelId="demo-simple-select-label"
+    //                     id="demo-simple-select"
+    //                     value={ward}
+    //                     label="ward"
+    //                     name="ward"
+    //                     required
+    //                     onChange={handleChange}
+    //                   >
+    //                     {Object.keys(wardsList)?.map((key) => (
+    //                       <MenuItem value={wardsList[key]}>
+    //                         {wardsList[key]}
+    //                       </MenuItem>
+    //                     ))}
+    //                   </Select>
     //                 </FormControl>
     //               </Grid>
     //               <Grid item xs={12}>
     //                 <TextField
+    //                   value={address}
+    //                   onChange={handleChange}
     //                   required
     //                   fullWidth
-    //                   name="password"
-    //                   label="Password"
-    //                   type="password"
-    //                   id="password"
-    //                   autoComplete="new-password"
+    //                   name="address"
+    //                   label="Address"
+    //                   type="Address"
+    //                   id="Address"
     //                 />
     //               </Grid>
     //             </Grid>
-    // <Button
-    //   type="submit"
-    //   fullWidth
-    //   variant="contained"
-    //   style={{
-    //     backgroundColor: "black",
-    //   }}
-    //   sx={{ mt: 3, mb: 2 }}
-    // >
-    //   Sign Up
-    // </Button>
+    //             <div id="recaptcha-container"></div>
+    // {!loading ? (
+    //   <button
+    //     type="submit"
+    //     id="sign-in-button"
+    //     className="w-full mt-4 py-2 font-medium text-white bg-black hover:bg-gray-900 rounded-lg border-gray-900 hover:shadow inline-flex space-x-2 items-center justify-center"
+    //   >
+    //     <span>SIGN UP</span>
+    //   </button>
+    // ) : (
+    //   <button
+    //     type="submit"
+    //     className="w-full mt-4 py-2 font-medium text-white bg-black rounded-lg border-black hover:shadow inline-flex space-x-2 items-center justify-center disabled"
+    //     disabled
+    //   >
+    //     <ButtonSpin />
+    //   </button>
+    // )}
     //             <Grid container justifyContent="flex-end">
     //               <Grid item>
-    //                 <Link href="#" variant="body2">
+    //                 <Link
+    //                   to="/signin"
+    //                   variant="body2"
+    //                   className="text-sm cursor-pointer underline mt-1 block hover:text-blue-800"
+    //                 >
     //                   Already have an account? Sign in
     //                 </Link>
     //               </Grid>
     //             </Grid>
-    // <OtpInput
-    //   value={otp}
-    //   onChange={handleChangeOtp}
-    //   numInputs={6}
-    //   separator={<span>-</span>}
-    //   separateAfter={3}
-    // />
     //           </Box>
     //         </Box>
+    // {error && <Error error={error} />}
     //         {/* <Copyright sx={{ mt: 5 }} /> */}
     //       </Container>
     //     </ThemeProvider>
     //   </div>
-    //   <div id="recaptcha-container"></div>
     // </div>
-    <Fragment>
-      <div className="max-w-sm mx-auto my-20 bg-white p-8 rounded-xl shadow-lg shadow-slate-300">
-        <h1 className="text-2xl text-center font-bold mb-3">Sign up</h1>
-        <form onSubmit={handleSignUp}>
-          <div className="flex flex-col space-y-5">
-            <label htmlFor="name">
-              <p className="text-sm text-slate-700 pb-2">Name</p>
-              <input
-                onChange={handleName}
-                id="name"
-                name="name"
-                type="name"
-                className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                placeholder="Enter email address"
-              />
-              {errors?.name && (
-                <p className="text-red-400 text-xs flex items-center">
-                  <AiOutlineExclamationCircle className="mr-1" />
-                  {errors.name}
-                </p>
-              )}
-            </label>
-            <label htmlFor="email">
-              <p className="text-sm text-slate-700 pb-2">Email address</p>
-              <input
-                onChange={handleEmail}
-                id="email"
-                name="email"
-                type="email"
-                className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                placeholder="Enter email address"
-              />
-              {errors?.email && (
-                <p className="text-red-400 text-xs flex items-center">
-                  <AiOutlineExclamationCircle className="mr-1" />
-                  {errors.email}
-                </p>
-              )}
-            </label>
-            <label htmlFor="phone">
-              <p className="text-sm text-slate-700 pb-2">Phone number</p>
-              <PhoneInput
-                defaultCountry="BD"
-                placeholder="Enter phone number"
-                value={number}
-                onChange={setNumber}
-                className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-              />
-              {errors?.phone && (
-                <p className="text-red-400 text-xs flex items-center">
-                  <AiOutlineExclamationCircle className="mr-1" />
-                  {errors.phone}
-                </p>
-              )}
-            </label>
-            <label htmlFor="ward">
-              <p className="text-sm text-slate-700 pb-2">Ward</p>
-              <select
-                value={ward}
-                label="ward"
-                required
-                className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-              >
-                {Object.keys(wardsList)?.map((key) => (
-                  <option value={wardsList[key]}>{wardsList[key]}</option>
-                ))}
-              </select>
-              {errors?.email && (
-                <p className="text-red-400 text-xs flex items-center">
-                  <AiOutlineExclamationCircle className="mr-1" />
-                  {errors.email}
-                </p>
-              )}
-            </label>
-            <label htmlFor="address">
-              <p className="text-sm text-slate-700 pb-2">Address</p>
-              <input
-                onChange={(e) => setInfo(...info, { address: e.target.value })}
-                // id="ad"
-                name="address"
-                type="address"
-                className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                placeholder="Enter your address"
-              />
-              {errors?.address && (
-                <p className="text-red-400 text-xs flex items-center">
-                  <AiOutlineExclamationCircle className="mr-1" />
-                  {errors.address}
-                </p>
-              )}
-            </label>
-            {!loading ? (
-              <button
-                type="submit"
-                className="w-full py-3 font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg border-indigo-500 hover:shadow inline-flex space-x-2 items-center justify-center"
-              >
-                <span>SIGN UP</span>
-              </button>
-            ) : (
-              <button
-                type="submit"
-                className="w-full py-3 font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg border-indigo-500 hover:shadow inline-flex space-x-2 items-center justify-center"
-                disabled
-              >
-                <ButtonSpin />
-              </button>
-            )}
-            <p className="text-center text-sm">
-              Already have an account?{" "}
-              <Link
-                to="/login"
-                className="text-indigo-600 font-medium inline-flex space-x-1 items-center"
-              >
-                <span className="font-bold text-sm">Login </span>
-              </Link>
-            </p>
-          </div>
-        </form>
+    <div>
+      <div className={`${show ? "block" : "hidden"}`}>
+        {confirmResponse && (
+          <OtpForm confirmResponse={confirmResponse} name={userInput.name} />
+        )}
       </div>
-    </Fragment>
+
+      <div className={`${!show ? "block" : "hidden"}`}>
+        <div className="max-w-sm mx-auto my-20 bg-white p-8 rounded-xl shadow-lg shadow-slate-300">
+          <h1 className="text-2xl text-center font-bold mb-3">Register</h1>
+          <form onSubmit={handleSubmit}>
+            <div className="flex flex-col space-y-5">
+              <label htmlFor="name">
+                <p className="text-sm text-slate-700 pb-2">Name</p>
+                <input
+                  onChange={handleChange}
+                  id="name"
+                  name="name"
+                  type="name"
+                  value={name}
+                  className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
+                  placeholder="Enter email address"
+                />
+              </label>
+              <label htmlFor="email">
+                <p className="text-sm text-slate-700 pb-2">Email address</p>
+                <input
+                  onChange={handleChange}
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={email}
+                  className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
+                  placeholder="Enter email address"
+                />
+              </label>
+              <label htmlFor="phone">
+                <p className="text-sm text-slate-700 pb-2">Phone number</p>
+                <PhoneInput
+                  defaultCountry="BD"
+                  placeholder="Enter phone number"
+                  name="name"
+                  value={phone}
+                  onChange={setPhone}
+                  className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
+                />
+              </label>
+              <label htmlFor="ward">
+                <p className="text-sm text-slate-700 pb-2">Ward</p>
+                <select
+                  value={ward}
+                  label="ward"
+                  onChange={handleChange}
+                  name="ward"
+                  required
+                  className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
+                >
+                  <option value="" selected disabled hidden>
+                    Choose here
+                  </option>
+                  {Object.keys(wardsList)?.map((key) => (
+                    <option value={wardsList[key]}>{wardsList[key]}</option>
+                  ))}
+                </select>
+              </label>
+              <label htmlFor="address">
+                <p className="text-sm text-slate-700 pb-2">Address</p>
+                <input
+                  onChange={handleChange}
+                  value={address}
+                  name="address"
+                  type="address"
+                  id="address"
+                  className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow placeholder:text-sm  "
+                  placeholder="Enter your address"
+                />
+              </label>
+              <div id="recaptcha-container"></div>
+
+              {!loading ? (
+                <button
+                  type="submit"
+                  id="sign-in-button"
+                  className="w-full mt-4 py-2 font-medium text-white bg-black hover:bg-gray-900 rounded-lg border-gray-900 hover:shadow inline-flex space-x-2 items-center justify-center"
+                >
+                  <span>SIGN UP</span>
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="w-full mt-4 py-2 font-medium text-white bg-black rounded-lg border-black hover:shadow inline-flex space-x-2 items-center justify-center disabled"
+                  disabled
+                >
+                  <ButtonSpin />
+                </button>
+              )}
+              <p className="text-center text-sm">
+                Already have an account?{" "}
+                <Link
+                  to="/login"
+                  className="text-indigo-600 font-medium inline-flex space-x-1 items-center"
+                >
+                  <span className="font-bold text-sm hover:underline">
+                    Login{" "}
+                  </span>
+                </Link>
+              </p>
+            </div>
+            {error && <Error error={error} />}
+          </form>
+        </div>
+      </div>
+    </div>
   );
-}
+};
+
+export default Register;

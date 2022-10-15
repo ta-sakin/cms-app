@@ -21,6 +21,7 @@ export function AuthProvider({ children }) {
   const [captchaResponse, setCaptchaResponse] = useState("");
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState();
+  const [loadCaptcha, setLoadCaptcha] = useState(true);
   const provider = new GoogleAuthProvider();
   const [confirmResponse, setConfirmResponse] = useState();
   useEffect(() => {
@@ -31,41 +32,28 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  const setUpRecaptcha = async (phone) => {
+  useEffect(() => {
+    const captcha = async () => {
+      if (!window.recaptchaVerifier) {
+        window.recaptchaVerifier = new RecaptchaVerifier(
+          "recaptcha-container",
+          { size: "invisible" },
+          auth
+        );
+      }
+      await window.recaptchaVerifier.render();
+    };
+    captcha();
+  }, []);
+  const getVerificationCode = async (phone) => {
     if (!phone) {
       phone = localStorage.getItem("phone");
     }
-
-    // if (captchaResponse) {
-    //   console.log("captcharesponse", captchaResponse);
-    //   // captchaResponse.clear();
-    //   window.recaptchaVerifier.recaptcha.reset(this.window.recaptchaWidgetId);
-    //   document.getElementById("recaptcha-container").innerHTML =
-    //     "<div id='recaptcha'></div>";
-    //   const recaptchaVerifier = new RecaptchaVerifier(
-    //     "recaptcha-container",
-    //     {},
-    //     auth
-    //   );
-    //   console.log("set", recaptchaVerifier);
-    // }
-
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        "recaptcha-container",
-        { size: "invisible" },
-        auth
-      );
-    }
-    await window.recaptchaVerifier.render();
-    // setConfirmResponse(recaptchaVerifier);
-    console.log("recaptch in context insided", window.recaptchaVerifier);
     const confirmationResult = await signInWithPhoneNumber(
       auth,
       phone,
       window.recaptchaVerifier
     );
-
     return confirmationResult;
   };
   function logout() {
@@ -81,8 +69,10 @@ export function AuthProvider({ children }) {
     // signInWithPhone,
     // verifcationCode,
     confirmResponse,
-    setUpRecaptcha,
+    getVerificationCode,
     captchaResponse,
+    setLoadCaptcha,
+    loadCaptcha,
   };
 
   return (

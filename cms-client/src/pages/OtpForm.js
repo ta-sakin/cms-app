@@ -1,54 +1,99 @@
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
+import axios from "axios";
+import { updateProfile } from "firebase/auth";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import OtpInput from "react18-input-otp";
+import ButtonSpin from "../components/shared/ButtonSpin";
 import { useAuth } from "../context/AuthContext";
+import auth from "../firebase.init";
+import useToken from "../hooks/useToken";
 
-const OtpForm = ({ confirmResponse }) => {
-  const { setUpRecaptcha } = useAuth();
-  const phone = localStorage.getItem("phone");
+const OtpForm = ({ confirmResponse, name, phone }) => {
+  const { getVerificationCode } = useAuth();
+  const [response, setResponse] = useState(confirmResponse);
+  const userData = JSON.parse(localStorage.getItem("userData"));
+
+  phone = localStorage.getItem("phone");
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
   const handleChange = (enteredOtp) => {
     setOtp(enteredOtp);
   };
-  console.log("otp sent", confirmResponse);
-  // const verifyCode = async () => {
-  //   const confirmationResult = await signInWithPhone();
-  // };
-  const verificationCode = async (confirmResponse) => {
-    const result = await confirmResponse.confirm(otp);
+  const verificationCode = async (response) => {
+    const result = await response.confirm(otp);
     return result.user;
   };
+  const [token] = useToken(userData?.phone || phone);
+
   const handleVerification = async () => {
     if (!otp || (otp + "").length < 6) {
-      setError("Invalid otp");
+      setError("Invalid Verification Code");
       return;
     }
+    setLoading(true);
     try {
-      if (confirmResponse) {
-        const user = await verificationCode(confirmResponse);
+      if (response) {
+        const user = await verificationCode(response);
+        if (name && user) {
+          await updateProfile(auth.currentUser, {
+            displayName: name,
+          });
+          const register = async () => {
+            try {
+              const response = await axios.post(
+                "http://localhost:5000/auth/signup",
+                userData
+              );
+              return response;
+            } catch (error) {
+              if (error.response.status >= 400) {
+                setError(error.response.data.message);
+              }
+              setLoading(false);
+              return;
+            }
+          };
+          await register();
+        }
+        if (token && user) {
+          userData && localStorage.removeItem("userData");
+          phone && localStorage.removeItem("phone");
+          localStorage.setItem("accessToken", token);
+          navigate("/");
+        }
+        setLoading(false);
         setError("");
-        console.log("user", user);
       }
     } catch (error) {
+      setLoading(false);
       setError(error.code);
-      console.log("code error", error);
     }
   };
+
   const resendOtp = async () => {
     try {
-      const response = await setUpRecaptcha(phone);
-      const user = await verificationCode(response);
       setError("");
-      console.log(user);
+      setOtp("");
+      setLoading(true);
+      const res = await getVerificationCode(userData?.phone || phone);
+      toast.info("OTP Sent", {
+        theme: "colored",
+      });
+      setResponse(res);
+      setLoading(false);
     } catch (error) {
-      if (error.code.includes("argument" || "internal")) {
+      setLoading(false);
+      if (error?.code?.includes("argument" || "internal")) {
         setError("Something went wrong!");
       } else {
         setError(error.code);
       }
       window.recaptchaVerifier.render().then(function (widgetId) {
-        console.log("widget", widgetId);
         // eslint-disable-next-line no-undef
         grecaptcha.reset(widgetId);
       });
@@ -56,9 +101,9 @@ const OtpForm = ({ confirmResponse }) => {
   };
   return (
     <div className="mt-20 max-w-lg py-10 rounded-lg  shadow-lg mx-auto">
-      <h4 className="text-3xl text-center">OTP Verification</h4>
-      <p className="text-center text-gray-600">
-        OTP has been sent to this phone number {phone}
+      <h4 className="text-2xl text-center mt-5">Enter Verification Code</h4>
+      <p className="text-center text-gray-600 text-sm">
+        OTP has been sent to this phone number {userData?.phone || phone}
       </p>
       <div className="flex justify-center items-center mt-8">
         <OtpInput
@@ -70,7 +115,7 @@ const OtpForm = ({ confirmResponse }) => {
           shouldAutoFocus={true}
           inputStyle="border-2 !w-[54px] rounded-md h-[54px] px-6 text-[#000] font-bold "
           focusStyle="border-2 border-[#000] outline-none"
-          hasErrored={error}
+          hasErrored={error?.includes("invalid")}
           errorStyle={error ? "border-red-500" : ""}
         />
       </div>
@@ -80,22 +125,31 @@ const OtpForm = ({ confirmResponse }) => {
       ></div>
 
       <div className="flex justify-evenly mt-8 px-2">
-        <button
-          className="text-center text-gray-700 px-10 py-2 border-2 hover:bg-[#000]  hover:text-white rounded-md "
-          onClick={resendOtp}
-        >
-          Resend OTP
-        </button>
-        <button
-          className="text-center px-10 bg-[#000] py-2 text-white rounded-md "
-          onClick={handleVerification}
-        >
-          Verify
-        </button>
+        {!loading ? (
+          <>
+            <button
+              className="text-center text-gray-700 px-10 py-2 border-2 hover:bg-[#000]  hover:text-white rounded-md "
+              onClick={resendOtp}
+            >
+              Resend OTP
+            </button>
+            <button
+              className="text-center px-10 bg-[#000] py-2 text-white rounded-md "
+              onClick={handleVerification}
+            >
+              Verify
+            </button>
+          </>
+        ) : (
+          <>
+            <ButtonSpin />
+            {/* <CircularProgress color="inherit" /> */}
+          </>
+        )}
       </div>
       {error && (
         <div className="bg-red-600 max-w-sm mx-auto mt-4">
-          <p className="text-white text-center py-2 capitalize">
+          <p className="text-white text-sm text-center py-2 capitalize">
             {error?.includes("auth")
               ? error.split("/")[1].split("-").join(" ")
               : error}

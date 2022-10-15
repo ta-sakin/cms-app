@@ -25,6 +25,7 @@ import auth from "../firebase.init";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import ButtonSpin from "../components/shared/ButtonSpin";
 const theme = createTheme();
 
 export default function Signup() {
@@ -84,7 +85,7 @@ export default function Signup() {
   // const handleChangeOtp = (enteredOtp) => {
   //   setOtp(enteredOtp);
   // };
-  const setUpRecaptcha = () => {
+  const getVerificationCode = () => {
     window.recaptchaVerifier = new RecaptchaVerifier(
       "recaptcha-container",
       {
@@ -98,17 +99,14 @@ export default function Signup() {
     );
   };
   const handleSignUp = async (event) => {
-    console.log("load");
     event.preventDefault();
-    // setUpRecaptcha();
-    // const data = new FormData(event.currentTarget);
+
     try {
       if (!info.name) {
         setErrors({ ...errors, name: "Enter your name" });
       } else if (!info.email) {
         setErrors({ ...errors, email: "Enter your email" });
       } else if (!number) {
-        console.log("phone", number);
         setErrors({ ...errors, phone: "Enter your phone" });
       } else if (!info.ward) {
         setErrors({ ...errors, ward: "Select your ward" });
@@ -145,8 +143,8 @@ export default function Signup() {
   // const handleChange = (event) => {
   //   setWard(event.target.value);
   // };
-  console.log(show);
-  console.log(info);
+  // console.log(show);
+  // console.log(info);
 
   return (
     // <div>
@@ -155,7 +153,7 @@ export default function Signup() {
     //       confirmationResult={confirmResponse}
     //       signInWithPhone={signInWithPhone}
     //       phone={data.phone}
-    //       setUpRecaptcha={setUpRecaptcha}
+    //       getVerificationCode={getVerificationCode}
     //     />
     //   </div>
     //   <div className={`${!show ? "block" : "hidden"}`}>
@@ -394,7 +392,7 @@ export default function Signup() {
                 className="w-full py-3 font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg border-indigo-500 hover:shadow inline-flex space-x-2 items-center justify-center"
                 disabled
               >
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-300"></div>
+                <ButtonSpin />
               </button>
             )}
             <p className="text-center text-sm">

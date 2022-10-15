@@ -28,6 +28,9 @@ import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import ButtonSpin from "../components/shared/ButtonSpin";
+import { toast } from "react-toastify";
+import Error from "../components/shared/Error";
+import axios from "axios";
 
 const theme = createTheme({
   typography: {
@@ -42,18 +45,27 @@ const defaulValues = {
   address: "",
 };
 const Register = () => {
-  const { captchaResponse, setUpRecaptcha, signInWithPhone } = useAuth();
+  const { getVerificationCode, currentUser, setLoadCaptcha, loadCaptcha } =
+    useAuth();
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userInput, setUserInput] = useState(defaulValues);
   const { fullName, email, phone, ward, address } = userInput;
   const [error, setError] = useState("");
   const [confirmResponse, setConfirmResponse] = useState("");
-  let recaptchaWrapperRef = useRef();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    window.recaptchaVerifier = new RecaptchaVerifier(
+      "recaptcha-container",
+      { size: "invisible" },
+      auth
+    );
+  }, []);
+
   const handleChange = (e) => {
     setUserInput({ ...userInput, [e.target.name]: e.target.value });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { fullName, email, phone, ward, address } = userInput;
@@ -72,38 +84,66 @@ const Register = () => {
       setError("Invalid phone! add country code");
       return;
     }
+
     setError("");
-    localStorage.setItem("phone", phone);
-    // https://stackoverflow.com/questions/51285008/firebase-recaptchaverifier-clear-has-no-effect/51328808#51328808
-    // https://stackoverflow.com/questions/63806396/how-to-reset-recaptcha-on-success-for-signinwithphonenumber
+    const userData = JSON.stringify({
+      name: fullName,
+      email: email,
+      phone: phone,
+      ward: ward,
+      address: address,
+    });
     try {
       setLoading(true);
-      const confirmationResult = await setUpRecaptcha(phone);
+      async function checkUser() {
+        try {
+          const { data } = await axios.post(
+            "http://localhost:5000/auth/checkUser",
+            { phone: phone }
+          );
+          return data;
+        } catch (error) {
+          if (error.response.status === 400) {
+            setError(error.response.data.message);
+          }
+          setLoading(false);
+          return;
+        }
+      }
+      const data = await checkUser();
+      if (!data) return;
+      const confirmationResult = await getVerificationCode(phone);
+      localStorage.setItem("userData", userData);
+
+      toast.info("OTP Sent", {
+        theme: "colored",
+      });
       setLoading(false);
       setConfirmResponse(confirmationResult);
       setShow(true);
-      console.log(confirmationResult);
     } catch (error) {
       setLoading(false);
-      console.log(error);
       if (error?.code?.includes("argument" || "internal")) {
         setError("Something went wrong!");
       } else {
         setError(error.code);
       }
       window.recaptchaVerifier.render().then(function (widgetId) {
-        console.log("widget", widgetId);
         // eslint-disable-next-line no-undef
         grecaptcha.reset(widgetId);
       });
       // captchaResponse.clear();
     }
   };
-
   return (
     <div>
       <div className={`${show ? "block" : "hidden"}`}>
-        {confirmResponse && <OtpForm confirmResponse={confirmResponse} />}
+        {confirmResponse && (
+          <OtpForm
+            confirmResponse={confirmResponse}
+            name={userInput.fullName}
+          />
+        )}
       </div>
 
       <div className={`${!show ? "block" : "hidden"}`}>
@@ -135,17 +175,13 @@ const Register = () => {
                     <TextField
                       value={fullName}
                       onChange={handleChange}
-                      autoComplete="given-name"
+                      autoComplete="name"
                       name="fullName"
                       required
                       fullWidth
-                      id="fullName"
+                      id="fullname"
                       label="Full Name"
                       autoFocus
-                      //   error={errorInput.fullName === ""}
-                      //   helperText={
-                      //     errorInput.fullName === "" ? "Empty field!" : " "
-                      //   }
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -158,22 +194,9 @@ const Register = () => {
                       label="Email Address"
                       name="email"
                       autoComplete="email"
-                      //   error={errorInput.email === ""}
-                      //   helperText={
-                      //     errorInput.email === "" ? "Empty field!" : " "
-                      //   }
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    {/* <PhoneInput
-                      defaultCountry="BD"
-                      placeholder="Enter phone number"
-                      value={number}
-                      onChange={setNumber}
-                    //   className="border-[1px] border-gray-400 hover:border-gray-800 rounded-md py-[16px]"
-                      // style={{ input: { appearance: "none" } }}
-                    /> */}
-
                     <TextField
                       value={phone}
                       onChange={handleChange}
@@ -183,10 +206,6 @@ const Register = () => {
                       label="Phone Number(+880)"
                       name="phone"
                       autoComplete="phone"
-                      //   error={errorInput.phone === ""}
-                      //   helperText={
-                      //     errorInput.phone === "" ? "Empty field!" : " "
-                      //   }
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -202,10 +221,6 @@ const Register = () => {
                         name="ward"
                         required
                         onChange={handleChange}
-                        // error={errorInput.ward === ""}
-                        // helperText={
-                        //   errorInput.ward === "" ? "Empty field!" : " "
-                        // }
                       >
                         {Object.keys(wardsList)?.map((key) => (
                           <MenuItem value={wardsList[key]}>
@@ -225,17 +240,10 @@ const Register = () => {
                       label="Address"
                       type="Address"
                       id="Address"
-                      //   autoComplete="address"
-                      //   error={errorInput.address === ""}
-                      //   helperText={
-                      //     errorInput.address === "" ? "Empty field!" : " "
-                      //   }
                     />
                   </Grid>
                 </Grid>
                 <div id="recaptcha-container"></div>
-                {/* <div ref={(ref) => (recaptchaWrapperRef = ref)}>
-                </div> */}
                 {!loading ? (
                   <button
                     type="submit"
@@ -256,9 +264,9 @@ const Register = () => {
                 <Grid container justifyContent="flex-end">
                   <Grid item>
                     <Link
-                      to="/login"
+                      to="/signin"
                       variant="body2"
-                      className="text-sm underline mt-1 block hover:text-blue-800"
+                      className="text-sm cursor-pointer underline mt-1 block hover:text-blue-800"
                     >
                       Already have an account? Sign in
                     </Link>
@@ -266,15 +274,7 @@ const Register = () => {
                 </Grid>
               </Box>
             </Box>
-            {error && (
-              <div className="bg-red-600 mt-4">
-                <p className="text-white text-center py-2 capitalize">
-                  {error.includes("auth")
-                    ? error.split("/")[1].split("-").join(" ")
-                    : error}
-                </p>
-              </div>
-            )}
+            {error && <Error error={error} />}
             {/* <Copyright sx={{ mt: 5 }} /> */}
           </Container>
         </ThemeProvider>

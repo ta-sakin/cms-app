@@ -37,20 +37,20 @@ const MobileDropDown = () => {
     //   )}
     // </>
     <>
-      <li className="sm:h-0">
+      <li className="lg:h-0">
         <NavLink to="/profle">Profile</NavLink>
       </li>
-      <li className="sm:h-0">
+      <li className="lg:h-0">
         <NavLink to="/mycomplain">My Complain</NavLink>
       </li>
-      <li className="sm:h-0">
+      <li className="lg:h-0">
         <NavLink to="/submitcomplain">Submit Complain</NavLink>
       </li>
       <>
         {user ? (
           <>
             <li>
-              <NavLink to="/profile" className="h-12">
+              <NavLink to="/profile" className="h-12 ">
                 <div className="flex cursor-pointer items-center rounded-md hover:border-none border-[1px] border-[#570df8] space-x-1 p-1">
                   <p className="sm:p-0 pr-4">
                     {user.displayName.split(" ")[0]}
@@ -75,14 +75,14 @@ const MobileDropDown = () => {
                   </ul> */}
             {/* </div> */}
             {/* </div> */}
-            <li className="sm:h-0">
+            <li className="lg:h-0">
               <Link to="" onClick={() => logout()}>
                 Logout
               </Link>
             </li>
           </>
         ) : (
-          <li className="sm:h-0">
+          <li className="lg:h-0">
             <NavLink to="/login">Login</NavLink>
           </li>
         )}

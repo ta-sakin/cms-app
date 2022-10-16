@@ -7,6 +7,7 @@ import {
   RecaptchaVerifier,
 } from "firebase/auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import Loading from "../components/shared/Loading";
 // import Loading from "../components/shared/Loading";
 import auth from "../firebase.init";
 // import useToken from "../hooks/useToken";
@@ -57,7 +58,7 @@ export function AuthProvider({ children }) {
     );
     return confirmationResult;
   };
-  
+
   function logout() {
     localStorage.removeItem("accessToken");
     return signOut(auth);
@@ -67,9 +68,6 @@ export function AuthProvider({ children }) {
     loading,
     currentUser,
     logout,
-    // token,
-    // signInWithPhone,
-    // verifcationCode,
     confirmResponse,
     getVerificationCode,
     captchaResponse,
@@ -79,8 +77,8 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={value}>
-      {/* {loading ? <Loading /> : children} */}
-      {children}
+      {loading ? <Loading /> : children}
+      {/* {children} */}
     </AuthContext.Provider>
   );
 }

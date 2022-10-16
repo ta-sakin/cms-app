@@ -10,7 +10,7 @@
 /dashboard
 # production
 /build
-./src/pages/Signup.js
+/src/pages/Signup.js
 # misc
 .DS_Store
 .env.local

@@ -1,30 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-// import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import {
-  Avatar,
-  Button,
-  CssBaseline,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+
 import wardsList from "../wardsList";
-import OtpInput from "react18-input-otp";
-// import OtpForm from "./OtpForm";
 import OtpForm from "./OtpForm";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { RecaptchaVerifier } from "firebase/auth";
 import "./phoneInputStyle.css";
 import auth from "../firebase.init";
-import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import ButtonSpin from "../components/shared/ButtonSpin";
@@ -32,11 +14,6 @@ import { toast } from "react-toastify";
 import Error from "../components/shared/Error";
 import axios from "axios";
 
-const theme = createTheme({
-  typography: {
-    fontFamily: ["Poppins"].join(","),
-  },
-});
 const defaulValues = {
   name: "",
   email: "",

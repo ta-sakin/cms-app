@@ -8,15 +8,40 @@ import Home from "./pages/Home";
 import { ToastContainer, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./components/shared/Header/Navbar";
+import SubmitComplain from "./pages/SubmitComplain";
+import PublicRoute from "./components/Auth/PublicRoute";
+import PrivateRoute from "./components/Auth/PrivateRoute";
 
 function App() {
   return (
-    <div id="app" className="font-poppins">
+    <div id="app" className="font-montserrat">
       <Navbar />
       <Routes>
-        <Route path="/register" element={<Register />}></Route>
-        <Route path="/login" element={<Login />}></Route>
         <Route path="/" element={<Home />}></Route>
+        <Route
+          path="/submitcomplain"
+          element={
+            <PrivateRoute>
+              <SubmitComplain />
+            </PrivateRoute>
+          }
+        ></Route>
+        <Route
+          path="/register"
+          element={
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
+          }
+        ></Route>
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        ></Route>
       </Routes>
       <ToastContainer
         className="max-w-32"

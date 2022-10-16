@@ -6,13 +6,14 @@ const useToken = (phone) => {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await axios.post("http://localhost:5000/auth/token", {
-          phone: phone,
-        });
+        const { data } = await axios.post(
+          "https://cms-server-production.up.railway.app/auth/token",
+          {
+            phone: phone,
+          }
+        );
         setToken(data);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     })();
   }, [phone]);
 

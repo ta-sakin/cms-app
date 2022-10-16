@@ -53,13 +53,8 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(phone);
     if (!phone) {
       setError("Enter phone number");
-      return;
-    }
-    if ((phone + "")[0] !== "+") {
-      setError("Invalid phone! add country code");
       return;
     }
     try {
@@ -67,12 +62,11 @@ const Login = () => {
       async function checkUser() {
         try {
           const { data } = await axios.post(
-            "http://localhost:5000/auth/signin",
+            "https://cms-server-production.up.railway.app/auth/signin",
             { phone: phone }
           );
           return data;
         } catch (error) {
-          console.log("error", error.response);
           if (error.response.status === 400) {
             setError(error.response.data.message);
           }
@@ -114,7 +108,7 @@ const Login = () => {
         )}
       </div>
       <div className={`${!show ? "block" : "hidden"}`}>
-        <div className="max-w-md mx-auto my-20 bg-white rounded-xl shadow-lg shadow-slate-300 py-8 px-16">
+        <div className="sm:max-w-md max-w-sm mx-auto my-20 bg-white rounded-xl shadow-lg shadow-slate-300 py-8 px-8 sm:px-16">
           <h1 className="text-2xl text-center font-bold mb-3">Login</h1>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col space-y-3">

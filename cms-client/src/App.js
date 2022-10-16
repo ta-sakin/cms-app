@@ -7,10 +7,12 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import { ToastContainer, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Navbar from "./components/shared/Header/Navbar";
 
 function App() {
   return (
     <div id="app" className="font-poppins">
+      <Navbar />
       <Routes>
         <Route path="/register" element={<Register />}></Route>
         <Route path="/login" element={<Login />}></Route>

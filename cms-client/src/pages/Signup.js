@@ -76,7 +76,6 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { name, email, ward, address } = userInput;
-    console.log("userInput", phone, userInput);
     if (
       name === "" ||
       email === "" ||
@@ -105,7 +104,7 @@ const Register = () => {
       async function checkUser() {
         try {
           const { data } = await axios.post(
-            "http://localhost:5000/auth/checkUser",
+            "https://cms-server-production.up.railway.app/auth/checkUser",
             { phone: phone }
           );
           return data;

@@ -47,7 +47,7 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
           const register = async () => {
             try {
               const response = await axios.post(
-                "http://localhost:5000/auth/signup",
+                "https://cms-server-production.up.railway.app/auth/signup",
                 userData
               );
               return response;
@@ -65,6 +65,9 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
           userData && localStorage.removeItem("userData");
           phone && localStorage.removeItem("phone");
           localStorage.setItem("accessToken", token);
+          toast.success("Welcome!", {
+            theme: "colored",
+          });
           navigate("/");
         }
         setLoading(false);
@@ -101,7 +104,7 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
     }
   };
   return (
-    <div className="mt-20 max-w-lg py-10 rounded-lg  shadow-lg mx-auto">
+    <div className="mt-20 max-w-sm sm:max-w-lg py-10 rounded-lg  shadow-lg mx-auto">
       <h4 className="text-2xl text-center mt-5">Enter Verification Code</h4>
       <p className="text-center text-gray-600 text-sm">
         OTP has been sent to this phone number {userData?.phone || phone}
@@ -114,7 +117,7 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
           separator={<span style={{ width: "8px" }}></span>}
           isInputNum={true}
           shouldAutoFocus={true}
-          inputStyle="border-2 !w-[54px] rounded-md h-[54px] px-6 text-[#000] font-bold "
+          inputStyle="border-2 !w-[44px] sm:!w-[54px] sm:h-[54px] h-[44px] rounded-md  px-6 text-[#000] font-bold "
           focusStyle="border-2 border-[#000] outline-none"
           hasErrored={error?.includes("invalid")}
           errorStyle={error ? "border-red-500" : ""}
@@ -122,11 +125,11 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
       </div>
       <div id="recaptcha-container"></div>
 
-      <div className="flex justify-evenly mt-8 px-2">
+      <div className="flex justify-evenly mt-8 px-4 sm:px-2">
         {!loading ? (
           <>
             <button
-              className="text-center text-gray-700 px-10 py-2 border-2 hover:bg-[#000]  hover:text-white rounded-md "
+              className="text-center text-gray-700 px-8 sm:px-10 py-2 border-2 hover:bg-[#000]  hover:text-white rounded-md "
               onClick={resendOtp}
             >
               Resend OTP

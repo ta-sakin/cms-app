@@ -73,7 +73,6 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { name, email, ward, address } = userInput;
-    console.log("userInput", phone, userInput);
     if (
       name === "" ||
       email === "" ||
@@ -82,10 +81,6 @@ const Register = () => {
       address === ""
     ) {
       setError("Empty field!");
-      return;
-    }
-    if ((phone + "")[0] !== "+") {
-      setError("Invalid phone! add country code");
       return;
     }
 
@@ -102,7 +97,7 @@ const Register = () => {
       async function checkUser() {
         try {
           const { data } = await axios.post(
-            "http://localhost:5000/auth/checkUser",
+            "https://cms-server-production.up.railway.app/auth/checkUser",
             { phone: phone }
           );
           return data;
@@ -147,7 +142,7 @@ const Register = () => {
       </div>
 
       <div className={`${!show ? "block" : "hidden"}`}>
-        <div className="max-w-md mx-auto my-20 bg-white rounded-xl shadow-lg shadow-slate-300 py-8 px-16">
+        <div className="sm:max-w-md max-w-sm mx-auto my-20 bg-white rounded-xl shadow-lg shadow-slate-300 py-8 px-8 sm:px-16">
           <h1 className="text-2xl text-center font-bold mb-3">Register</h1>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col space-y-5">

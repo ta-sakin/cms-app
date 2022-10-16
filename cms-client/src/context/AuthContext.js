@@ -45,6 +45,7 @@ export function AuthProvider({ children }) {
     };
     captcha();
   }, []);
+
   const getVerificationCode = async (phone) => {
     if (!phone) {
       phone = localStorage.getItem("phone");
@@ -56,6 +57,7 @@ export function AuthProvider({ children }) {
     );
     return confirmationResult;
   };
+  
   function logout() {
     localStorage.removeItem("accessToken");
     return signOut(auth);

@@ -1,28 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ButtonSpin from "../components/shared/ButtonSpin";
 import Error from "../components/shared/Error";
 import wardsList from "../wardsList";
 import { DropzoneArea } from "mui-file-dropzone";
+import { useDebounce } from "use-debounce";
 
 const defaulValues = {
   address: "",
   ward: "",
   description: "",
-  img: "",
-  publicSubmit: false,
 };
+
 const SubmitComplain = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [check, setCheck] = useState({ publicSubmit: false, anonymous: false });
+  const [img, setImg] = useState([]);
   const [userInput, setUserInput] = useState(defaulValues);
-  const { address, ward, description, img, publicSubmit } = userInput;
+  const { address, ward, description } = userInput;
+  const [key, setKey] = useState(0);
+  const [debounceKey] = useDebounce(key, 1000);
   const handleChange = (e) => {
     setUserInput({
       ...userInput,
       [e.target.name]: e.target.value,
     });
   };
-  const handleSubmit = () => {};
+  const handleCheckbox = (e) => {
+    setCheck({ ...check, [e.target.name]: e.target.checked });
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(img, userInput, check);
+    setUserInput(defaulValues);
+    setImg([]);
+    setCheck({});
+    setKey(key + 1);
+  };
+
   return (
     <div className="sm:max-w-lg max-w-sm mx-auto my-20 bg-white rounded-xl border-2 py-12 px-4 sm:px-10 ">
       <div className="mb-6">
@@ -40,7 +55,7 @@ const SubmitComplain = () => {
               value={address}
               name="address"
               type="address"
-              id="address"
+              id="autocomplete"
               className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow placeholder:text-sm  "
               placeholder="Enter an address, zipcode, or location"
             />
@@ -63,7 +78,6 @@ const SubmitComplain = () => {
               ))}
             </select>
           </label>
-
           <label htmlFor="description">
             <p className="text-sm text-slate-700 pb-2">Description</p>
             <textarea
@@ -76,54 +90,62 @@ const SubmitComplain = () => {
               placeholder="Write your complain here..."
             />
           </label>
-          {/* <label htmlFor="file-upload">
-            <div class="flex justify-center items-center w-full">
-              <label
-                for="dropzone-file"
-                class="flex flex-col justify-center items-center w-full h-48 bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer "
-              >
-                <div class="flex flex-col justify-center items-center pt-5 pb-6">
-                  <svg
-                    aria-hidden="true"
-                    class="mb-3 w-10 h-10 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                    ></path>
-                  </svg>
-                  <p class="mb-2 text-sm text-gray-700 dark:text-gray-700">
-                    <span class="font-semibold">Click to upload</span> or drag
-                    and drop
-                  </p>
-                  <p class="text-xs text-gray-500 dark:text-gray-500">
-                    SVG, PNG, JPG or GIF (MAX. 800x400px)
-                  </p>
-                </div>
-                <input id="dropzone-file" type="file" />
-              </label>
-            </div>
-          </label> */}
+
           <DropzoneArea
+            key={debounceKey}
             acceptedFiles={["image/*"]}
             dropzoneText={"Drag & drop or browse images (MAX. 3)"}
-            onChange={(files) => console.log("Files:", files)}
+            onChange={(files) => setImg(files)}
             dropzoneParagraphClass={
               "!text-base !font-montserrat !text-gray-700"
             }
+            clearOnUnmount
             dropzoneClass={"!bg-slate-50"}
             filesLimit={3}
             showAlerts={["error"]}
-            // showPreviewsInDropzone={false}
-            // showPreviews={true}
+            initialFiles={img}
             useChipsForPreview={true}
           />
+          <div class="flex justify-around border-2 rounded-lg py-3">
+            <div class="flex items-center mr-4">
+              <input
+                id="inline-checkbox"
+                type="checkbox"
+                name="publicSubmit"
+                checked={check.publicSubmit}
+                class="w-4 h-4 bg-gray-100 rounded border-gray-300  dark:bg-gray-700 dark:border-gray-600"
+                onChange={handleCheckbox}
+              />
+              <label
+                for="inline-checkbox"
+                class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-800"
+              >
+                Complain as Public
+              </label>
+            </div>
+
+            <div
+              class={`flex items-center mr-4 ${
+                check.publicSubmit ? "visible" : "invisible"
+              }`}
+            >
+              <input
+                id="inline-2-checkbox"
+                type="checkbox"
+                name="anonymous"
+                checked={check.anonymous}
+                class="w-4 h-4 bg-gray-100 rounded border-gray-300  dark:bg-gray-700 dark:border-gray-600"
+                onChange={handleCheckbox}
+              />
+              <label
+                title="Your name will remain hidden"
+                for="inline-2-checkbox"
+                class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-800"
+              >
+                Remain Anonymous
+              </label>
+            </div>
+          </div>
           {!loading ? (
             <button
               type="submit"

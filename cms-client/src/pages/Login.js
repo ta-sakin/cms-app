@@ -62,7 +62,7 @@ const Login = () => {
       async function checkUser() {
         try {
           const { data } = await axios.post(
-            "https://cms-server-production.up.railway.app/auth/signin",
+            "http://localhost:5000/api/auth/signin",
             { phone: phone }
           );
           return data;

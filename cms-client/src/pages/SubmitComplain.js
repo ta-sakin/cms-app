@@ -4,19 +4,25 @@ import Error from "../components/shared/Error";
 import wardsList from "../wardsList";
 import { DropzoneArea } from "mui-file-dropzone";
 import { useDebounce } from "use-debounce";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
 
 const defaulValues = {
   address: "",
   ward: "",
   description: "",
 };
-
+// `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`
 const SubmitComplain = () => {
+  const { currentUser } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [check, setCheck] = useState({ publicSubmit: false, anonymous: false });
-  const [img, setImg] = useState([]);
+  const [type, setType] = useState({ publicSubmit: false, anonymous: false });
+  const { publicSubmit, anonymous } = type;
+  const [imgs, setImgs] = useState([]);
   const [userInput, setUserInput] = useState(defaulValues);
+  const [imgUrls, setImgUrls] = useState("");
   const { address, ward, description } = userInput;
   const [key, setKey] = useState(0);
   const [debounceKey] = useDebounce(key, 1000);
@@ -27,21 +33,78 @@ const SubmitComplain = () => {
     });
   };
   const handleCheckbox = (e) => {
-    setCheck({ ...check, [e.target.name]: e.target.checked });
+    setType({ ...type, [e.target.name]: e.target.checked });
   };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(img, userInput, check);
+
+  const reset = () => {
+    setImgs([]);
+    setImgUrls("");
     setUserInput(defaulValues);
-    setImg([]);
-    setCheck({});
+    setType({});
     setKey(key + 1);
+    setError("");
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!address || !ward || !description) {
+      if (!address) setError("Enter your address");
+      if (!ward) setError("Select your ward");
+      if (!description) setError("Describe your problem");
+      return;
+    }
+    if (!currentUser) {
+      setError("Something went wrong");
+      return;
+    }
+    const complain = {
+      address,
+      ward,
+      description,
+      imgUrls: imgUrls ? imgUrls : [],
+      type,
+      phone: currentUser?.phoneNumber,
+    };
+
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        "http://localhost:5000/api/complain",
+        complain
+      );
+
+      if (response.status === 201) {
+        toast.success("Complain submitted successfully", {
+          theme: "colored",
+        });
+        reset();
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      if (error.response.data.message.includes("defined")) {
+        setError("Something went wrong");
+        return;
+      }
+      setError(error.response.data.message);
+    }
+  };
+
+  useEffect(() => {
+    imgs.forEach((img) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImgUrls((prev) => [...prev, reader.result]);
+      };
+      reader.readAsDataURL(img);
+    });
+  }, [imgs]);
 
   return (
     <div className="sm:max-w-lg max-w-sm mx-auto my-20 bg-white rounded-xl border-2 py-12 px-4 sm:px-10 ">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold ">What’s your complain?</h1>
+        <h1 className="text-2xl font-bold ">What's your complain?</h1>
         <p className="text-gray-600">
           Ensure that you follow our rules and regulations!
         </p>
@@ -95,7 +158,7 @@ const SubmitComplain = () => {
             key={debounceKey}
             acceptedFiles={["image/*"]}
             dropzoneText={"Drag & drop or browse images (MAX. 3)"}
-            onChange={(files) => setImg(files)}
+            onChange={(files) => setImgs(files)}
             dropzoneParagraphClass={
               "!text-base !font-montserrat !text-gray-700"
             }
@@ -103,16 +166,16 @@ const SubmitComplain = () => {
             dropzoneClass={"!bg-slate-50"}
             filesLimit={3}
             showAlerts={["error"]}
-            initialFiles={img}
+            initialFiles={imgs}
             useChipsForPreview={true}
           />
-          <div class="flex justify-around border-2 rounded-lg py-3">
-            <div class="flex items-center mr-4">
+          <div class="flex border-2 justify-between bg-gray-100 hover:shadow rounded-lg  py-3">
+            <div class="flex items-center mx-2">
               <input
                 id="inline-checkbox"
                 type="checkbox"
                 name="publicSubmit"
-                checked={check.publicSubmit}
+                checked={publicSubmit}
                 class="w-4 h-4 bg-gray-100 rounded border-gray-300  dark:bg-gray-700 dark:border-gray-600"
                 onChange={handleCheckbox}
               />
@@ -125,15 +188,15 @@ const SubmitComplain = () => {
             </div>
 
             <div
-              class={`flex items-center mr-4 ${
-                check.publicSubmit ? "visible" : "invisible"
+              class={`flex items-center mx-2 ${
+                publicSubmit ? "block" : "hidden"
               }`}
             >
               <input
                 id="inline-2-checkbox"
                 type="checkbox"
                 name="anonymous"
-                checked={check.anonymous}
+                checked={anonymous}
                 class="w-4 h-4 bg-gray-100 rounded border-gray-300  dark:bg-gray-700 dark:border-gray-600"
                 onChange={handleCheckbox}
               />

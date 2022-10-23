@@ -44,8 +44,6 @@ function App() {
         ></Route>
       </Routes>
       <ToastContainer
-        className="max-w-32"
-        style={{ width: "250px" }}
         autoClose={2500}
         hideProgressBar={true}
         closeOnClick={true}

@@ -50,7 +50,7 @@ const MobileDropDown = () => {
         {user ? (
           <>
             <li>
-              <NavLink to="/profile" className="h-12 ">
+              <NavLink to="/profile" className="h-12">
                 <div className="flex cursor-pointer items-center rounded-md hover:border-none border-[1px] border-[#570df8] space-x-1 p-1">
                   <p className="sm:p-0 pr-4">
                     {user.displayName.split(" ")[0]}
@@ -82,7 +82,7 @@ const MobileDropDown = () => {
             </li>
           </>
         ) : (
-          <li className="lg:h-0">
+          <li className="lg:h-12">
             <NavLink to="/login">Login</NavLink>
           </li>
         )}

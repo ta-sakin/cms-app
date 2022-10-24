@@ -17,7 +17,15 @@ function App() {
     <div id="app" className="font-montserrat">
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home />}></Route>
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <Home />
+            </PrivateRoute>
+          }
+        ></Route>
+        <Route path="/home" element={<Home />}></Route>
         <Route
           path="/submitcomplain"
           element={

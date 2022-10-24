@@ -65,6 +65,7 @@ const Login = () => {
             "http://localhost:5000/api/auth/signin",
             { phone: phone }
           );
+          console.log("data", data);
           return data;
         } catch (error) {
           if (error.response.status === 400) {

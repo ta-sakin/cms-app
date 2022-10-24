@@ -70,7 +70,12 @@ const SubmitComplain = () => {
       setLoading(true);
       const response = await axios.post(
         "http://localhost:5000/api/complain",
-        complain
+        complain,
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
       );
 
       if (response.status === 201) {
@@ -85,7 +90,7 @@ const SubmitComplain = () => {
       setLoading(false);
       if (error.response.data.message.includes("defined")) {
         setError("Something went wrong");
-        return;
+        // return;
       }
       setError(error.response.data.message);
     }

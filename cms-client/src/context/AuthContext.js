@@ -10,6 +10,10 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import Loading from "../components/shared/Loading";
 // import Loading from "../components/shared/Loading";
 import auth from "../firebase.init";
+import jwt_decode from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 // import useToken from "../hooks/useToken";
 // import auth from "../utils/firebase.init";
 const AuthContext = createContext();
@@ -19,6 +23,7 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
+  const navigate = useNavigate();
   const [captchaResponse, setCaptchaResponse] = useState("");
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState();
@@ -47,6 +52,21 @@ export function AuthProvider({ children }) {
     captcha();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      if (localStorage.getItem("accessToken")) {
+        let token = localStorage.getItem("accessToken");
+        const { exp } = jwt_decode(token);
+        const expirationTime = exp * 1000 - 60000;
+        if (Date.now() >= expirationTime) {
+          await logout();
+          navigate("/login");
+          toast.error("Session expired", { theme: "colored" });
+        }
+      }
+    })();
+  });
+  
   const getVerificationCode = async (phone) => {
     if (!phone) {
       phone = localStorage.getItem("phone");

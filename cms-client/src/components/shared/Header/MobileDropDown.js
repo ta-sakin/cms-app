@@ -38,7 +38,7 @@ const MobileDropDown = () => {
     // </>
     <>
       <li className="lg:h-0">
-        <NavLink to="/profle">Profile</NavLink>
+        <NavLink to="/home">Home</NavLink>
       </li>
       <li className="lg:h-0">
         <NavLink to="/mycomplain">My Complain</NavLink>

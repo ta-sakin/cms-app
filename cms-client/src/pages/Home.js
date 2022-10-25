@@ -5,13 +5,15 @@ import { useAuth } from "../context/AuthContext";
 import wardsList from "../wardsList";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import useUser from "../hooks/useUser";
+
+// const activeCss = "text-white bg-blue-500 font-bold rounded-full";
+
 const Home = () => {
   const { currentUser: user } = useAuth();
   const [complains, setComplains] = useState([]);
   const [upvoteState, setUpvoteState] = useState({});
   const [userId] = useUser(user?.phoneNumber);
   const [votes, setVotes] = useState([]);
-
   const handleSubmit = () => {};
   const handleChange = () => {};
   const status = [
@@ -62,6 +64,11 @@ const Home = () => {
 
   const handleUpvote = async (complainId, cid) => {
     const voted = votes?.find((vote) => vote.complain_id === complainId);
+    // if (voted.upvote) {
+    //   setActiveCss("text-white bg-blue-500 font-bold rounded-full");
+    // } else {
+    //   setActiveCss("");
+    // }
     setUpvoteState(voted);
     try {
       const { data } = await axios.put(
@@ -95,7 +102,7 @@ const Home = () => {
 
   return (
     <div className="flex gap-x-10 md:justify-center items-center md:flex-row flex-col">
-      <div className="max-w-[380px] md:sticky block md:self-start self-auto left-10 top-20 my-20 bg-white rounded-xl px-6 md:px-10">
+      <div className="w-96 md:sticky block md:self-start self-auto left-10 top-20 my-20 bg-white rounded-xl px-6 md:px-10">
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col space-y-5">
             <label htmlFor="ward">
@@ -212,12 +219,13 @@ const Home = () => {
                   }
                 >
                   <BiUpvote
-                    className={`text-lg ${votes?.map(
-                      (vote) =>
-                        vote?.upvote &&
-                        vote?.complain_id === complain?._id &&
-                        "text-white bg-blue-500 font-bold rounded-full"
-                    )}`}
+                    className={`text-lg ${
+                      votes?.some(
+                        (vote) =>
+                          vote.complain_id === complain._id && vote.upvote
+                      ) &&
+                      "text-white text-lg bg-blue-500 font-bold rounded-full"
+                    } `}
                   />
                   <span></span>
                 </div>

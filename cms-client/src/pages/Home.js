@@ -1,17 +1,20 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { FaUserCircle } from "react-icons/fa";
+import { FaGalacticSenate, FaUserCircle } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 import wardsList from "../wardsList";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import useUser from "../hooks/useUser";
-
-// const activeCss = "text-white bg-blue-500 font-bold rounded-full";
+import { Tooltip } from "@mui/material";
+import Loading from "../components/shared/Loading";
 
 const Home = () => {
   const { currentUser: user } = useAuth();
   const [complains, setComplains] = useState([]);
-  const [upvoteState, setUpvoteState] = useState({});
+  const [upvote, setUpvote] = useState(false);
+  const [downvote, setDownvote] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [userId] = useUser(user?.phoneNumber);
   const [votes, setVotes] = useState([]);
   const handleSubmit = () => {};
@@ -24,6 +27,7 @@ const Home = () => {
     "rejected",
     "closed",
   ];
+
   useEffect(() => {
     const getComplains = async () => {
       try {
@@ -35,13 +39,14 @@ const Home = () => {
             },
           }
         );
+
         setComplains(data.data);
       } catch (error) {
         console.log(error);
       }
     };
     getComplains();
-  }, []);
+  }, [upvote, downvote]);
 
   useEffect(() => {
     const userVotes = async () => {
@@ -54,30 +59,30 @@ const Home = () => {
             },
           }
         );
-        setVotes(data);
+
+        data && setVotes(data);
       } catch (error) {
         console.log(error);
       }
     };
     userVotes();
-  }, [userId, upvoteState]);
+  }, [userId, upvote, downvote]);
 
-  const handleUpvote = async (complainId, cid) => {
+  if (loading) {
+    return <Loading />;
+  }
+
+  const handleUpvote = async (complainId, cid, complain) => {
     const voted = votes?.find((vote) => vote.complain_id === complainId);
-    // if (voted.upvote) {
-    //   setActiveCss("text-white bg-blue-500 font-bold rounded-full");
-    // } else {
-    //   setActiveCss("");
-    // }
-    setUpvoteState(voted);
+
     try {
       const { data } = await axios.put(
         "http://localhost:5000/api/votes",
         {
           complain_id: complainId,
-          citizen_id: cid,
+          citizen_id: userId,
           upvote: voted?.upvote ? !voted?.upvote : true,
-          downvote: voted?.downvote ? voted?.downvote : false,
+          downvote: false,
           createdAt: new Date(),
         },
         {
@@ -86,15 +91,67 @@ const Home = () => {
           },
         }
       );
-      console.log("data", data);
-      // const response = await axios.put(
-      //   `http://localhost:5000/api/${complainId}`,
-      //   {
-      //     headers: {
-      //       authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      //     },
-      //   }
-      // );
+      const response = await axios.put(
+        `http://localhost:5000/api/complain`,
+        {
+          complain_id: complainId,
+          total_upvotes: !voted?.upvote
+            ? complain.total_upvotes + 1
+            : complain.total_upvotes - 1,
+          total_downvotes: voted?.downvote
+            ? complain.total_downvotes - 1
+            : complain.total_downvotes,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+
+      setUpvote(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDownvote = async (complainId, cid, complain) => {
+    const voted = votes?.find((vote) => vote.complain_id === complainId);
+    try {
+      const { data } = await axios.put(
+        "http://localhost:5000/api/votes",
+        {
+          complain_id: complainId,
+          citizen_id: userId,
+          upvote: false,
+          downvote: voted?.downvote ? !voted?.downvote : true,
+          createdAt: new Date(),
+        },
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      const response = await axios.put(
+        `http://localhost:5000/api/complain`,
+        {
+          complain_id: complainId,
+          total_downvotes: !voted?.downvote
+            ? complain.total_downvotes + 1
+            : complain.total_downvotes - 1,
+          total_upvotes: voted?.upvote
+            ? complain.total_upvotes - 1
+            : complain.total_upvotes,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+
+      setDownvote(response);
     } catch (error) {
       console.log(error);
     }
@@ -163,31 +220,13 @@ const Home = () => {
             >
               <span>Search</span>
             </button>
-            {/* {!loading ? (
-            <button
-              type="submit"
-              id="sign-in-button"
-              className="w-full mt-4 py-2 font-medium text-white bg-black hover:bg-gray-900 rounded-lg border-gray-900 hover:shadow inline-flex space-x-2 items-center justify-center uppercase"
-            >
-              <span>Submit Complain</span>
-            </button>
-          ) : (
-            <button
-              type="submit"
-              className="w-full mt-4 py-2 font-medium text-white bg-black rounded-lg border-black hover:shadow inline-flex space-x-2 items-center justify-center disabled"
-              disabled
-            >
-              <ButtonSpin />
-            </button>
-          )} */}
           </div>
-          {/* {error && <Error error={error} />} */}
         </form>
       </div>
       <div className="mt-20">
         {complains?.map((complain, key) => (
           <div className="sm:max-w-lg max-w-sm mb-10 bg-white rounded-xl border-2 py-6 px-4 mx-6 sm:mx-10">
-            <div className="flex gap-2 ">
+            <div className="flex gap-2">
               <FaUserCircle className="text-4xl text-gray-500" />
               <div>
                 <p className="text-sm">{user?.displayName}</p>
@@ -211,26 +250,54 @@ const Home = () => {
               </div>
             </div>
             <div className="">
-              <div className="flex gap-1 mt-4">
-                <div
-                  className="bg-gray-100 cursor-pointer h-10 flex items-center w-fit px-5 rounded-tl-2xl rounded-bl-2xl"
-                  onClick={() =>
-                    handleUpvote(complain._id, complain.citizen_id)
-                  }
-                >
-                  <BiUpvote
-                    className={`text-lg ${
-                      votes?.some(
-                        (vote) =>
-                          vote.complain_id === complain._id && vote.upvote
-                      ) &&
-                      "text-white text-lg bg-blue-500 font-bold rounded-full"
-                    } `}
-                  />
-                  <span></span>
+              <div className="flex items-center gap-1 mt-4">
+                <div className="bg-gray-100 h-10 flex justify-evenly space-x-1 items-center w-fit px-3 rounded-tl-2xl rounded-bl-2xl ">
+                  <p className="rounded-2xl bg-white flex items-center">
+                    {complain.total_upvotes}
+                  </p>
+                  <Tooltip title="upvote" placement="top" arrow>
+                    <div
+                      className={`p-[2px] rounded-full hover:text-blue-500 cursor-pointer ${
+                        votes?.some(
+                          (vote) =>
+                            vote.complain_id === complain._id && vote.upvote
+                        ) && " bg-blue-500 hover:text-white text-white"
+                      } `}
+                      onClick={() =>
+                        handleUpvote(
+                          complain._id,
+                          complain.citizen_id,
+                          complain
+                        )
+                      }
+                    >
+                      <BiUpvote />
+                    </div>
+                  </Tooltip>
                 </div>
-                <div className="bg-gray-100 cursor-pointer h-10 flex items-center w-fit px-5 rounded-tr-2xl rounded-br-2xl">
-                  <BiDownvote className="text-lg" />
+                <div className="bg-gray-100 h-10 flex justify-evenly space-x-1 items-center w-fit px-3 rounded-tr-2xl rounded-br-2xl ">
+                  <Tooltip title="downvote" placement="top" arrow>
+                    <div
+                      className={` p-[2px] rounded-full hover:text-blue-500 cursor-pointer ${
+                        votes?.some(
+                          (vote) =>
+                            vote.complain_id === complain._id && vote.downvote
+                        ) && " bg-blue-500 hover:text-white text-white"
+                      } `}
+                      onClick={() =>
+                        handleDownvote(
+                          complain._id,
+                          complain.citizen_id,
+                          complain
+                        )
+                      }
+                    >
+                      <BiDownvote />
+                    </div>
+                  </Tooltip>
+                  <p className="rounded-2xl bg-white flex items-center">
+                    {complain.total_downvotes}
+                  </p>
                 </div>
               </div>
             </div>

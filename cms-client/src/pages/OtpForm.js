@@ -31,7 +31,8 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
   };
   const [token] = useToken(userData?.phone || phone);
 
-  const handleVerification = async () => {
+  const handleVerification = async (e) => {
+    e.preventDefault();
     if (!otp || (otp + "").length < 6) {
       setError("invalid verification code");
       return;
@@ -109,46 +110,48 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
       <p className="text-center text-gray-600 text-sm">
         OTP has been sent to this phone number {userData?.phone || phone}
       </p>
-      <div className="flex justify-center items-center mt-8">
-        <OtpInput
-          value={otp}
-          onChange={handleChange}
-          numInputs={6}
-          separator={<span style={{ width: "8px" }}></span>}
-          isInputNum={true}
-          shouldAutoFocus={true}
-          inputStyle="border-2 !w-[44px] sm:!w-[54px] sm:h-[54px] h-[44px] rounded-md  px-6 text-[#000] font-bold "
-          focusStyle="border-2 border-[#000] outline-none"
-          hasErrored={error?.includes("invalid")}
-          errorStyle={error ? "border-red-500" : ""}
-        />
-      </div>
-      <div id="recaptcha-container"></div>
+      <form>
+        <div className="flex justify-center items-center mt-8">
+          <OtpInput
+            value={otp}
+            onChange={handleChange}
+            numInputs={6}
+            separator={<span style={{ width: "8px" }}></span>}
+            isInputNum={true}
+            shouldAutoFocus={true}
+            inputStyle="border-2 !w-[44px] sm:!w-[54px] sm:h-[54px] h-[44px] rounded-md  px-6 text-[#000] font-bold "
+            focusStyle="border-2 border-[#000] outline-none"
+            hasErrored={error?.includes("invalid")}
+            errorStyle={error ? "border-red-500" : ""}
+          />
+        </div>
+        <div id="recaptcha-container"></div>
 
-      <div className="flex justify-evenly mt-8 px-4 sm:px-2">
-        {!loading ? (
-          <>
-            <button
-              className="text-center text-gray-700 px-8 sm:px-10 py-2 border-2 hover:bg-[#000]  hover:text-white rounded-md "
-              onClick={resendOtp}
-            >
-              Resend OTP
-            </button>
-            <button
-              className="text-center px-10 bg-[#000] py-2 text-white rounded-md "
-              onClick={handleVerification}
-            >
-              Verify
-            </button>
-          </>
-        ) : (
-          <>
-            <ButtonSpin />
-            {/* <CircularProgress color="inherit" /> */}
-          </>
-        )}
-      </div>
-      <div className="px-16">{error && <Error error={error} />}</div>
+        <div className="flex justify-evenly mt-8 px-4 sm:px-2">
+          {!loading ? (
+            <>
+              <button
+                className="text-center order-last px-10 bg-[#000] py-2 text-white rounded-md "
+                onClick={handleVerification}
+              >
+                Verify
+              </button>
+              <button
+                className="text-center text-gray-700 px-8 sm:px-10 py-2 border-2 hover:bg-[#000]  hover:text-white rounded-md "
+                onClick={resendOtp}
+              >
+                Resend OTP
+              </button>
+            </>
+          ) : (
+            <>
+              <ButtonSpin />
+              {/* <CircularProgress color="inherit" /> */}
+            </>
+          )}
+        </div>
+        <div className="px-16">{error && <Error error={error} />}</div>
+      </form>
     </div>
   );
 };

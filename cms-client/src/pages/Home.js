@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { FaGalacticSenate, FaUserCircle } from "react-icons/fa";
+import { FaGalacticSenate, FaRegComment, FaUserCircle } from "react-icons/fa";
+import { GoComment } from "react-icons/go";
 import { useAuth } from "../context/AuthContext";
 import wardsList from "../wardsList";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
@@ -8,14 +9,17 @@ import useUser from "../hooks/useUser";
 import { Tooltip } from "@mui/material";
 import Loading from "../components/shared/Loading";
 
+let commentsState = [];
 const Home = () => {
   const { currentUser: user } = useAuth();
   const [complains, setComplains] = useState([]);
   const [upvote, setUpvote] = useState(false);
   const [downvote, setDownvote] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const [showComment, setShowComment] = useState(true);
+  const [commentClicked, setCommentClicked] = useState([]);
   const [userId] = useUser(user?.phoneNumber);
+  const [commentId, setCommentId] = useState("");
   const [votes, setVotes] = useState([]);
   const handleSubmit = () => {};
   const handleChange = () => {};
@@ -115,6 +119,7 @@ const Home = () => {
     }
   };
 
+  const handleComment = (complain_id, complain) => {};
   const handleDownvote = async (complainId, cid, complain) => {
     const voted = votes?.find((vote) => vote.complain_id === complainId);
     try {
@@ -157,9 +162,43 @@ const Home = () => {
     }
   };
 
+  const handleShowComment = (complain, show) => {
+    // setCommentId(complain._id);
+    // // let copy = commentsState;
+    // setCommentClicked([...commentClicked, { [complain._id]: showComment }]);
+    // // console.log("commentsState", commentsState);
+
+    // const clickedComment = commentClicked?.find(
+    //   (comment) => comment[complain._id]
+    // );
+
+    setCommentClicked({
+      [complain._id]: commentClicked[complain._id] ? false : true,
+    });
+    // let clickedComment;
+    // if (commentClicked) {
+    //   clickedComment = commentClicked?.find((comment) => comment[complain._id]);
+    // }
+
+    // setCommentClicked([
+    //   ...commentClicked,
+    //   {
+    //     [complain._id]:
+    //       clickedComment === undefined ? true : !clickedComment[complain._id],
+    //   },
+    // ]);
+
+    console.log("commentClicked", commentClicked);
+    // if (clickedComment === undefined) {
+    //   setShowComment(true);
+    // } else {
+    //   setShowComment(!clickedComment[complain._id]);
+    // }
+  };
+
   return (
     <div className="flex gap-x-10 md:justify-center items-center md:flex-row flex-col">
-      <div className="w-96 md:sticky block md:self-start self-auto left-10 top-20 my-20 bg-white rounded-xl px-6 md:px-10">
+      <div className="sm:w-96 md:sticky block md:self-start self-auto left-10 top-20 my-20 bg-white rounded-xl px-6 md:px-10">
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col space-y-5">
             <label htmlFor="ward">
@@ -224,12 +263,18 @@ const Home = () => {
         </form>
       </div>
       <div className="mt-20">
-        {complains?.map((complain, key) => (
+        {[...complains]?.reverse().map((complain, key) => (
           <div className="sm:max-w-lg max-w-sm mb-10 bg-white rounded-xl border-2 py-6 px-4 mx-6 sm:mx-10">
             <div className="flex gap-2">
-              <FaUserCircle className="text-4xl text-gray-500" />
               <div>
-                <p className="text-sm">{user?.displayName}</p>
+                <FaUserCircle className="sm:text-4xl text-3xl text-gray-500" />
+              </div>
+              <div>
+                <p className="text-sm">
+                  {complain.complainType !== "public-anonymous"
+                    ? user?.displayName
+                    : "Anonymous"}
+                </p>
                 <p className="text-xs">
                   Ward: {complain.ward} | Status: {complain.status} | Category:
                   Water | Date: {complain.submission_date.split("T")[0]}
@@ -251,8 +296,8 @@ const Home = () => {
             </div>
             <div className="">
               <div className="flex items-center gap-1 mt-4">
-                <div className="bg-gray-100 h-10 flex justify-evenly space-x-1 items-center w-fit px-3 rounded-tl-2xl rounded-bl-2xl ">
-                  <p className="rounded-2xl bg-white flex items-center">
+                <div className="bg-gray-100 h-10 flex items-center justify-center space-x-1  min-w-[60px] rounded-tl-2xl rounded-bl-2xl ">
+                  <p className="text-sm flex items-center">
                     {complain.total_upvotes}
                   </p>
                   <Tooltip title="upvote" placement="top" arrow>
@@ -275,7 +320,7 @@ const Home = () => {
                     </div>
                   </Tooltip>
                 </div>
-                <div className="bg-gray-100 h-10 flex justify-evenly space-x-1 items-center w-fit px-3 rounded-tr-2xl rounded-br-2xl ">
+                <div className="bg-gray-100 h-10 flex justify-center space-x-1 items-center min-w-[60px] rounded-tr-2xl rounded-br-2xl ">
                   <Tooltip title="downvote" placement="top" arrow>
                     <div
                       className={` p-[2px] rounded-full hover:text-blue-500 cursor-pointer ${
@@ -295,9 +340,49 @@ const Home = () => {
                       <BiDownvote />
                     </div>
                   </Tooltip>
-                  <p className="rounded-2xl bg-white flex items-center">
+                  <p className="text-sm flex items-center">
                     {complain.total_downvotes}
                   </p>
+                </div>
+                <Tooltip title="comment" placement="top" arrow>
+                  <div
+                    className="ml-5 text-2xl cursor-pointer hover:text-blue-500 hover:shadow-lg"
+                    onClick={() => handleShowComment(complain)}
+                  >
+                    <FaRegComment className="font-thin" />
+                  </div>
+                </Tooltip>
+              </div>
+              <div
+                className={`flex items-center mt-5 ${
+                  commentClicked[complain._id] ? "block" : "hidden"
+                }`}
+              >
+                <div>
+                  <FaUserCircle className="sm:text-4xl text-3xl text-gray-500" />
+                </div>
+                <div className="w-full mx-2">
+                  <label htmlFor="comment">
+                    <input
+                      onChange={handleChange}
+                      id="comment"
+                      name="comment"
+                      type="comment"
+                      autofocus="autofocus"
+                      // value={email}
+                      className="w-full text-sm py-2 border border-slate-200 rounded-2xl px-3 focus:outline-none focus:border-slate-500 hover:shadow"
+                      placeholder="Enter your comment"
+                    />
+                  </label>
+                </div>
+                <div>
+                  <button
+                    type="submit"
+                    id="sign-in-button"
+                    className="py-2 px-3 text-sm text-white bg-black hover:bg-gray-900 rounded-lg border-gray-900 hover:shadow inline-flex items-center justify-center uppercase"
+                  >
+                    <span>Comment</span>
+                  </button>
                 </div>
               </div>
             </div>

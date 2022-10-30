@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaGalacticSenate, FaRegComment, FaUserCircle } from "react-icons/fa";
 import { GoComment } from "react-icons/go";
 import { useAuth } from "../context/AuthContext";
@@ -8,6 +8,7 @@ import { BiUpvote, BiDownvote } from "react-icons/bi";
 import useUser from "../hooks/useUser";
 import { Tooltip } from "@mui/material";
 import Loading from "../components/shared/Loading";
+import ButtonSpin from "../components/shared/ButtonSpin";
 
 let commentsState = [];
 const Home = () => {
@@ -16,12 +17,12 @@ const Home = () => {
   const [upvote, setUpvote] = useState(false);
   const [downvote, setDownvote] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showComment, setShowComment] = useState(true);
   const [commentClicked, setCommentClicked] = useState([]);
   const [userId] = useUser(user?.phoneNumber);
-  const [commentId, setCommentId] = useState("");
   const [votes, setVotes] = useState([]);
-  const handleSubmit = () => {};
+  const [inputComment, setInputComment] = useState("");
+  const [comments, setComments] = useState([]);
+
   const handleChange = () => {};
   const status = [
     "pending approval",
@@ -56,7 +57,7 @@ const Home = () => {
     const userVotes = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/votes/${userId}`,
+          `http://localhost:5000/api/react/votes/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -72,16 +73,12 @@ const Home = () => {
     userVotes();
   }, [userId, upvote, downvote]);
 
-  if (loading) {
-    return <Loading />;
-  }
-
   const handleUpvote = async (complainId, cid, complain) => {
     const voted = votes?.find((vote) => vote.complain_id === complainId);
 
     try {
       const { data } = await axios.put(
-        "http://localhost:5000/api/votes",
+        "http://localhost:5000/api/react/votes",
         {
           complain_id: complainId,
           citizen_id: userId,
@@ -119,12 +116,11 @@ const Home = () => {
     }
   };
 
-  const handleComment = (complain_id, complain) => {};
   const handleDownvote = async (complainId, cid, complain) => {
     const voted = votes?.find((vote) => vote.complain_id === complainId);
     try {
       const { data } = await axios.put(
-        "http://localhost:5000/api/votes",
+        "http://localhost:5000/api/react/votes",
         {
           complain_id: complainId,
           citizen_id: userId,
@@ -138,6 +134,7 @@ const Home = () => {
           },
         }
       );
+
       const response = await axios.put(
         `http://localhost:5000/api/complain`,
         {
@@ -162,40 +159,63 @@ const Home = () => {
     }
   };
 
-  const handleShowComment = (complain, show) => {
-    // setCommentId(complain._id);
-    // // let copy = commentsState;
-    // setCommentClicked([...commentClicked, { [complain._id]: showComment }]);
-    // // console.log("commentsState", commentsState);
-
-    // const clickedComment = commentClicked?.find(
-    //   (comment) => comment[complain._id]
-    // );
-
+  const getComments = async (complainId) => {
+    const { data } = await axios.get(
+      `http://localhost:5000/api/react/comment/${complainId}`,
+      {
+        headers: {
+          authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
+    return data;
+  };
+  const handleShowComment = async (complain) => {
     setCommentClicked({
       [complain._id]: commentClicked[complain._id] ? false : true,
     });
-    // let clickedComment;
-    // if (commentClicked) {
-    //   clickedComment = commentClicked?.find((comment) => comment[complain._id]);
-    // }
-
-    // setCommentClicked([
-    //   ...commentClicked,
-    //   {
-    //     [complain._id]:
-    //       clickedComment === undefined ? true : !clickedComment[complain._id],
-    //   },
-    // ]);
-
-    console.log("commentClicked", commentClicked);
-    // if (clickedComment === undefined) {
-    //   setShowComment(true);
-    // } else {
-    //   setShowComment(!clickedComment[complain._id]);
-    // }
+    setInputComment("");
+    try {
+      setLoading(true);
+      const data = await getComments(complain._id);
+      setComments(data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
   };
 
+  const submitComment = (e, complainId) => {
+    e.preventDefault();
+    (async () => {
+      try {
+        const { result } = await axios.post(
+          "http://localhost:5000/api/react/comment",
+          {
+            complain_id: complainId,
+            citizen_id: userId,
+            comment: inputComment,
+            createdAt: new Date(),
+          },
+          {
+            headers: {
+              authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+        const data = await getComments(complainId);
+        setComments(data);
+        setInputComment("");
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
   return (
     <div className="flex gap-x-10 md:justify-center items-center md:flex-row flex-col">
       <div className="sm:w-96 md:sticky block md:self-start self-auto left-10 top-20 my-20 bg-white rounded-xl px-6 md:px-10">
@@ -296,7 +316,12 @@ const Home = () => {
             </div>
             <div className="">
               <div className="flex items-center gap-1 mt-4">
-                <div className="bg-gray-100 h-10 flex items-center justify-center space-x-1  min-w-[60px] rounded-tl-2xl rounded-bl-2xl ">
+                <div
+                  className="bg-gray-100 hover:bg-blue-100 cursor-pointer h-10 flex items-center justify-center space-x-1 min-w-[60px] rounded-tl-2xl rounded-bl-2xl"
+                  onClick={() =>
+                    handleUpvote(complain._id, complain.citizen_id, complain)
+                  }
+                >
                   <p className="text-sm flex items-center">
                     {complain.total_upvotes}
                   </p>
@@ -308,19 +333,17 @@ const Home = () => {
                             vote.complain_id === complain._id && vote.upvote
                         ) && " bg-blue-500 hover:text-white text-white"
                       } `}
-                      onClick={() =>
-                        handleUpvote(
-                          complain._id,
-                          complain.citizen_id,
-                          complain
-                        )
-                      }
                     >
                       <BiUpvote />
                     </div>
                   </Tooltip>
                 </div>
-                <div className="bg-gray-100 h-10 flex justify-center space-x-1 items-center min-w-[60px] rounded-tr-2xl rounded-br-2xl ">
+                <div
+                  className="bg-gray-100 hover:bg-blue-100 cursor-pointer h-10 flex justify-center space-x-1 items-center min-w-[60px] rounded-tr-2xl rounded-br-2xl"
+                  onClick={() =>
+                    handleDownvote(complain._id, complain.citizen_id, complain)
+                  }
+                >
                   <Tooltip title="downvote" placement="top" arrow>
                     <div
                       className={` p-[2px] rounded-full hover:text-blue-500 cursor-pointer ${
@@ -329,13 +352,6 @@ const Home = () => {
                             vote.complain_id === complain._id && vote.downvote
                         ) && " bg-blue-500 hover:text-white text-white"
                       } `}
-                      onClick={() =>
-                        handleDownvote(
-                          complain._id,
-                          complain.citizen_id,
-                          complain
-                        )
-                      }
                     >
                       <BiDownvote />
                     </div>
@@ -346,45 +362,80 @@ const Home = () => {
                 </div>
                 <Tooltip title="comment" placement="top" arrow>
                   <div
-                    className="ml-5 text-2xl cursor-pointer hover:text-blue-500 hover:shadow-lg"
+                    className="ml-5 text-2xl cursor-pointer hover:text-blue-500 "
                     onClick={() => handleShowComment(complain)}
                   >
-                    <FaRegComment className="font-thin" />
+                    <FaRegComment />
                   </div>
                 </Tooltip>
               </div>
-              <div
-                className={`flex items-center mt-5 ${
-                  commentClicked[complain._id] ? "block" : "hidden"
-                }`}
-              >
-                <div>
-                  <FaUserCircle className="sm:text-4xl text-3xl text-gray-500" />
+              {commentClicked[complain._id] && (
+                <div className="">
+                  <div className="flex items-center mt-5 ">
+                    <div>
+                      <FaUserCircle className="sm:text-4xl text-3xl text-gray-500" />
+                    </div>
+                    <form
+                      onSubmit={(e) => submitComment(e, complain._id)}
+                      className="w-full"
+                    >
+                      <div className="mx-2">
+                        <label htmlFor="comment">
+                          <input
+                            id="comment"
+                            name="comment"
+                            type="comment"
+                            autoFocus
+                            onChange={(e) => setInputComment(e.target.value)}
+                            value={inputComment}
+                            className="w-full text-sm py-2 border border-slate-200 rounded-2xl px-3 focus:outline-none focus:border-slate-500 hover:shadow"
+                            placeholder="Enter your comment"
+                          />
+                        </label>
+                      </div>
+                    </form>
+                    <div>
+                      <button
+                        onClick={(e) => submitComment(e, complain._id)}
+                        type="submit"
+                        id="sign-in-button"
+                        className="py-2 sm:px-3 px-1 text-sm  text-white bg-black hover:bg-gray-900 rounded-full border-gray-900 hover:shadow inline-flex items-center justify-center"
+                      >
+                        <span>Comment</span>
+                      </button>
+                    </div>
+                  </div>
+                  {loading ? (
+                    <div className="mt-8 flex justify-center">
+                      <ButtonSpin />
+                    </div>
+                  ) : (
+                    <div className="mt-5">
+                      {comments?.map((comment) => (
+                        <div className="mb-3 border-2 rounded-lg p-2">
+                          <div className="flex gap-2">
+                            <div>
+                              <FaUserCircle className="sm:text-3xl text-2xl text-gray-500" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold">
+                                {comment.name}
+                              </p>
+                              <p className="text-xs">
+                                Ward: {comment.ward} |
+                                {comment.date.split("T")[0]}
+                              </p>
+                            </div>
+                          </div>
+                          <p className="mt-3 ml-10 text-sm">
+                            {comment.comment}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <div className="w-full mx-2">
-                  <label htmlFor="comment">
-                    <input
-                      onChange={handleChange}
-                      id="comment"
-                      name="comment"
-                      type="comment"
-                      autofocus="autofocus"
-                      // value={email}
-                      className="w-full text-sm py-2 border border-slate-200 rounded-2xl px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                      placeholder="Enter your comment"
-                    />
-                  </label>
-                </div>
-                <div>
-                  <button
-                    type="submit"
-                    id="sign-in-button"
-                    className="py-2 px-3 text-sm text-white bg-black hover:bg-gray-900 rounded-lg border-gray-900 hover:shadow inline-flex items-center justify-center uppercase"
-                  >
-                    <span>Comment</span>
-                  </button>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         ))}

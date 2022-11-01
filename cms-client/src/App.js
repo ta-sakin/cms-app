@@ -11,6 +11,7 @@ import Navbar from "./components/shared/Header/Navbar";
 import SubmitComplain from "./pages/SubmitComplain";
 import PublicRoute from "./components/Auth/PublicRoute";
 import PrivateRoute from "./components/Auth/PrivateRoute";
+import ComplainPage from "./pages/ComplainPage";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           element={
             <PrivateRoute>
               <Home />
+              {/* <ComplainPage /> */}
             </PrivateRoute>
           }
         ></Route>

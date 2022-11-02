@@ -18,7 +18,6 @@ const Comment = ({ complain, loading, setTotalComments }) => {
 
   useEffect(() => {
     (async () => {
-      console.log("inital comments", complain._id);
 
       try {
         const { data } = await axios.get(

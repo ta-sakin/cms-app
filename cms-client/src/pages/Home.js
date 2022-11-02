@@ -25,7 +25,7 @@ const Home = () => {
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        toast.error("Something went wrong", { theme: "colored" });
+        //toast.error("Something went wrong", { theme: "colored" });
       }
     };
     getComplains();

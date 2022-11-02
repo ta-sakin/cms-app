@@ -30,8 +30,9 @@ const Votes = ({ complain }) => {
             },
           }
         );
-        setVotes(data[1]);
         setTotal(data[0]);
+        setVotes(data[1]);
+        console.log(data);
       } catch (error) {
         toast.error("Something went wrong", { theme: "colored" });
       }
@@ -133,7 +134,9 @@ const Votes = ({ complain }) => {
         <Tooltip title="upvote" placement="top" arrow>
           <div
             className={`p-[2px] rounded-full hover:text-blue-500 cursor-pointer ${
-              votes.upvote && "bg-blue-500 hover:text-white text-white"
+              votes.upvote &&
+              votes.citizen_id === complain.citizen_id &&
+              "bg-blue-500 hover:text-white text-white"
             } `}
           >
             <BiUpvote />

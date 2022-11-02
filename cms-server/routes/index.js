@@ -1,5 +1,8 @@
 const router = require("express").Router();
 const authRoutes = require("./auth");
-router.use("/auth", authRoutes);
+const complainRoutes = require("./complain");
+
+router.use("/api/auth", authRoutes);
+router.use("/api", complainRoutes);
 
 module.exports = router;

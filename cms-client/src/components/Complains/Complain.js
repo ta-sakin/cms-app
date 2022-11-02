@@ -4,17 +4,20 @@ import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { FaRegComment, FaUserCircle } from "react-icons/fa";
+import { FiMoreHorizontal } from "react-icons/fi";
 import { useAsyncError } from "react-router-dom";
 import { toast } from "react-toastify";
 import Comment from "./Comment";
 import Votes from "./Votes";
 
-const Complain = ({ complain }) => {
+const Complain = ({ complain, userId }) => {
   const [name, setName] = useState("");
   const [totalComments, setTotalComments] = useState(0);
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState(0);
-  const [commentClicked, setCommentClicked] = useState(false);
+  const [deleted, setDeleted] = useState();
+  const [showModal, setShowModal] = useState(false);
+  const [showComment, setShowComment] = useState(false);
   useEffect(() => {
     (async () => {
       try {
@@ -34,35 +37,64 @@ const Complain = ({ complain }) => {
     })();
   }, [complain.citizen_id, complain._id]);
 
-  // const handleShowComment = async (complain) => {
-  //   setLoading(true);
-  //   setCommentClicked({
-  //     [complain._id]: commentClicked[complain._id] ? false : true,
-  //   });
-  //   // setInputComment("");
+  const deleteComplain = (id) => {
+    (async () => {
+      try {
+        const { data } = axios.delete(
+          `http://localhost:5000/api/complain/${id}`,
+          {
+            headers: {
+              authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+        setDeleted(data);
+        window.location.reload();
+        toast.warning("Complain deleted", { theme: "colored" });
+      } catch (error) {}
+    })();
+  };
 
-  //   try {
-  //     setLoading(false);
-  //   } catch (error) {
-  //     setLoading(false);
-  //     console.log(error);
-  //   }
-  // };
   return (
     <div className="sm:max-w-lg max-w-sm mb-10 bg-white rounded-xl border-2 py-6 px-4 mx-6 sm:mx-10">
-      <div className="flex gap-2">
-        <div>
-          <FaUserCircle className="sm:text-4xl text-3xl text-gray-500" />
+      <div className="flex justify-between">
+        <div className="flex gap-2">
+          <div>
+            <FaUserCircle className="sm:text-4xl text-3xl text-gray-500" />
+          </div>
+          <div>
+            <p className="text-sm">
+              {complain.complainType !== "public-anonymous"
+                ? name
+                : "Anonymous"}
+            </p>
+            <p className="text-xs">
+              Ward: {complain.ward} | Status: {complain.status} | Category:{" "}
+              {complain.category}| Date:{" "}
+              {complain.submission_date.split("T")[0]}
+            </p>
+          </div>
         </div>
-        <div>
-          <p className="text-sm">
-            {complain.complainType !== "public-anonymous" ? name : "Anonymous"}
-          </p>
-          <p className="text-xs">
-            Ward: {complain.ward} | Status: {complain.status} | Category:{" "}
-            {complain.category}| Date: {complain.submission_date.split("T")[0]}
-          </p>
-        </div>
+        {complain.citizen_id === userId && (
+          <div className={`${showModal && "relative"}`}>
+            <div
+              className="cursor-pointer"
+              onClick={() => setShowModal(!showModal)}
+            >
+              <FiMoreHorizontal />
+            </div>
+            {showModal && (
+              <div className="px-8 py-4 justify-center right-0 z-10 absolute bg-white shadow-lg rounded-lg items-center">
+                <button
+                  className="btn btn-sm"
+                  onClick={() => deleteComplain(complain._id)}
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <div className="mt-6">
         <p className="text-sm mb-4">
@@ -83,14 +115,14 @@ const Complain = ({ complain }) => {
           <Tooltip title="comment" placement="top" arrow>
             <div
               className="ml-5 text-2xl cursor-pointer hover:text-blue-500 flex gap-1 items-center"
-              onClick={() => setCommentClicked(!commentClicked)}
+              onClick={() => setShowComment(!showComment)}
             >
               <FaRegComment />
               <p className="text-sm">{totalComments}</p>
             </div>
           </Tooltip>
         </div>
-        {commentClicked && (
+        {showComment && (
           <Comment
             complain={complain}
             setTotalComments={setTotalComments}

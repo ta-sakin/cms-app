@@ -12,6 +12,7 @@ import SubmitComplain from "./pages/SubmitComplain";
 import PublicRoute from "./components/Auth/PublicRoute";
 import PrivateRoute from "./components/Auth/PrivateRoute";
 import ComplainPage from "./pages/ComplainPage";
+import MyComplain from "./pages/MyComplain";
 
 function App() {
   return (
@@ -23,16 +24,30 @@ function App() {
           element={
             <PrivateRoute>
               <Home />
-              {/* <ComplainPage /> */}
             </PrivateRoute>
           }
         ></Route>
-        <Route path="/home" element={<Home />}></Route>
         <Route
-          path="/submitcomplain"
+          path="/home"
+          element={
+            <PrivateRoute>
+              <Home />
+            </PrivateRoute>
+          }
+        ></Route>
+        <Route
+          path="/complain"
           element={
             <PrivateRoute>
               <SubmitComplain />
+            </PrivateRoute>
+          }
+        ></Route>
+        <Route
+          path="/mycomplain"
+          element={
+            <PrivateRoute>
+              <MyComplain />
             </PrivateRoute>
           }
         ></Route>

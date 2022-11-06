@@ -23,13 +23,15 @@ const Filter = ({ handleChange, handleSubmit }) => {
               name="ward"
               className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
             >
-              <option value="" selected disabled hidden>
+              <option defaultValue="" selected disabled hidden>
                 Select a ward
               </option>
               <option value="select">--Select--</option>
 
-              {Object.keys(wardsList)?.map((key) => (
-                <option value={wardsList[key]}>{wardsList[key]}</option>
+              {Object.keys(wardsList)?.map((key, i) => (
+                <option key={i} value={wardsList[key]}>
+                  {wardsList[key]}
+                </option>
               ))}
             </select>
           </label>
@@ -40,7 +42,7 @@ const Filter = ({ handleChange, handleSubmit }) => {
               name="status"
               className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
             >
-              <option value="" selected disabled hidden>
+              <option defaultValue="" selected disabled hidden>
                 Select complain status
               </option>
               <option value="select">--Select--</option>
@@ -59,7 +61,7 @@ const Filter = ({ handleChange, handleSubmit }) => {
               name="category"
               className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
             >
-              <option value="" selected disabled hidden>
+              <option defaultValue="" selected disabled hidden>
                 Select complain category
               </option>
               <option value="select">--Select--</option>

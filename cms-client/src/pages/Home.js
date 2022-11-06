@@ -45,9 +45,9 @@ const Home = () => {
           },
           cancelToken: new CancelToken((c) => (cancel = c)),
         });
-        setLoading(false);
 
-        if (Object.keys(filteredData).length > 0) {
+        setLoading(false);
+        if (filteredData && Object.keys(filteredData).length > 0) {
           setComplains(data);
         } else {
           setComplains((prevComplain) => {
@@ -63,7 +63,7 @@ const Home = () => {
     };
     getComplains();
   }, [filteredData, page, render]);
-  // console.log("complains", complains);
+
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
@@ -77,10 +77,6 @@ const Home = () => {
       setTotalComplains(data);
     })();
   });
-
-  // if (loading) {
-  //   return <Loading />;
-  // }
 
   const handleChange = (e) => {
     setSelected(true);

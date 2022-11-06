@@ -9,17 +9,17 @@ import { useAuth } from "../../context/AuthContext";
 import useUser from "../../hooks/useUser";
 import ButtonSpin from "../shared/ButtonSpin";
 
-const Comment = ({ complain, loading, setTotalComments }) => {
+const Comment = ({ complain, setTotalComments }) => {
   const [inputComment, setInputComment] = useState("");
   const [comments, setComments] = useState([]);
   const [trigger, setTrigger] = useState();
   const { currentUser: user } = useAuth();
   const [userId] = useUser(user?.phoneNumber);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     (async () => {
-
       try {
+        // setLoading(true);
         const { data } = await axios.get(
           `http://localhost:5000/api/react/comment/${complain._id}`,
           {
@@ -29,7 +29,10 @@ const Comment = ({ complain, loading, setTotalComments }) => {
           }
         );
         setComments(data);
-      } catch (error) {}
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
     })();
   }, [trigger, complain._id, loading]);
 

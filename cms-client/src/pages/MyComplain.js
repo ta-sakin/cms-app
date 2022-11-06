@@ -25,9 +25,11 @@ const MyComplain = () => {
       setComplains(data);
     })();
   }, [userId]);
+
   if (complains.length < 1) {
     return <Loading />;
   }
+
   return (
     <div className="flex justify-center mt-20">
       <div></div>

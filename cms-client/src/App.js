@@ -36,7 +36,7 @@ function App() {
           }
         ></Route>
         <Route
-          path="/complain"
+          path="/submitcomplain"
           element={
             <PrivateRoute>
               <SubmitComplain />

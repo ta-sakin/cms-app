@@ -94,9 +94,11 @@ const Register = () => {
       toast.info("OTP Sent", {
         theme: "colored",
       });
+
       setLoading(false);
       setConfirmResponse(confirmationResult);
       setShow(true);
+      
     } catch (error) {
       setLoading(false);
       if (error?.code?.includes("argument" || "internal")) {

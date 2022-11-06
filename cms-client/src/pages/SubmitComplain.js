@@ -26,6 +26,7 @@ const SubmitComplain = () => {
   const { address, ward, description } = userInput;
   const [key, setKey] = useState(0);
   const [debounceKey] = useDebounce(key, 1000);
+
   const handleChange = (e) => {
     setUserInput({
       ...userInput,
@@ -107,10 +108,10 @@ const SubmitComplain = () => {
   }, [imgs]);
 
   return (
-    <div className="sm:max-w-lg max-w-sm mx-auto my-20 bg-white rounded-xl border-2 py-12 px-4 sm:px-10 ">
+    <div className="sm:max-w-lg max-w-md mx-auto my-20 bg-white rounded-xl border-2 py-12 px-4 sm:px-10 ">
       <div className="mb-6">
         <h1 className="text-2xl font-bold ">What's your complain?</h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 text-sm">
           Ensure that you follow our rules and regulations!
         </p>
       </div>

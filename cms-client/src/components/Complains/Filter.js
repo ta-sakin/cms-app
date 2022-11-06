@@ -1,33 +1,33 @@
 import React from "react";
 import wardsList from "../../wardsList";
 
-const Filter = () => {
-  const status = [
-    "pending approval",
-    "in verification",
-    "in hold",
-    "in progress",
-    "rejected",
-    "closed",
+const Filter = ({ handleChange, handleSubmit }) => {
+  const statusList = [
+    "Pending approval",
+    "In verification",
+    "In hold",
+    "In progress",
+    "Rejected",
+    "Closed",
   ];
-  const handleChange = () => {};
-  const handleSubmit = () => {};
+  const categories = ["Water", "Mosquitos", "Roads", "Others"];
+
   return (
     <div className="sm:w-96 md:sticky block md:self-start self-auto left-10 top-20 my-20 bg-white rounded-xl px-6 md:px-10">
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col space-y-5">
           <label htmlFor="ward">
             <select
-              // value={ward}
               label="ward"
               onChange={handleChange}
               name="ward"
-              required
               className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
             >
               <option value="" selected disabled hidden>
                 Select a ward
               </option>
+              <option value="select">--Select--</option>
+
               {Object.keys(wardsList)?.map((key) => (
                 <option value={wardsList[key]}>{wardsList[key]}</option>
               ))}
@@ -35,17 +35,17 @@ const Filter = () => {
           </label>
           <label htmlFor="status">
             <select
-              // value={ward}
               label="status"
               onChange={handleChange}
               name="status"
-              required
               className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
             >
               <option value="" selected disabled hidden>
                 Select complain status
               </option>
-              {status?.map((item, i) => (
+              <option value="select">--Select--</option>
+
+              {statusList?.map((item, i) => (
                 <option key={i} value={item}>
                   {item}
                 </option>
@@ -54,25 +54,29 @@ const Filter = () => {
           </label>
           <label htmlFor="category">
             <select
-              // value={ward}
               label="category"
               onChange={handleChange}
               name="category"
-              required
               className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
             >
               <option value="" selected disabled hidden>
                 Select complain category
               </option>
-              <option value="water">water</option>
+              <option value="select">--Select--</option>
+
+              {categories?.map((category, i) => (
+                <option key={i} value={category}>
+                  {category}
+                </option>
+              ))}
             </select>
           </label>
           <button
             type="submit"
             id="sign-in-button"
-            className="w-full mt-4 py-2 font-medium text-white bg-black hover:bg-gray-900 rounded-lg border-gray-900 hover:shadow inline-flex space-x-2 items-center justify-center uppercase"
+            className="w-full mt-4 py-2 font-medium text-white bg-black hover:bg-gray-900 rounded-lg border-gray-900 hover:shadow inline-flex space-x-2 items-center justify-center cursor-pointer"
           >
-            <span>Search</span>
+            <span>Apply Filters</span>
           </button>
         </div>
       </form>

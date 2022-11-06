@@ -23,6 +23,25 @@ const Votes = ({ complain }) => {
     const userVotes = async () => {
       try {
         const { data } = await axios.get(
+          `http://localhost:5000/api/react/votes/total?cid=${complain._id}`,
+          {
+            headers: {
+              authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+        setTotal(data);
+      } catch (error) {
+        toast.error("Something went wrong", { theme: "colored" });
+      }
+    };
+    userVotes();
+  }, [userId, upvote, downvote, complain._id]);
+
+  useEffect(() => {
+    const userVotes = async () => {
+      try {
+        const { data } = await axios.get(
           `http://localhost:5000/api/react/votes?cid=${complain._id}&uid=${userId}`,
           {
             headers: {
@@ -30,9 +49,9 @@ const Votes = ({ complain }) => {
             },
           }
         );
-        setTotal(data[0]);
-        setVotes(data[1]);
-        console.log(data);
+        // console.log("votes", data);
+
+        setVotes(data?.citizen_id && data);
       } catch (error) {
         toast.error("Something went wrong", { theme: "colored" });
       }
@@ -100,7 +119,6 @@ const Votes = ({ complain }) => {
         }
       );
       setDownvote(data);
-
       const response = await axios.put(
         `http://localhost:5000/api/complain`,
         {
@@ -122,6 +140,7 @@ const Votes = ({ complain }) => {
       console.log(error);
     }
   };
+
   return (
     <>
       <div
@@ -134,8 +153,8 @@ const Votes = ({ complain }) => {
         <Tooltip title="upvote" placement="top" arrow>
           <div
             className={`p-[2px] rounded-full hover:text-blue-500 cursor-pointer ${
-              votes.upvote &&
-              votes.citizen_id === complain.citizen_id &&
+              votes?.upvote &&
+              // complain.citizen_id === votes?.citizen_id &&
               "bg-blue-500 hover:text-white text-white"
             } `}
           >

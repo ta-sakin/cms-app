@@ -18,6 +18,7 @@ const Complain = ({ complain, userId }) => {
   const [deleted, setDeleted] = useState();
   const [showModal, setShowModal] = useState(false);
   const [showComment, setShowComment] = useState(false);
+
   useEffect(() => {
     (async () => {
       try {
@@ -49,8 +50,8 @@ const Complain = ({ complain, userId }) => {
           }
         );
         setDeleted(data);
-        window.location.reload();
         toast.warning("Complain deleted", { theme: "colored" });
+        window.location.reload();
       } catch (error) {}
     })();
   };
@@ -69,7 +70,7 @@ const Complain = ({ complain, userId }) => {
                 : "Anonymous"}
             </p>
             <p className="text-xs">
-              Ward: {complain.ward} | Status: {complain.status} | Category:{" "}
+              Ward: {complain.ward} | Status: {complain.status} | Category:
               {complain.category}| Date:{" "}
               {complain.submission_date.split("T")[0]}
             </p>
@@ -124,6 +125,7 @@ const Complain = ({ complain, userId }) => {
         </div>
         {showComment && (
           <Comment
+          key={complain._id}
             complain={complain}
             setTotalComments={setTotalComments}
             loading={loading}

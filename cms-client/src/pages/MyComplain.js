@@ -13,20 +13,24 @@ const MyComplain = () => {
 
   useEffect(() => {
     (async () => {
-      console.log(userId);
-      const { data } = await axios.get(
-        `http://localhost:5000/api/complains/${userId}`,
-        {
-          headers: {
-            authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      setComplains(data);
+      try {
+        if (!userId) return;
+        const { data } = await axios.get(
+          `http://localhost:5000/api/complains/${userId}`,
+          {
+            headers: {
+              authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+        setComplains(data);
+      } catch (error) {
+        console.log(error);
+      }
     })();
   }, [userId]);
 
-  if (complains.length < 1) {
+  if (complains?.length < 1) {
     return <Loading />;
   }
 

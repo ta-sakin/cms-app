@@ -40,14 +40,18 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const captcha = async () => {
-      if (!window.recaptchaVerifier) {
-        window.recaptchaVerifier = new RecaptchaVerifier(
-          "recaptcha-container",
-          { size: "invisible" },
-          auth
-        );
+      try {
+        if (!window.recaptchaVerifier) {
+          window.recaptchaVerifier = new RecaptchaVerifier(
+            // "recaptcha-container",
+            { size: "invisible" },
+            auth
+          );
+        }
+        await window.recaptchaVerifier.render();
+      } catch (error) {
+        console.log(error);
       }
-      await window.recaptchaVerifier.render();
     };
     captcha();
   }, []);
@@ -66,7 +70,7 @@ export function AuthProvider({ children }) {
       }
     })();
   });
-  
+
   const getVerificationCode = async (phone) => {
     if (!phone) {
       phone = localStorage.getItem("phone");

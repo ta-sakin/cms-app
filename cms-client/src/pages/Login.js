@@ -47,10 +47,6 @@ const Login = () => {
     );
   }, []);
 
-  // const handleChange = (e) => {
-  //   setPhone(e.target.value);
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!phone) {

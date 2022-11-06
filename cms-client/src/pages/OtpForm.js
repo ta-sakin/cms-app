@@ -22,13 +22,16 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
   const [loading, setLoading] = useState(false);
   const { currentUser } = useAuth();
   const navigate = useNavigate();
+
   const handleChange = (enteredOtp) => {
     setOtp(enteredOtp);
   };
+
   const verificationCode = async (response) => {
     const result = await response.confirm(otp);
     return result.user;
   };
+
   const [token] = useToken(userData?.phone || phone);
 
   const handleVerification = async (e) => {
@@ -104,6 +107,7 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
       });
     }
   };
+
   return (
     <div className="mt-20 max-w-sm sm:max-w-lg py-10 rounded-lg  shadow-lg mx-auto">
       <h4 className="text-2xl text-center mt-5">Enter Verification Code</h4>

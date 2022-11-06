@@ -103,8 +103,8 @@ const Complain = ({ complain, userId }) => {
         </p>
         <p className="text-sm mb-5">{complain.description}</p>
         <div className="flex items-center gap-2">
-          {complain.attachment.map((image) => (
-            <div className="flex-1">
+          {complain.attachment.map((image,i) => (
+            <div className="flex-1" key={i}>
               <img className="w-fit" src={image.url} alt="" />
             </div>
           ))}

@@ -47,6 +47,7 @@ const Register = () => {
       [e.target.name]: e.target.value,
     });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { name, email, ward, address } = userInput;
@@ -86,6 +87,7 @@ const Register = () => {
           return;
         }
       }
+
       const data = await checkUser();
       if (!data) return;
       const confirmationResult = await getVerificationCode(phone);
@@ -98,7 +100,6 @@ const Register = () => {
       setLoading(false);
       setConfirmResponse(confirmationResult);
       setShow(true);
-      
     } catch (error) {
       setLoading(false);
       if (error?.code?.includes("argument" || "internal")) {
@@ -112,6 +113,7 @@ const Register = () => {
       });
     }
   };
+
   return (
     <div>
       <div className={`${show ? "block" : "hidden"}`}>

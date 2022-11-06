@@ -6,15 +6,10 @@ import Complain from "../components/Complains/Complain";
 import { toast } from "react-toastify";
 import Loading from "../components/shared/Loading";
 import ButtonSpin from "../components/shared/ButtonSpin";
-import { useCallback } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-const defaulValues = {
-  ward: "",
-  status: "",
-  category: "",
-};
+import _ from "lodash";
 
-let numOfdataToLoad = 3;
+const NUM_OF_DATA_TO_LOAD = 3;
 const Home = () => {
   const [complains, setComplains] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +20,6 @@ const Home = () => {
   const [selected, setSelected] = useState(false);
   const [render, setRender] = useState(false);
 
-  // window.addEventListener("scroll", handleScroll);
   useEffect(() => {
     const getComplains = async () => {
       let CancelToken = axios.CancelToken;
@@ -37,7 +31,7 @@ const Home = () => {
           params: {
             filters: filteredData,
             page,
-            count: numOfdataToLoad,
+            count: NUM_OF_DATA_TO_LOAD,
           },
 
           headers: {
@@ -51,7 +45,8 @@ const Home = () => {
           setComplains(data);
         } else {
           setComplains((prevComplain) => {
-            return [...prevComplain, ...data];
+            const uniqueComplain = _.uniq([...prevComplain, ...data]);
+            return uniqueComplain;
           });
         }
       } catch (error) {
@@ -80,6 +75,7 @@ const Home = () => {
 
   const handleChange = (e) => {
     setSelected(true);
+
     //if no option selected load all data
     if (e.target.value === "select") {
       delete filters[e.target.name];
@@ -92,16 +88,16 @@ const Home = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (selected) {
-      setPage(0);
-      setComplains([]);
+      setPage(0); //render all data again [pagination for the backend]
+      setComplains([]); //empty the prev data
       setLoading(true);
-      setRender(!render);
+      setRender(!render); //trigger useeffect
       setFilteredData(filters);
     }
   };
 
   const fetchMoreData = async () => {
-    setPage((prevPage) => prevPage + numOfdataToLoad);
+    setPage((prevPage) => prevPage + NUM_OF_DATA_TO_LOAD);
   };
 
   return (

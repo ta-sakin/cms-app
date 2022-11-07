@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { VscThreeBars } from "react-icons/vsc";
 import MobileDropDown from "./MobileDropDown";
+import DesktopBar from "./DesktopBar";
 const Navbar = ({ className }) => {
   return (
     // <div
@@ -118,7 +119,7 @@ const Navbar = ({ className }) => {
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal gap-x-1 p-0 ">
-          <MobileDropDown />
+          <DesktopBar />
         </ul>
       </div>
     </div>

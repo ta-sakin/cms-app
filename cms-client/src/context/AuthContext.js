@@ -43,7 +43,7 @@ export function AuthProvider({ children }) {
       try {
         if (!window.recaptchaVerifier) {
           window.recaptchaVerifier = new RecaptchaVerifier(
-            // "recaptcha-container",
+            "recaptcha-container",
             { size: "invisible" },
             auth
           );

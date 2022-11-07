@@ -7,8 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import useUser from "../hooks/useUser";
 
 const MyComplain = () => {
-  const { currentUser: user } = useAuth();
-  const [userId] = useUser(user.phoneNumber);
+  const [userId] = useUser();
   const [complains, setComplains] = useState([]);
 
   useEffect(() => {

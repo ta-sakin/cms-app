@@ -13,6 +13,7 @@ import PublicRoute from "./components/Auth/PublicRoute";
 import PrivateRoute from "./components/Auth/PrivateRoute";
 import ComplainPage from "./pages/ComplainPage";
 import MyComplain from "./pages/MyComplain";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -32,6 +33,14 @@ function App() {
           element={
             <PrivateRoute>
               <Home />
+            </PrivateRoute>
+          }
+        ></Route>
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
             </PrivateRoute>
           }
         ></Route>

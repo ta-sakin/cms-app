@@ -76,7 +76,7 @@ const Home = () => {
   const handleChange = (e) => {
     setSelected(true);
 
-    //if no option selected load all data
+    //if no --select-- option selected load all data
     if (e.target.value === "select") {
       delete filters[e.target.name];
       setFilters({ ...filters });
@@ -121,7 +121,7 @@ const Home = () => {
           loader=""
           style={{ overflow: "hidden" }}
         >
-          {complains.map((complain) => (
+          {complains?.map((complain) => (
             <Complain complain={complain} key={complain._id} />
           ))}
         </InfiniteScroll>

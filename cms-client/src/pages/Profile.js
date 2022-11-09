@@ -173,9 +173,9 @@ const Profile = () => {
                 <input
                   onChange={handleChange}
                   value={ward}
-                  name="address"
-                  type="address"
-                  id="address"
+                  name="ward"
+                  type="ward"
+                  id="ward"
                   readOnly={!changed}
                   className="w-full text-sm py-2 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow placeholder:text-sm  "
                 />

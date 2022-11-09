@@ -9,7 +9,7 @@ import useUser from "../hooks/useUser";
 const MyComplain = () => {
   const [userId] = useUser();
   const [complains, setComplains] = useState([]);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     (async () => {
       try {
@@ -22,14 +22,17 @@ const MyComplain = () => {
             },
           }
         );
+        setLoading(false);
         setComplains(data);
       } catch (error) {
+        setLoading(false);
+
         console.log(error);
       }
     })();
   }, [userId]);
 
-  if (complains?.length < 1) {
+  if (loading) {
     return <Loading />;
   }
 

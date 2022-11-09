@@ -103,7 +103,7 @@ const Complain = ({ complain, userId }) => {
         </p>
         <p className="text-sm mb-5">{complain.description}</p>
         <div className="flex items-center gap-2">
-          {complain.attachment.map((image,i) => (
+          {complain.attachment.map((image, i) => (
             <div className="flex-1" key={i}>
               <img className="w-fit" src={image.url} alt="" />
             </div>
@@ -125,7 +125,7 @@ const Complain = ({ complain, userId }) => {
         </div>
         {showComment && (
           <Comment
-          key={complain._id}
+            key={complain._id}
             complain={complain}
             setTotalComments={setTotalComments}
             loading={loading}

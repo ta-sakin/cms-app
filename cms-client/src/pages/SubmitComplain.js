@@ -92,8 +92,9 @@ const SubmitComplain = () => {
       if (error.response.data.message.includes("defined")) {
         setError("Something went wrong");
         // return;
+      } else {
+        setError(error.response.data.message);
       }
-      setError(error.response.data.message);
     }
   };
 
@@ -143,7 +144,9 @@ const SubmitComplain = () => {
                 Select your ward
               </option>
               {Object.keys(wardsList)?.map((key) => (
-                <option value={wardsList[key]}>{wardsList[key]}</option>
+                <option key={key} value={wardsList[key]}>
+                  {wardsList[key]}
+                </option>
               ))}
             </select>
           </label>

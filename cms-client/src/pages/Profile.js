@@ -2,11 +2,12 @@ import axios from "axios";
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { FaUserCircle } from "react-icons/fa";
+import { FaEdit, FaUserCircle } from "react-icons/fa";
 import Loading from "../components/shared/Loading";
 import useUser from "../hooks/useUser";
 import _ from "lodash";
 import { toast } from "react-toastify";
+import Dashboard from "../components/Profile/Dashboard";
 
 const defaulValues = {
   name: "",
@@ -23,6 +24,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [changed, setChanged] = useState(false);
   const [updated, setUpdated] = useState({});
+
   useEffect(() => {
     (async () => {
       try {
@@ -35,7 +37,6 @@ const Profile = () => {
             },
           }
         );
-        // const { name, email, address, ward, phone } = data;
         setProfile(data);
         setUser(data);
         setLoading(false);
@@ -62,17 +63,17 @@ const Profile = () => {
   };
   const handleSave = async () => {
     try {
+      setChanged(false);
       if (_.isEqual(profile, user)) return;
       const { data } = await axios.patch(
         `http://localhost:5000/api/user/${userId}`,
-        profile,
+        { name, email, ward, address },
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         }
       );
-      setChanged(false);
       setUpdated(data);
       toast.success("Profile updated", { theme: "colored" });
     } catch (error) {}
@@ -80,12 +81,20 @@ const Profile = () => {
 
   return (
     <div>
-      <div className="bg-gray-100 h-fit py-10 flex md:flex-row flex-col justify-center items-center flex-grow ">
-        <div className="">
-          <FaUserCircle className="w-40 h-40 border-2 rounded-md border-gray-500 p-4 text-gray-500" />
+      <div className="bg-gray-100 h-fit py-10 flex md:flex-row flex-col justify-center  flex-grow gap-8 items-center md:items-start">
+        <div className="flex flex-col items-center">
+          <FaUserCircle className="w-48 h-48 border-2 rounded-md border-gray-500 p-4 text-gray-500" />
+          <button
+            className="mt-2 btn-outline btn btn-sm flex items-center justify-center gap-1"
+            type="button"
+            // onClick={handleEdit}
+          >
+            <FaEdit />
+            Update Profile
+          </button>
         </div>
-        <div className="grow max-w-md">
-          <form className="w-full">
+        <div className="grow md:max-w-lg w-full px-6 mt-4 md:mt-0 md:px-0">
+          <form className="">
             <div className="md:flex md:items-center mb-4">
               <div className="md:w-1/3">
                 <label
@@ -133,6 +142,28 @@ const Profile = () => {
               <div className="md:w-1/3">
                 <label
                   className="block text-gray-700 text-sm md:text-right mb-1 md:mb-0 pr-4"
+                  for="phone"
+                >
+                  Phone
+                </label>
+              </div>
+              <div className="md:w-2/3">
+                <input
+                  onChange={handleChange}
+                  id="phone"
+                  name="phone"
+                  type="phone"
+                  value={phone}
+                  readOnly
+                  className="w-full bg-gray-50 text-sm py-2 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
+                  placeholder="Enter email address"
+                />
+              </div>
+            </div>
+            <div className="md:flex md:items-center mb-4">
+              <div className="md:w-1/3">
+                <label
+                  className="block text-gray-700 text-sm md:text-right mb-1 md:mb-0 pr-4"
                   for="ward"
                 >
                   Ward
@@ -172,15 +203,16 @@ const Profile = () => {
               </div>
             </div>
 
-            <div className="md:flex md:items-center justify-end">
-              <div className="md:w-1/3"></div>
+            <div className="flex items-center justify-end ">
+              <div className="w-1/3"></div>
               {!changed ? (
                 <div className="w-fit">
                   <button
-                    className="btn-active btn-link btn btn-sm mr-2"
+                    className="btn btn-outline btn-sm flex items-center justify-center gap-1"
                     type="button"
                     onClick={handleEdit}
                   >
+                    <FaEdit />
                     Edit
                   </button>
                 </div>
@@ -209,6 +241,9 @@ const Profile = () => {
             </div>
           </form>
         </div>
+      </div>
+      <div className="mt-10">
+        <Dashboard userId={userId} />
       </div>
     </div>
   );

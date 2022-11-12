@@ -27,7 +27,7 @@ const Home = () => {
       try {
         const { data } = await axios({
           method: "GET",
-          url: "http://localhost:5000/api/allcomplains",
+          url: "https://cms-server-production.up.railway.app/api/allcomplains",
           params: {
             filters: filteredData,
             page,
@@ -62,7 +62,7 @@ const Home = () => {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        "http://localhost:5000/api/totalcomplains",
+        "https://cms-server-production.up.railway.app/api/totalcomplains",
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem("accessToken")}`,

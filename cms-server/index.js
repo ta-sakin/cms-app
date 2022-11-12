@@ -28,7 +28,7 @@ app.use((err, req, res, next) => {
   await client.connect();
 
   app.get("/", (req, res) => {
-    res.send("What are you doing in Citizen management system server!");
+    res.send("What are you doing in the CMS server!");
   });
 
   app.listen(port, () => {

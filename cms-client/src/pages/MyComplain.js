@@ -15,7 +15,7 @@ const MyComplain = () => {
       try {
         if (!userId) return;
         const { data } = await axios.get(
-          `http://localhost:5000/api/complains/${userId}`,
+          `https://cms-server-production.up.railway.app/api/complains/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,

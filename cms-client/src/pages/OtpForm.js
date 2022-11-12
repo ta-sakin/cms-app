@@ -51,7 +51,7 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
           const register = async () => {
             try {
               const response = await axios.post(
-                "http://localhost:5000/api/auth/signup",
+                "https://cms-server-production.up.railway.app/api/auth/signup",
                 userData
               );
               return response;

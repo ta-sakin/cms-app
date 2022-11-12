@@ -1,16 +1,19 @@
 const { cloudinary } = require("../utils/cloudinary");
+
 const {
   createNewComplain,
   findComplainByProperty,
 } = require("./complainsFunc");
 
 const complainService = async ({
+  citizen_id,
   address,
   ward,
   description,
   imgUrls,
   complainType,
   phone,
+  category,
 }) => {
   try {
     const promises = [];
@@ -31,23 +34,34 @@ const complainService = async ({
         })
       );
     }
-    const user = await findComplainByProperty("phone", phone);
-    if (attachment && user) {
+    // const user = await findComplainByProperty("phone", phone);
+    if (attachment) {
       return await createNewComplain({
-        citizen_id: user._id,
+        citizen_id,
         address,
         ward,
         description,
         attachment,
         complainType,
+        category,
       });
     }
   } catch (error) {
     console.log(error);
-    next(error);
   }
 };
 
+// const classifyComplain = (description) => {
+//   natural.BayesClassifier.load(
+//     "classifier.json",
+//     null,
+//     function (err, classifier) {
+//       return classifier.classify(description);
+//     }
+//   );
+// };
+
 module.exports = {
   complainService,
+  // classifyComplain,
 };

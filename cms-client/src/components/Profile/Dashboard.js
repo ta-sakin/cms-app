@@ -10,7 +10,7 @@ const Dashboard = ({ userId }) => {
     (async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/complain/${userId}`,
+          `https://cms-server-production.up.railway.app/api/complain/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,

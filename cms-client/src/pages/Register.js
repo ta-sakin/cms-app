@@ -4,8 +4,8 @@ import wardsList from "../wardsList";
 import OtpForm from "./OtpForm";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import { RecaptchaVerifier } from "firebase/auth";
 import "./phoneInputStyle.css";
+import { RecaptchaVerifier } from "firebase/auth";
 import auth from "../firebase.init";
 import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
@@ -75,7 +75,7 @@ const Register = () => {
       async function checkUser() {
         try {
           const { data } = await axios.post(
-            "http://localhost:5000/api/auth/checkUser",
+            "https://cms-server-production.up.railway.app/api/auth/checkUser",
             { phone: phone }
           );
           return data;

@@ -11,10 +11,13 @@ const signUpControllers = async (req, res, next) => {
   try {
     const user = await signUpService({ name, email, phone, ward, address });
     res.status(201).json({ message: "User created successfully", user });
-  } catch (error) {
-    next(error);
+  } catch (e) {
+    console.log(e);
+    const err = error(e)
+    next(e);
   }
 };
+
 const signInControllers = async (req, res, next) => {
   const { phone } = req.body;
   if (!phone) {
@@ -26,9 +29,10 @@ const signInControllers = async (req, res, next) => {
       return res.status(201).send({ message: "Valid User", user });
     }
     return res.status(400).send({ message: "User not found" });
-  } catch (error) {
-    console.log(error);
-    next(error);
+  } catch (e) {
+    console.log(e);
+    const err = error(e)
+    next(e);
   }
 };
 
@@ -43,9 +47,10 @@ const checkUserControllers = async (req, res, next) => {
       return res.status(400).send({ message: "User already exists" });
     }
     res.status(201).send({ message: "Valid User", user });
-  } catch (error) {
-    console.log(error);
-    next(error);
+  } catch (e) {
+    console.log(e);
+    const err = error(e)
+    next(e);
   }
 };
 
@@ -55,6 +60,7 @@ const tokenControllers = async (req, res, next) => {
   const token = jwt.sign(payLoad, process.env.JWT_SECRET_KEY, {
     expiresIn: "1d",
   });
+
   res.send(token);
 };
 module.exports = {

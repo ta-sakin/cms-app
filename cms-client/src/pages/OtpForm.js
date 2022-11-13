@@ -96,7 +96,10 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      if (error?.code?.includes("argument" || "internal")) {
+      if (
+        error.code?.includes("argument") ||
+        error.code?.includes("internal")
+      ) {
         setError("Something went wrong!");
       } else {
         setError(error.code);

@@ -10,6 +10,7 @@ const MyComplain = () => {
   const [userId] = useUser();
   const [complains, setComplains] = useState([]);
   const [loading, setLoading] = useState(true);
+  
   useEffect(() => {
     (async () => {
       try {
@@ -26,7 +27,6 @@ const MyComplain = () => {
         setComplains(data);
       } catch (error) {
         setLoading(false);
-
         console.log(error);
       }
     })();

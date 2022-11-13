@@ -14,13 +14,12 @@ import { useAuth } from "../context/AuthContext";
 const defaulValues = {
   name: "",
   email: "",
-  phone: "",
   ward: "",
   password: "",
 };
 
 const Register = () => {
-  const { signup } = useAuth();
+  const { currentUser: user, signup } = useAuth();
   const [loading, setLoading] = useState(false);
   const [userInput, setUserInput] = useState(defaulValues);
   const [error, setError] = useState("");
@@ -33,6 +32,11 @@ const Register = () => {
       ...userInput,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const reset = () => {
+    setUserInput(defaulValues);
+    setPhone("");
   };
 
   const handleSubmit = async (e) => {
@@ -59,25 +63,32 @@ const Register = () => {
 
     async function createUser(role) {
       try {
-        await signup(email, password, name);
+        await signup(email, password, name, phone);
         const { data } = await axios.post(
-          "http://localhost:5000/api/auth/createadmin",
+          "http://localhost:5000/api/auth/admin/create",
           { name, email, phone, ward, role }
         );
-        console.log(data);
-        setLoading(false);
+
+        if (data.token) {
+          console.log(data);
+          localStorage.setItem("accessToken", data.token);
+          toast.success(`Welcome ${user.displayName}!`, {
+            theme: "colored",
+          });
+          navigate("/");
+          reset();
+          setLoading(false);
+        }
       } catch (error) {
-        // if (error.response.status === 400) {
-        //   setError(error.response.data.message);
-        // }
         setLoading(false);
         if (
           error.code?.includes("argument") ||
           error.code?.includes("internal")
         ) {
           setError("Something went wrong!");
+        } else if (error.response?.status === 400) {
+          setError(error.response?.data.message);
         } else if (error.message) {
-          console.log(error.message);
           setError(error.message);
         } else {
           setError(error.code);
@@ -104,11 +115,11 @@ const Register = () => {
                   type="name"
                   value={name}
                   className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                  placeholder="Enter email address"
+                  placeholder="Enter name"
                 />
               </label>
               <label htmlFor="email">
-                <p className="text-sm text-slate-700 pb-2">Email address</p>
+                <p className="text-sm text-slate-700 pb-2">Email</p>
                 <input
                   onChange={handleChange}
                   id="email"
@@ -127,16 +138,17 @@ const Register = () => {
                   name="password"
                   type="password"
                   id="password"
+                  autoComplete="new-password"
                   className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow placeholder:text-sm  "
                   placeholder="Enter your password"
                 />
               </label>
               <label htmlFor="phone">
-                <p className="text-sm text-slate-700 pb-2">Phone number</p>
+                <p className="text-sm text-slate-700 pb-2">Phone</p>
                 <PhoneInput
                   defaultCountry="BD"
                   placeholder="Enter phone number"
-                  name="name"
+                  name="phone"
                   value={phone}
                   onChange={setPhone}
                   className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"

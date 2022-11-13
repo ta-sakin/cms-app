@@ -8,7 +8,7 @@ const reactionsRoutes = require("./reactions");
 
 router.use("/api/auth", authRoutes);
 router.use("/api/user", userRoutes);
-router.use("/api/auth", authAdminRoutes);
+router.use("/api/auth/admin", authAdminRoutes);
 router.use("/api", authenticate, complainRoutes);
 router.use("/api/react", authenticate, reactionsRoutes);
 

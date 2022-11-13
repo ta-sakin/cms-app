@@ -1,19 +1,9 @@
 import { ThemeProvider } from "@emotion/react";
-import {
-  Avatar,
-  Box,
-  Container,
-  createTheme,
-  CssBaseline,
-  FormControl,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { createTheme } from "@mui/material";
 import axios from "axios";
 import { RecaptchaVerifier } from "firebase/auth";
 
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import PhoneInput from "react-phone-number-input";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -36,8 +26,6 @@ const Login = () => {
   const { getVerificationCode } = useAuth();
   const [confirmResponse, setConfirmResponse] = useState("");
   const [show, setShow] = useState(false);
-  const { currentUser } = useAuth();
-  const navigate = useNavigate();
 
   useEffect(() => {
     window.recaptchaVerifier = new RecaptchaVerifier(

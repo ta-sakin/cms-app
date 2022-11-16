@@ -30,7 +30,7 @@ const Profile = () => {
       try {
         if (!userId) return;
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/${userId}`,
+          `http://localhost:5000/api/user/user/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -66,7 +66,7 @@ const Profile = () => {
       setChanged(false);
       if (_.isEqual(profile, user)) return;
       const { data } = await axios.patch(
-        `https://cms-server-production.up.railway.app/api/user/${userId}`,
+        `http://localhost:5000/api/user/user/${userId}`,
         { name, email, ward, address },
         {
           headers: {

@@ -65,7 +65,7 @@ const Register = () => {
       try {
         await signup(email, password, name, phone);
         const { data } = await axios.post(
-          "http://localhost:5000/api/auth/admin/create",
+          "http://localhost:5000/api/admin/auth/create",
           { name, email, phone, ward, role }
         );
 

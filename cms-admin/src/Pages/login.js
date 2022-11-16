@@ -1,28 +1,30 @@
 import React, { useEffect, useState } from "react";
 // import auth from "../utils/firebase.init";
 // import { useAuth } from "../context/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Spin from "../components/shared/Spin";
 import { toast } from "react-toastify";
 import Error from "../components/shared/Error";
 import axios from "axios";
-import wardsList from "../wardsList";
 import "react-phone-number-input/style.css";
 import "./phoneInputStyle.css";
-import PhoneInput from "react-phone-number-input";
 import { useAuth } from "../context/AuthContext";
+
 const defaulValues = {
   email: "",
   password: "",
 };
 
 const Login = () => {
-  const { currentUser: user, login } = useAuth();
+  const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [userInput, setUserInput] = useState(defaulValues);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
   const { email, password } = userInput;
+  const navigate = useNavigate();
+
+  const location = useLocation();
+  let from = location.state?.from?.pathname || "/";
 
   const handleChange = (e) => {
     setUserInput({
@@ -53,17 +55,22 @@ const Login = () => {
 
     async function createUser(role) {
       try {
-        await login(email, password);
-        // const { data } = await axios.post(
-        //   "http://localhost:5000/api/auth/admin/get",
-        //   { email }
-        // );
-        reset();
-        setLoading(false);
-        toast.success(`Welcome back ${user.displayName}!`, {
-          theme: "colored",
-        });
-        navigate("/");
+        console.log("login");
+        const { data } = await axios.get(
+          `http://localhost:5000/api/admin/auth/token?email=${email}`
+        );
+        const info = await login(email, password);
+        if (info) {
+          if (data.token) {
+            localStorage.setItem("accessToken", data.token);
+          }
+          reset();
+          toast.success(`Welcome back ${info.user?.displayName}!`, {
+            theme: "colored",
+          });
+          setLoading(false);
+          navigate(from, { replace: true });
+        }
       } catch (error) {
         setLoading(false);
         if (
@@ -73,7 +80,7 @@ const Login = () => {
           setError("Something went wrong!");
         } else if (error.code) {
           setError(error.code);
-        } else if (error.response.status === 400) {
+        } else if (error.response?.status === 400) {
           setError(error.response.data.message);
         } else {
           setError(error.message);

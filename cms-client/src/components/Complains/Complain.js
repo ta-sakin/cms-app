@@ -23,7 +23,7 @@ const Complain = ({ complain, userId }) => {
     (async () => {
       try {
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/complain?uid=${complain.citizen_id}&cid=${complain._id}`,
+          `http://localhost:5000/api/user/complain?uid=${complain.citizen_id}&cid=${complain._id}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -42,7 +42,7 @@ const Complain = ({ complain, userId }) => {
     (async () => {
       try {
         const { data } = axios.delete(
-          `https://cms-server-production.up.railway.app/api/complain/${id}`,
+          `http://localhost:5000/api/user/complain/${id}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,

@@ -46,7 +46,7 @@ const Login = () => {
       async function checkUser() {
         try {
           const { data } = await axios.post(
-            "https://cms-server-production.up.railway.app/api/auth/signin",
+            "http://localhost:5000/api/user/auth/signin",
             { phone: phone }
           );
           console.log("data", data);

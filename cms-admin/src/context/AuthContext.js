@@ -80,7 +80,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("accessToken");
     return signOut(auth);
   }
-
+  // logout();
   const value = {
     loading,
     currentUser,

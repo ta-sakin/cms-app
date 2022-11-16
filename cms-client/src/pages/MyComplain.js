@@ -10,13 +10,13 @@ const MyComplain = () => {
   const [userId] = useUser();
   const [complains, setComplains] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     (async () => {
       try {
         if (!userId) return;
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/complains/${userId}`,
+          `http://localhost:5000/api/user/complains/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,

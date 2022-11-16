@@ -16,14 +16,13 @@ async function authenticate(req, res, next) {
     } else if (decoded.email) {
       user = await findAdminByProperty("email", decoded.email);
     }
-
     if (!user) {
       return res.status(401).json({ message: "Unauthorized" });
     }
     req.user = user;
     next();
   } catch (error) {
-    return res.status(400).json({ message: "Unauthorized access" });
+    return res.status(403).json({ message: "Unauthorized access" });
   }
 }
 

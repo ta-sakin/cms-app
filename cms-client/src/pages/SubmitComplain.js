@@ -70,7 +70,7 @@ const SubmitComplain = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "https://cms-server-production.up.railway.app/api/complain",
+        "http://localhost:5000/api/user/complain",
         complain,
         {
           headers: {

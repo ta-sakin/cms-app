@@ -21,7 +21,7 @@ const Comment = ({ complain, setTotalComments }) => {
       try {
         // setLoading(true);
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/react/comment/${complain._id}`,
+          `http://localhost:5000/api/user/react/comment/${complain._id}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -41,7 +41,7 @@ const Comment = ({ complain, setTotalComments }) => {
     (async () => {
       try {
         const { data } = await axios.post(
-          "https://cms-server-production.up.railway.app/api/react/comment",
+          "http://localhost:5000/api/user/react/comment",
           {
             complain_id: complain._id,
             citizen_id: userId,

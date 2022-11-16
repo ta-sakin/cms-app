@@ -10,6 +10,7 @@ const Filter = ({ handleChange, handleSubmit }) => {
     "Rejected",
     "Closed",
   ];
+
   const categories = ["Water", "Mosquitos", "Roads", "Others"];
 
   return (

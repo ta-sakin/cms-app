@@ -25,4 +25,20 @@ const createAdmin = async (req, res, next) => {
   }
 };
 
-module.exports = { createAdmin };
+const getToken = async (req, res, next) => {
+  try {
+    const email = req.query.email;
+    if (!email) throw "Unauthorized";
+    const payLoad = { email };
+    const token = jwt.sign(payLoad, process.env.JWT_SECRET_KEY, {
+      expiresIn: "1d",
+    });
+
+    res.status(200).json({ token });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+module.exports = { createAdmin, getToken };

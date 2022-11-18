@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Spin from "../components/shared/Spin";
 import { toast } from "react-toastify";
 import Error from "../components/shared/Error";
-import axios from "axios";
+import axios from "../utils/baseUrl";
 import wardsList from "../wardsList";
 import "react-phone-number-input/style.css";
 import "./phoneInputStyle.css";
@@ -64,10 +64,13 @@ const Register = () => {
     async function createUser(role) {
       try {
         await signup(email, password, name, phone);
-        const { data } = await axios.post(
-          "http://localhost:5000/api/admin/auth/create",
-          { name, email, phone, ward, role }
-        );
+        const { data } = await axios.post("/auth/create", {
+          name,
+          email,
+          phone,
+          ward,
+          role,
+        });
 
         if (data.token) {
           console.log(data);
@@ -75,7 +78,7 @@ const Register = () => {
           toast.success(`Welcome ${user.displayName}!`, {
             theme: "colored",
           });
-          navigate("/");
+          navigate("/dashboard");
           reset();
           setLoading(false);
         }

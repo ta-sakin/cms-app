@@ -1,11 +1,12 @@
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
-import Navbar from "../components/Navbar/Navbar";
-import Loading from "../components/shared/Loading";
-import useAdmin from "../hooks/useAdmin";
-
+import Navbar from "../../components/Navbar/Navbar";
+import Loading from "../../components/shared/Loading";
+import useAdmin from "../../hooks/useAdmin";
+import { IoIosArrowForward } from "react-icons/io";
 const Dashboard = () => {
+  const [expand, setExpand] = useState(false);
   const [user] = useAdmin();
   if (!user?.email) {
     return <Loading />;
@@ -45,32 +46,58 @@ const Dashboard = () => {
             htmlFor="dashboard-sidebar "
             className="drawer-overlay"
           ></label>
-          <ul className="menu p-4 cursor-pointer overflow-y-auto w-64 bg-gray-100 text-base-content pt-10 gap-y-2">
+          <ul className="menu p-2 cursor-pointer overflow-y-auto w-64 bg-gray-100 text-base-content pt-10 gap-y-1">
             <li>
-              <NavLink to="/" className="font-semibold">
+              <NavLink to="/dashboard" className="font-semibold h-10">
                 Dashboard
               </NavLink>
             </li>
+            <ul className={`${expand && "bg-gray-200 py-2"}`}>
+              <li>
+                <NavLink
+                  to="muser"
+                  onClick={() => setExpand(!expand)}
+                  className="font-semibold flex justify-between items-center h-10 "
+                >
+                  Manage User <IoIosArrowForward />
+                </NavLink>
+              </li>
+              {expand && (
+                <ul className="ml-5 transition ease-in-out delay-150">
+                  <li>
+                    <NavLink
+                      to="muser/status"
+                      className="font-semibold h-8 my-1 "
+                    >
+                      By status
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/muser"
+                      className="font-semibold h-8 bg-slate-400"
+                    >
+                      By status
+                    </NavLink>
+                  </li>
+                </ul>
+              )}
+            </ul>
             <li>
-              <NavLink to="/muser" className="font-semibold">
-                Manage User
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/mcomplain" className="font-semibold">
+              <NavLink to="/mcomplain" className="font-semibold h-10">
                 Manage Complaints
               </NavLink>
             </li>
             <li>
-              <NavLink to="/reports" className="font-semibold">
+              <NavLink to="/reports" className="font-semibold h-10">
                 Reports
               </NavLink>
             </li>
-            <li>
+            {/* <li>
               <NavLink to="/reports" className="font-semibold">
                 Logout
               </NavLink>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>

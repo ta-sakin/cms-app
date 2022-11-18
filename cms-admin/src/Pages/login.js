@@ -5,11 +5,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Spin from "../components/shared/Spin";
 import { toast } from "react-toastify";
 import Error from "../components/shared/Error";
-import axios from "axios";
 import "react-phone-number-input/style.css";
 import "./phoneInputStyle.css";
 import { useAuth } from "../context/AuthContext";
-
+import axios from "../utils/baseUrl";
 const defaulValues = {
   email: "",
   password: "",
@@ -24,7 +23,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  let from = location.state?.from?.pathname || "/";
+  let from = location.state?.from?.pathname || "/dashboard";
 
   const handleChange = (e) => {
     setUserInput({
@@ -56,9 +55,7 @@ const Login = () => {
     async function createUser(role) {
       try {
         console.log("login");
-        const { data } = await axios.get(
-          `http://localhost:5000/api/admin/auth/token?email=${email}`
-        );
+        const { data } = await axios.get(`/auth/token?email=${email}`);
         const info = await login(email, password);
         if (info) {
           if (data.token) {

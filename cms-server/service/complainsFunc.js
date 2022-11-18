@@ -103,6 +103,45 @@ const getStatusCountByUser = async (id) => {
   return (status = { pendingApproval, totalComplains });
 };
 
+const getComplainsCount = async (ward) => {
+  return await complainsCollection.countDocuments({ ward });
+};
+
+const countComplainsByStatus = async (ward = 0, status) => {
+  if (!ward) {
+    return await complainsCollection.countDocuments({ status });
+  }
+  return await complainsCollection.countDocuments({
+    $and: [{ ward }, { status }],
+  });
+};
+
+const countComplainByCategory = async (ward) => {
+  const complains = await complainsCollection.find({ ward }).toArray();
+  let countByCategory = {};
+  for (const complain of complains) {
+    const key = complain.category;
+    if (countByCategory[key]) {
+      countByCategory = {
+        ...countByCategory,
+        [key]: countByCategory[key]++,
+      };
+    } else {
+      if (key) {
+        countByCategory = {
+          ...countByCategory,
+          [key]: 1,
+        };
+      }
+    }
+  }
+  return countByCategory;
+};
+const countComplainByType = async (ward, type) => {
+  return await complainsCollection.countDocuments({
+    $and: [{ ward }, { type }],
+  });
+};
 module.exports = {
   createNewComplain,
   findComplainByProperty,
@@ -112,4 +151,8 @@ module.exports = {
   findComplainsByUserId,
   deleteComplainById,
   getStatusCountByUser,
+  getComplainsCount,
+  countComplainsByStatus,
+  countComplainByCategory,
+  countComplainByType,
 };

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../utils/baseUrl";
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 // import { useAuthState } from "react-firebase-hooks/auth";
@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 const useToken = () => {
   const [token, setToken] = useState("");
   const { currentUser: user } = useAuth();
-console.log('user',user)
+  console.log("user", user);
   useEffect(() => {
     // const email = user?.user?.email;
     // const name = user?.user?.displayName;
@@ -15,9 +15,7 @@ console.log('user',user)
     (async () => {
       try {
         if (user?.email) {
-          const { data } = await axios.get(
-            `http://localhost:5000/api/admin/auth/token?email=${user.email}`
-          );
+          const { data } = await axios.get(`/auth/token?email=${user.email}`);
           if (data) {
             console.log("usetoken", data);
             localStorage.setItem("accessToken", data.token);

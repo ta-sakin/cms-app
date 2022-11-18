@@ -31,9 +31,9 @@ const Navbar = ({ className, user }) => {
             <MobileDropDown user={user} />
           </ul>
         </div>
-        <NavLink to="" className="btn btn-ghost normal-case text-xl">
+        <Link to="/dashboard" className="btn btn-ghost normal-case text-xl">
           CMS App
-        </NavLink>
+        </Link>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal gap-x-1 p-0 ">

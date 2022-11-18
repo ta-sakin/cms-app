@@ -28,8 +28,14 @@ const patchUser = async (id, data) => {
     { $set: data }
   );
 };
+
+const getUsersCount = async (ward) => {
+  return await citizensCollection.countDocuments({ ward });
+};
+
 module.exports = {
   findUserByProperty,
   createNewUser,
   patchUser,
+  getUsersCount,
 };

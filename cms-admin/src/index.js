@@ -5,6 +5,13 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import axios from "axios";
+
+axios.defaults.baseURL = "http://localhost:5000/api";
+axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
+  "accessToken"
+)}`;
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

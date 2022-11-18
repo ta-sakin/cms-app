@@ -3,10 +3,12 @@ import Register from "./Pages/Register";
 import { ToastContainer, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Login from "./Pages/Login";
-import Home from "./Pages/Home";
 import PublicRoute from "./components/Auth/PublicRoute";
-import Dashboard from "./Pages/Dashboard";
 import PrivateRoute from "./components/Auth/PrivateRoute";
+import Home from "./Pages/Dashboard/Home";
+import Dashboard from "./Pages/Dashboard/Dashboard";
+import PageNotFound from "./components/shared/PageNotFound";
+import ManageUser from "./Pages/Dashboard/ManageUser";
 
 function App() {
   return (
@@ -36,7 +38,12 @@ function App() {
               <Dashboard />
             </PrivateRoute>
           }
-        ></Route>
+        >
+          {/* <Route path="" element={<Home />}></Route> */}
+          <Route path="/dashboard" element={<Home />}></Route>
+          <Route path="/muser" element={<ManageUser />}></Route>
+        </Route>
+        <Route path="*" element={<PageNotFound />}></Route>
       </Routes>
       <ToastContainer
         autoClose={2500}

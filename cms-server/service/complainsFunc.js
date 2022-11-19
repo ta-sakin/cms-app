@@ -64,14 +64,14 @@ const createNewComplain = async ({
       submission_date: new Date(),
     });
 
-    // const complainsByUser = await complainsCollection.countDocuments({
-    //   citizen_id,
-    // });
+    const countOfComplains = await complainsCollection.countDocuments({
+      citizen_id,
+    });
 
-    // await citizensCollection.updateOne(
-    //   { _id: citizen_id },
-    //   { $set: { total_complaints: complainsByUser } }
-    // );
+    await citizensCollection.updateOne(
+      { _id: citizen_id },
+      { $set: { total_complaints: countOfComplains } }
+    );
 
     return result;
   }
@@ -95,8 +95,9 @@ const deleteComplainById = (id) => {
 const getStatusCountByUser = async (id) => {
   let status = {};
   const pendingApproval = await complainsCollection.countDocuments({
-    $and: [{ citizen_id: ObjectId(id) }, { status: "Pending approval" }],
+    $and: [{ citizen_id: ObjectId(id) }, { status: "pending approval" }],
   });
+
   const totalComplains = await complainsCollection.countDocuments({
     citizen_id: ObjectId(id),
   });
@@ -107,41 +108,63 @@ const getComplainsCount = async (ward) => {
   return await complainsCollection.countDocuments({ ward });
 };
 
-const countComplainsByStatus = async (ward = 0, status) => {
+const countComplainsByStatus = async (key, value) => {
+  const searchBy = { [key]: value };
   if (!ward) {
-    return await complainsCollection.countDocuments({ status });
+    searchBy = {};
   }
-  return await complainsCollection.countDocuments({
-    $and: [{ ward }, { status }],
-  });
+  const label = "status";
+  const countByStatus = await turnObjPairingCount(label, searchBy);
+  return countByStatus;
 };
 
-const countComplainByCategory = async (ward) => {
-  const complains = await complainsCollection.find({ ward }).toArray();
-  let countByCategory = {};
-  for (const complain of complains) {
-    const key = complain.category;
-    if (countByCategory[key]) {
-      countByCategory = {
-        ...countByCategory,
-        [key]: countByCategory[key]++,
-      };
-    } else {
-      if (key) {
-        countByCategory = {
-          ...countByCategory,
-          [key]: 1,
-        };
-      }
-    }
-  }
+const countComplainByCategory = async (key, value) => {
+  const searchBy = { [key]: value };
+  const label = "category";
+  const countByCategory = await turnObjPairingCount(label, searchBy);
   return countByCategory;
 };
-const countComplainByType = async (ward, type) => {
-  return await complainsCollection.countDocuments({
-    $and: [{ ward }, { type }],
-  });
+
+const countComplainByType = async (key, value) => {
+  const searchBy = { [key]: value };
+  const label = "complainType";
+  let countByType = await turnObjPairingCount(label, searchBy);
+  if (!countByType.public) {
+    countByType = { ...countByType, public: 0 };
+  } else if (!countByType.private) {
+    countByType = { ...countByType, private: 0 };
+  }
+  return countByType;
 };
+
+const turnObjPairingCount = async (label, search) => {
+  const complains = await complainsCollection.find(search).toArray();
+  if (complains.length < 1) {
+    return {};
+  }
+  let obj = {};
+  for (const complain of complains) {
+    let key = complain[label];
+    if (!key) continue;
+    if (key.includes("public")) {
+      key = "public";
+    }
+    if (obj[key]) {
+      let count = obj[key] + 1;
+      obj = {
+        ...obj,
+        [key]: count,
+      };
+    } else {
+      obj = {
+        ...obj,
+        [key]: 1,
+      };
+    }
+  }
+  return obj;
+};
+
 module.exports = {
   createNewComplain,
   findComplainByProperty,

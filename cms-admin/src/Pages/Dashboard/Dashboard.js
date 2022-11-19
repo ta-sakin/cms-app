@@ -4,7 +4,7 @@ import { Link, NavLink, Outlet } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Loading from "../../components/shared/Loading";
 import useAdmin from "../../hooks/useAdmin";
-import { IoIosArrowForward } from "react-icons/io";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 const Dashboard = () => {
   const [expand, setExpand] = useState(false);
   const [user] = useAdmin();
@@ -52,22 +52,33 @@ const Dashboard = () => {
                 Dashboard
               </NavLink>
             </li>
-            <ul className={`${expand && "bg-gray-200 py-2"}`}>
-              <li>
+            <li>
+              <NavLink to="/muser" className="font-semibold h-10">
+                Manage User
+              </NavLink>
+            </li>
+            <ul className={`${!expand && ""}`}>
+              <li className="">
                 <NavLink
-                  to="muser"
+                  to="mcomplains"
                   onClick={() => setExpand(!expand)}
                   className="font-semibold flex justify-between items-center h-10 "
                 >
-                  Manage User <IoIosArrowForward />
+                  Manage Complains{" "}
+                  <IoIosArrowForward
+                    className={`duration-200 ${
+                      expand &&
+                      "transition-transform mb-1 origin-left rotate-90"
+                    }`}
+                  />
                 </NavLink>
               </li>
               {expand && (
-                <ul className="ml-5 transition ease-in-out delay-150">
+                <ul className="h-24 ml-5 bg-gray-300 py-2 rounded-lg transition-all duration-500">
                   <li>
                     <NavLink
-                      to="muser/status"
-                      className="font-semibold h-8 my-1 "
+                      to="mcomplains/status"
+                      className="font-semibold h-8 my-1"
                     >
                       By status
                     </NavLink>

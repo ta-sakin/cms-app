@@ -5,7 +5,11 @@ const {
   countComplainByCategory,
   countComplainByType,
 } = require("../service/complainsFunc");
-const { getUsers, getUsersCount } = require("../service/user");
+const {
+  getUsers,
+  getUsersCount,
+  getCitizensByWard,
+} = require("../service/user");
 
 const getCurrentUser = async (req, res, next) => {
   try {
@@ -28,26 +32,16 @@ const getDataCount = async (req, res, next) => {
 
     const users = await getUsersCount(ward);
     const complains = await getComplainsCount(ward);
-    const solved = await countComplainsByStatus(ward, "Closed");
-    const pendingApproval = await countComplainsByStatus(
-      ward,
-      "pending approval"
-    );
-    const category = await countComplainByCategory(ward);
-    let public = await countComplainByType(ward, "public");
-    const anonym = await countComplainByType(ward, "public-anonymous");
-    const private = await countComplainByType(ward, "private");
-
-    public = public + anonym;
+    const status = await countComplainsByStatus("ward", ward);
+    const category = await countComplainByCategory("ward", ward);
+    let type = await countComplainByType("ward", ward);
 
     res.status(200).json({
       users,
       complains,
-      solved,
-      pendingApproval,
-      private,
-      public,
+      status,
       category,
+      type,
     });
   } catch (error) {
     console.log(error);
@@ -55,4 +49,16 @@ const getDataCount = async (req, res, next) => {
   }
 };
 
-module.exports = { getCurrentUser, getDataCount };
+const citizenByward = async (req, res, next) => {
+  try {
+    const user = req.user;
+    const { ward } = user;
+    const users = await getCitizensByWard(ward);
+    res.status(200).json(users);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+module.exports = { getCurrentUser, getDataCount, citizenByward };

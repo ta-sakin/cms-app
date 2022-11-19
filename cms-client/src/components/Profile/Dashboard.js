@@ -10,7 +10,7 @@ const Dashboard = ({ userId }) => {
     (async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/user/complain/${userId}`,
+          `http://localhost:5000/api/user/complain/count/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,

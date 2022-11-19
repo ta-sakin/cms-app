@@ -8,6 +8,7 @@ import Loading from "../components/shared/Loading";
 import ButtonSpin from "../components/shared/ButtonSpin";
 import InfiniteScroll from "react-infinite-scroll-component";
 import _ from "lodash";
+import useUser from "../hooks/useUser";
 
 const NUM_OF_DATA_TO_LOAD = 3;
 const Home = () => {
@@ -19,7 +20,7 @@ const Home = () => {
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState(false);
   const [render, setRender] = useState(false);
-
+  const [userId] = useUser();
   useEffect(() => {
     const getComplains = async () => {
       let CancelToken = axios.CancelToken;
@@ -27,25 +28,26 @@ const Home = () => {
       try {
         const { data } = await axios({
           method: "GET",
-          url: "http://localhost:5000/api/user/allcomplains",
+          url: "http://localhost:5000/api/user/complain/all",
           params: {
             filters: filteredData,
             page,
             count: NUM_OF_DATA_TO_LOAD,
           },
-
           headers: {
             authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
           cancelToken: new CancelToken((c) => (cancel = c)),
         });
-
         setLoading(false);
         if (filteredData && Object.keys(filteredData).length > 0) {
-          setComplains(data);
+          setComplains((prevComplain) => {
+            const uniqueComplain = _.uniq([...prevComplain, ...data], "_id");
+            return uniqueComplain;
+          });
         } else {
           setComplains((prevComplain) => {
-            const uniqueComplain = _.uniq([...prevComplain, ...data]);
+            const uniqueComplain = _.uniqBy([...prevComplain, ...data], "_id");
             return uniqueComplain;
           });
         }
@@ -62,7 +64,7 @@ const Home = () => {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        "http://localhost:5000/api/user/totalcomplains",
+        "http://localhost:5000/api/user/complain/total",
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -71,17 +73,17 @@ const Home = () => {
       );
       setTotalComplains(data);
     })();
-  });
+  }, []);
 
   const handleChange = (e) => {
     setSelected(true);
 
-    //if no --select-- option selected load all data
+    //if --select-- option selected load all data
     if (e.target.value === "select") {
       delete filters[e.target.name];
       setFilters({ ...filters });
     } else {
-      setFilters({ ...filters, [e.target.name]: e.target.value });
+      setFilters({ ...filters, [e.target.name]: e.target.value.toLowerCase() });
     }
   };
 
@@ -104,7 +106,9 @@ const Home = () => {
     <div className="flex gap-x-10 md:justify-center items-center md:flex-row flex-col">
       <Filter handleChange={handleChange} handleSubmit={handleSubmit} />
       {loading ? (
-        <ButtonSpin />
+        <div className="sm:w-96 w-fit flex justify-center">
+          <ButtonSpin />
+        </div>
       ) : (
         !complains.length && (
           <p className="text-center font-semibold text-gray-500">
@@ -112,7 +116,6 @@ const Home = () => {
           </p>
         )
       )}
-
       <div className="mt-20">
         <InfiniteScroll
           dataLength={complains?.length}
@@ -122,7 +125,7 @@ const Home = () => {
           style={{ overflow: "hidden" }}
         >
           {complains?.map((complain) => (
-            <Complain complain={complain} key={complain._id} />
+            <Complain complain={complain} key={complain._id} userId={userId} />
           ))}
         </InfiniteScroll>
       </div>

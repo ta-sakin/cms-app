@@ -49,7 +49,6 @@ const Votes = ({ complain }) => {
             },
           }
         );
-        // console.log("votes", data);
 
         setVotes(data?.citizen_id && data);
       } catch (error) {

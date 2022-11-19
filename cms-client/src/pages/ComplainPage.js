@@ -1,3 +1,5 @@
+//Lagacy of home page
+
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { FaGalacticSenate, FaRegComment, FaUserCircle } from "react-icons/fa";
@@ -37,14 +39,13 @@ const ComplainPage = () => {
     const getComplains = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:5000/api/user/allcomplains",
+          "http://localhost:5000/api/user/complain/all",
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
           }
         );
-
         setComplains(data.data);
       } catch (error) {
         console.log(error);
@@ -100,7 +101,6 @@ const ComplainPage = () => {
           },
         }
       );
-      console.log("result", result);
       const response = await axios.put(
         `http://localhost:5000/api/user/complain`,
         {
@@ -239,7 +239,7 @@ const ComplainPage = () => {
                 required
                 className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
               >
-                <option value="" selected disabled hidden>
+                <option defaultValue="" selected disabled hidden>
                   Select a ward
                 </option>
                 {Object.keys(wardsList)?.map((key) => (
@@ -256,7 +256,7 @@ const ComplainPage = () => {
                 required
                 className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
               >
-                <option value="" selected disabled hidden>
+                <option defaultValue="" selected disabled hidden>
                   Select complain status
                 </option>
                 {status?.map((item, i) => (
@@ -275,7 +275,7 @@ const ComplainPage = () => {
                 required
                 className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
               >
-                <option value="" selected disabled hidden>
+                <option defaultValue="" selected disabled hidden>
                   Select complain category
                 </option>
                 <option value="water">water</option>

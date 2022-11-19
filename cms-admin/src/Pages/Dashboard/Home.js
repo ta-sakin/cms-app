@@ -14,6 +14,7 @@ const Home = () => {
     solved: 0,
     pendingApproval: 0,
     category: {},
+    type: {},
   });
   const [loading, setLoading] = useState(true);
 
@@ -31,17 +32,13 @@ const Home = () => {
       } catch (error) {
         setLoading(false);
         console.log(error);
-        // <ServerError error={error}/>
+        <ServerError error={error.response?.message} />;
       }
     })();
   }, []);
 
   if (loading) {
-    return (
-      <div className="mt-20 flex justify-center">
-        <Spin />
-      </div>
-    );
+    return <Spin />;
   }
 
   return (
@@ -49,7 +46,7 @@ const Home = () => {
       <Summary count={count} />
       <Status count={count} />
       <Category categories={count?.category} />
-      <ComplainType count={count}/>
+      <ComplainType count={count} />
     </section>
   );
 };

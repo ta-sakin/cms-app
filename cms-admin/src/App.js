@@ -9,6 +9,7 @@ import Home from "./Pages/Dashboard/Home";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import PageNotFound from "./components/shared/PageNotFound";
 import ManageUser from "./Pages/Dashboard/ManageUser";
+import ManageComplains from "./Pages/Dashboard/ManageComplains";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
           {/* <Route path="" element={<Home />}></Route> */}
           <Route path="/dashboard" element={<Home />}></Route>
           <Route path="/muser" element={<ManageUser />}></Route>
+          <Route path="/mcomplains" element={<ManageComplains />}></Route>
         </Route>
         <Route path="*" element={<PageNotFound />}></Route>
       </Routes>

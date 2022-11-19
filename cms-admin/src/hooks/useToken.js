@@ -7,7 +7,6 @@ import { useAuth } from "../context/AuthContext";
 const useToken = () => {
   const [token, setToken] = useState("");
   const { currentUser: user } = useAuth();
-  console.log("user", user);
   useEffect(() => {
     // const email = user?.user?.email;
     // const name = user?.user?.displayName;

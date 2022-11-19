@@ -50,7 +50,7 @@ export function AuthProvider({ children }) {
         }
         await window.recaptchaVerifier.render();
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
     captcha();

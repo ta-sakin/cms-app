@@ -13,7 +13,6 @@ const defaulValues = {
   ward: "",
   description: "",
 };
-// `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`
 const SubmitComplain = () => {
   const { currentUser } = useAuth();
   const [error, setError] = useState("");
@@ -189,7 +188,7 @@ const SubmitComplain = () => {
                 onChange={handleCheckbox}
               />
               <label
-                for="inline-checkbox"
+                htmlFor="inline-checkbox"
                 class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-800"
               >
                 Complain as Public
@@ -211,7 +210,7 @@ const SubmitComplain = () => {
               />
               <label
                 title="Your name will remain hidden"
-                for="inline-2-checkbox"
+                htmlFor="inline-2-checkbox"
                 class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-800"
               >
                 Remain Anonymous

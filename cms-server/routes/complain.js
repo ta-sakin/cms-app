@@ -2,13 +2,13 @@ const complainsController = require("../controllers/complain");
 
 const router = require("express").Router();
 
-router.post("/complain", complainsController.submitComplain);
-router.get("/complain", complainsController.findUserName);
-router.get("/complains/:id", complainsController.getComplainByUserId);
-router.delete("/complain/:id", complainsController.deleteComplain);
-router.get("/allcomplains", complainsController.getAllComplains);
-router.get("/totalcomplains", complainsController.totalComplains);
-router.put("/complain", complainsController.updateComplain);
-router.get("/complain/:id", complainsController.getCountComplaintStatus);
+router.post("/", complainsController.submitComplain);
+router.get("/uname", complainsController.findUserName);
+router.get("/count/:id", complainsController.getCountComplaintStatus);
+router.get("/all", complainsController.getAllComplains);
+router.get("/total", complainsController.totalComplains);
+router.delete("/:id", complainsController.deleteComplain);
+router.put("/", complainsController.updateComplain);
+router.get("/:id", complainsController.getComplainByUserId);
 
 module.exports = router;

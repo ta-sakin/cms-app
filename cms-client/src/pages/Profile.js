@@ -30,7 +30,7 @@ const Profile = () => {
       try {
         if (!userId) return;
         const { data } = await axios.get(
-          `http://localhost:5000/api/user/user/${userId}`,
+          `http://localhost:5000/api/user/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -66,7 +66,7 @@ const Profile = () => {
       setChanged(false);
       if (_.isEqual(profile, user)) return;
       const { data } = await axios.patch(
-        `http://localhost:5000/api/user/user/${userId}`,
+        `http://localhost:5000/api/user/${userId}`,
         { name, email, ward, address },
         {
           headers: {
@@ -99,7 +99,7 @@ const Profile = () => {
               <div className="md:w-1/3">
                 <label
                   className="block text-gray-700 text-sm md:text-right mb-1 md:mb-0 pr-4"
-                  for="name"
+                  htmlFor="name"
                 >
                   Full Name
                 </label>
@@ -120,7 +120,7 @@ const Profile = () => {
               <div className="md:w-1/3">
                 <label
                   className="block text-gray-700 text-sm md:text-right mb-1 md:mb-0 pr-4"
-                  for="email"
+                  htmlFor="email"
                 >
                   Email
                 </label>
@@ -142,7 +142,7 @@ const Profile = () => {
               <div className="md:w-1/3">
                 <label
                   className="block text-gray-700 text-sm md:text-right mb-1 md:mb-0 pr-4"
-                  for="phone"
+                  htmlFor="phone"
                 >
                   Phone
                 </label>
@@ -164,7 +164,7 @@ const Profile = () => {
               <div className="md:w-1/3">
                 <label
                   className="block text-gray-700 text-sm md:text-right mb-1 md:mb-0 pr-4"
-                  for="ward"
+                  htmlFor="ward"
                 >
                   Ward
                 </label>
@@ -185,7 +185,7 @@ const Profile = () => {
               <div className="md:w-1/3">
                 <label
                   className="block text-gray-700 text-sm md:text-right mb-1 md:mb-0 pr-4"
-                  for="address"
+                  htmlFor="address"
                 >
                   Address
                 </label>

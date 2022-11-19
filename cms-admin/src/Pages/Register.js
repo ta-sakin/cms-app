@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 // import auth from "../utils/firebase.init";
 // import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
-import Spin from "../components/shared/Spin";
 import { toast } from "react-toastify";
 import Error from "../components/shared/Error";
 import axios from "../utils/baseUrl";
@@ -11,6 +10,7 @@ import "react-phone-number-input/style.css";
 import "./phoneInputStyle.css";
 import PhoneInput from "react-phone-number-input";
 import { useAuth } from "../context/AuthContext";
+import ButtonSpin from "../components/shared/ButtonSpin";
 const defaulValues = {
   name: "",
   email: "",
@@ -73,7 +73,6 @@ const Register = () => {
         });
 
         if (data.token) {
-          console.log(data);
           localStorage.setItem("accessToken", data.token);
           toast.success(`Welcome ${user.displayName}!`, {
             theme: "colored",
@@ -191,7 +190,7 @@ const Register = () => {
                   className="w-full mt-4 py-2 font-medium text-white bg-black rounded-lg border-black hover:shadow inline-flex space-x-2 items-center justify-center disabled"
                   disabled
                 >
-                  <Spin />
+                  <ButtonSpin />
                 </button>
               )}
               <p className="text-center text-sm">

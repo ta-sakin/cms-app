@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
-// import auth from "../utils/firebase.init";
-// import { useAuth } from "../context/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Spin from "../components/shared/Spin";
 import { toast } from "react-toastify";
 import Error from "../components/shared/Error";
 import "react-phone-number-input/style.css";
 import "./phoneInputStyle.css";
 import { useAuth } from "../context/AuthContext";
 import axios from "../utils/baseUrl";
+import ButtonSpin from "../components/shared/ButtonSpin";
 const defaulValues = {
   email: "",
   password: "",
@@ -54,7 +52,6 @@ const Login = () => {
 
     async function createUser(role) {
       try {
-        console.log("login");
         const { data } = await axios.get(`/auth/token?email=${email}`);
         const info = await login(email, password);
         if (info) {
@@ -133,7 +130,7 @@ const Login = () => {
                   className="w-full mt-4 py-2 font-medium text-white bg-black rounded-lg border-black hover:shadow inline-flex space-x-2 items-center justify-center disabled"
                   disabled
                 >
-                  <Spin />
+                  <ButtonSpin />
                 </button>
               )}
               <p className="text-center text-sm">

@@ -16,7 +16,7 @@ const MyComplain = () => {
       try {
         if (!userId) return;
         const { data } = await axios.get(
-          `http://localhost:5000/api/user/complains/${userId}`,
+          `http://localhost:5000/api/user/complain/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,

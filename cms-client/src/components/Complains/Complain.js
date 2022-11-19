@@ -23,7 +23,7 @@ const Complain = ({ complain, userId }) => {
     (async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/user/complain?uid=${complain.citizen_id}&cid=${complain._id}`,
+          `http://localhost:5000/api/user/complain/uname?uid=${complain.citizen_id}&cid=${complain._id}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -70,9 +70,13 @@ const Complain = ({ complain, userId }) => {
                 : "Anonymous"}
             </p>
             <p className="text-xs">
-              Ward: {complain.ward} | Status: {complain.status} | Category:
-              {complain.category}| Date:{" "}
-              {complain.submission_date.split("T")[0]}
+              <span>Ward: {complain.ward}</span> |{" "}
+              <span className="capitalize">Status: {complain.status}</span> |{" "}
+              <span className="capitalize">
+                Category:
+                {complain.category}
+              </span>{" "}
+              | <span>Date: {complain.submission_date.split("T")[0]}</span>
             </p>
           </div>
         </div>

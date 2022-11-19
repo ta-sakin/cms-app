@@ -32,10 +32,14 @@ const patchUser = async (id, data) => {
 const getUsersCount = async (ward) => {
   return await citizensCollection.countDocuments({ ward });
 };
+const getCitizensByWard = async (ward) => {
+  return await citizensCollection.find({ ward }).toArray();
+};
 
 module.exports = {
   findUserByProperty,
   createNewUser,
   patchUser,
   getUsersCount,
+  getCitizensByWard,
 };

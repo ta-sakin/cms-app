@@ -8,11 +8,11 @@ const ComplainType = ({ count }) => {
       </p>
       <div className="grid grid-cols-2 sm:grid-cols-4 place-items-center gap-8">
         <div className="bg-gray-100 w-44 py-10 text-center rounded-xl">
-          <p>{count?.public}</p>
+          <p>{count?.type.public}</p>
           <p>Public</p>
         </div>
         <div className="bg-gray-100 w-44 py-10 text-center rounded-xl">
-          <p>{count?.private}</p>
+          <p>{count?.type.private}</p>
           <p>Private</p>
         </div>
       </div>

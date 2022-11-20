@@ -1,32 +1,38 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useQuery } from "react-query";
+import DeleteUser from "../../components/Dashboard/ManageUser/DeleteUser";
+import Row from "../../components/Dashboard/ManageUser/Row";
 import Spin from "../../components/shared/Spin";
 
 const ManageUser = () => {
   const [loading, setLoading] = useState(true);
-  const [users, setUsers] = useState([]);
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await axios.get("/admin/usersbyward");
-        if (data) {
-          setUsers(data);
-        }
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.log(error);
-        // <ServerError error={error}/>
-      }
-    })();
-  }, []);
-  if (loading) {
+  const [deleteUser, setDeleteUser] = useState(null);
+  // const [users, setUsers] = useState([]);
+  const {
+    data: users,
+    isLoading,
+    refetch,
+  } = useQuery("users", async () => {
+    try {
+      const { data } = await axios.get("/admin/usersbyward");
+      return data;
+    } catch (error) {
+      console.log(error);
+      // <ServerError error={error}/>
+    }
+  });
+  if (isLoading) {
     return <Spin />;
   }
+
   return (
     <section className="my-10 mx-10">
-      <div class="overflow-x-auto">
-        <table class="table w-full">
+      <div className="bg-gray-100 rounded-lg p-2 w-fit mb-4 font-semibold">
+        <p>Total Users: {users.length}</p>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="table w-full">
           <thead>
             <tr>
               <th></th>
@@ -35,25 +41,30 @@ const ManageUser = () => {
               <th>Complaints</th>
               <th>Status</th>
               <th>Actions</th>
+              <th>Delete</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {users.map((user, i) => (
-              <tr key={user._id} className="hover">
-                <th>{i + 1}</th>
-                <td>{user.name}</td>
-                <td>{user.phone}</td>
-                <td>Blue</td>
-                <td>{user.status}</td>
-                <td>
-                  <button className="btn btn-warning">Active</button>
-                </td>
-              </tr>
+              <Row
+                key={user._id}
+                user={user}
+                i={i}
+                refetch={refetch}
+                setDeleteUser={setDeleteUser}
+              />
             ))}
           </tbody>
         </table>
       </div>
+      {deleteUser && (
+        <DeleteUser
+          setDeleteUser={setDeleteUser}
+          deleteUser={deleteUser}
+          refetch={refetch}
+        />
+      )}
     </section>
   );
 };

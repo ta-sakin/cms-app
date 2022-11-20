@@ -11,10 +11,9 @@ const Home = () => {
   const [count, setCount] = useState({
     users: 0,
     complains: 0,
-    solved: 0,
-    pendingApproval: 0,
     category: {},
     type: {},
+    status: {},
   });
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +22,6 @@ const Home = () => {
       try {
         const { data } = await axios.get("/admin/datacount");
         if (data) {
-          console.log(data);
           setCount({
             ...data,
           });

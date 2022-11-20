@@ -5,7 +5,6 @@ import { useAuth } from "../../context/AuthContext";
 
 const MobileDropDown = ({ user }) => {
   const { logout } = useAuth();
-  console.log(user);
   return (
     <>
       <li className="lg:h-0">

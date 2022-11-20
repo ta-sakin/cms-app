@@ -48,7 +48,7 @@ const Dashboard = () => {
           ></label>
           <ul className="menu p-2 cursor-pointer overflow-y-auto w-64 bg-gray-100 text-base-content pt-10 gap-y-1">
             <li>
-              <NavLink to="/dashboard" className="font-semibold h-10">
+              <NavLink to={"/dashboard"} className="font-semibold h-10">
                 Dashboard
               </NavLink>
             </li>

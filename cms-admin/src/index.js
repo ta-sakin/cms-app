@@ -6,21 +6,25 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import axios from "axios";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
   "accessToken"
 )}`;
 
+const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   </React.StrictMode>
 );
 

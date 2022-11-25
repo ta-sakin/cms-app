@@ -1,16 +1,27 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { Link, NavLink, Outlet } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink, Outlet } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Loading from "../../components/shared/Loading";
 import useAdmin from "../../hooks/useAdmin";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { IoIosArrowForward } from "react-icons/io";
+import { MdSpaceDashboard } from "react-icons/md";
+import { FaUserCircle } from "react-icons/fa";
+import { TbReportAnalytics } from "react-icons/tb";
+import {
+  HiDocument,
+  HiDocumentDuplicate,
+  HiDocumentReport,
+  HiDocumentText,
+} from "react-icons/hi";
+
 const Dashboard = () => {
   const [expand, setExpand] = useState(false);
+
   const [user] = useAdmin();
   if (!user?.email) {
     return <Loading />;
   }
+
   return (
     <div>
       <Navbar className="lg:px-16 px-8 z-50" user={user} />
@@ -48,13 +59,21 @@ const Dashboard = () => {
           ></label>
           <ul className="menu p-2 cursor-pointer overflow-y-auto w-64 bg-gray-100 text-base-content pt-10 gap-y-1">
             <li>
-              <NavLink to={"/dashboard"} className="font-semibold h-10">
-                Dashboard
+              <NavLink
+                onClick={() => setExpand(false)}
+                to={"/dashboard"}
+                className="font-semibold h-10"
+              >
+                <MdSpaceDashboard /> Dashboard
               </NavLink>
             </li>
             <li>
-              <NavLink to="/muser" className="font-semibold h-10">
-                Manage User
+              <NavLink
+                onClick={() => setExpand(false)}
+                to="/muser"
+                className="font-semibold h-10"
+              >
+                <FaUserCircle /> Manage User
               </NavLink>
             </li>
             <ul className={`${!expand && ""}`}>
@@ -62,15 +81,18 @@ const Dashboard = () => {
                 <NavLink
                   to="mcomplains"
                   onClick={() => setExpand(!expand)}
-                  className="font-semibold flex justify-between items-center h-10 "
+                  className="font-semibold  h-10 "
                 >
-                  Manage Complains{" "}
-                  <IoIosArrowForward
-                    className={`duration-200 ${
-                      expand &&
-                      "transition-transform mb-1 origin-left rotate-90"
-                    }`}
-                  />
+                  <HiDocumentDuplicate className="text-xl" />
+                  <p className="w-full flex justify-between items-center">
+                    Manage Complains
+                    <IoIosArrowForward
+                      className={`duration-200 ${
+                        expand &&
+                        "transition-transform mb-1 origin-left rotate-90"
+                      }`}
+                    />
+                  </p>
                 </NavLink>
               </li>
               {expand && (
@@ -95,13 +117,12 @@ const Dashboard = () => {
               )}
             </ul>
             <li>
-              <NavLink to="/mcomplain" className="font-semibold h-10">
-                Manage Complaints
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/reports" className="font-semibold h-10">
-                Reports
+              <NavLink
+                onClick={() => setExpand(false)}
+                to="/reports"
+                className="font-semibold h-10"
+              >
+                <TbReportAnalytics className="text-xl" /> Reports
               </NavLink>
             </li>
             {/* <li>

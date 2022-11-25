@@ -9,6 +9,7 @@ import { useAsyncError } from "react-router-dom";
 import { toast } from "react-toastify";
 import Comment from "./Comment";
 import Votes from "./Votes";
+import moment from "moment";
 
 const Complain = ({ complain, userId }) => {
   const [name, setName] = useState("");
@@ -76,7 +77,7 @@ const Complain = ({ complain, userId }) => {
                 Category:
                 {complain.category}
               </span>{" "}
-              | <span>Date: {complain.submission_date.split("T")[0]}</span>
+              | <span>Date: {moment(complain.submission_date).fromNow()}</span>
             </p>
           </div>
         </div>

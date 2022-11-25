@@ -1,4 +1,4 @@
-import axios from "../utils/baseUrl";
+import axios from "axios";
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 // import { useAuthState } from "react-firebase-hooks/auth";

@@ -5,7 +5,7 @@ import Error from "../components/shared/Error";
 import "react-phone-number-input/style.css";
 import "./phoneInputStyle.css";
 import { useAuth } from "../context/AuthContext";
-import axios from "../utils/baseUrl";
+import axios from "axios";
 import ButtonSpin from "../components/shared/ButtonSpin";
 const defaulValues = {
   email: "",
@@ -13,7 +13,7 @@ const defaulValues = {
 };
 
 const Login = () => {
-  const { login } = useAuth();
+  const { login, resetPassword, setLoadingAuth } = useAuth();
   const [loading, setLoading] = useState(false);
   const [userInput, setUserInput] = useState(defaulValues);
   const [error, setError] = useState("");
@@ -34,15 +34,30 @@ const Login = () => {
     setUserInput(defaulValues);
   };
 
+  const passwordReset = async () => {
+    try {
+      if (!userInput?.email) {
+        return setError("Please enter an email");
+      }
+      await resetPassword(userInput?.email);
+      toast.success("Password reset email sent, check inbox/spam.", {
+        theme: "colored",
+      });
+      setError("");
+    } catch (error) {
+      setError(error.code);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     if (email === "" || password === "") {
       setError("Empty field!");
       return;
-    } else if (email.includes("@councillor")) {
+    } else if (email.includes("councillor@")) {
       createUser("councillor");
-    } else if (email.includes("@mayor")) {
+    } else if (email.includes("mayor@")) {
       createUser("mayor");
     } else {
       setError("Your email is not authorized");
@@ -52,7 +67,7 @@ const Login = () => {
 
     async function createUser(role) {
       try {
-        const { data } = await axios.get(`/auth/token?email=${email}`);
+        const { data } = await axios.get(`admin/auth/token?email=${email}`);
         const info = await login(email, password);
         if (info) {
           if (data.token) {
@@ -67,6 +82,8 @@ const Login = () => {
         }
       } catch (error) {
         setLoading(false);
+        setLoadingAuth(false);
+
         if (
           error.code?.includes("argument") ||
           error.code?.includes("internal")
@@ -98,6 +115,7 @@ const Login = () => {
                   name="email"
                   type="email"
                   value={email}
+                  autoComplete="email"
                   className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
                   placeholder="Enter email address"
                 />
@@ -115,7 +133,14 @@ const Login = () => {
                   placeholder="Enter your password"
                 />
               </label>
-
+              <span>
+                <p
+                  className="font-bold text-sm link link-hover hover:text-indigo-500 w-fit cursor-pointer"
+                  onClick={passwordReset}
+                >
+                  Forgot password?
+                </p>
+              </span>
               {!loading ? (
                 <button
                   type="submit"

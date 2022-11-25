@@ -6,7 +6,6 @@ import Loading from "../shared/Loading";
 const PublicRoute = ({ children }) => {
   const { currentUser: user, loading } = useAuth();
   let location = useLocation();
-
   if (loading) {
     return <Loading />;
   }

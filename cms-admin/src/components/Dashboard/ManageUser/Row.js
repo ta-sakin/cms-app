@@ -1,9 +1,11 @@
-import axios from "axios";
 import React from "react";
+import axios from "axios";
 import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+
 const Row = ({ user, i, refetch, setDeleteUser }) => {
   const navigate = useNavigate();
+
   const handleStatus = async () => {
     try {
       const { data } = await axios.patch(`/admin/userstatus/${user._id}`, {

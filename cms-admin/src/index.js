@@ -8,12 +8,10 @@ import { AuthProvider } from "./context/AuthContext";
 import axios from "axios";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-axios.defaults.baseURL = "http://localhost:5000/api";
-axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem(
-  "accessToken"
-)}`;
-
 const queryClient = new QueryClient();
+
+// console.log("access token index", localStorage.getItem("accessToken"));
+axios.defaults.baseURL = "http://localhost:5000/api";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

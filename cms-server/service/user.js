@@ -36,10 +36,21 @@ const getCitizensByWard = async (ward) => {
   return await citizensCollection.find({ ward }).toArray();
 };
 
+const updateUserStatus = async (id, status) => {
+  return await citizensCollection.updateOne(
+    { _id: ObjectId(id) },
+    { $set: { status } }
+  );
+};
+
+const deleteUserById = async (id) => {
+  return await citizensCollection.deleteOne({ _id: ObjectId(id) });
+};
 module.exports = {
   findUserByProperty,
   createNewUser,
   patchUser,
   getUsersCount,
   getCitizensByWard,
+  updateUserStatus,deleteUserById
 };

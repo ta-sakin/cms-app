@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
-// import auth from "../utils/firebase.init";
-// import { useAuth } from "../context/AuthContext";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Error from "../components/shared/Error";
-import axios from "../utils/baseUrl";
+import axios from "axios";
 import wardsList from "../wardsList";
 import "react-phone-number-input/style.css";
 import "./phoneInputStyle.css";
@@ -19,7 +17,7 @@ const defaulValues = {
 };
 
 const Register = () => {
-  const { currentUser: user, signup } = useAuth();
+  const { currentUser: user, signup, setLoadingAuth } = useAuth();
   const [loading, setLoading] = useState(false);
   const [userInput, setUserInput] = useState(defaulValues);
   const [error, setError] = useState("");
@@ -51,9 +49,9 @@ const Register = () => {
     ) {
       setError("Empty field!");
       return;
-    } else if (email.includes("@councillor")) {
+    } else if (email.includes("councillor@")) {
       createUser("councillor");
-    } else if (email.includes("@mayor")) {
+    } else if (email.includes("mayor@")) {
       createUser("mayor");
     } else {
       setError("Your email is not authorized");
@@ -63,26 +61,30 @@ const Register = () => {
 
     async function createUser(role) {
       try {
-        await signup(email, password, name, phone);
-        const { data } = await axios.post("/auth/create", {
+        const { data } = await axios.post("admin/auth/create", {
           name,
           email,
           phone,
           ward,
           role,
         });
-
         if (data.token) {
           localStorage.setItem("accessToken", data.token);
-          toast.success(`Welcome ${user.displayName}!`, {
+          await signup(email, password, name, phone);
+          toast.success(`Welcome ${name}!`, {
             theme: "colored",
           });
-          navigate("/dashboard");
           reset();
           setLoading(false);
+          navigate("/dashboard");
         }
       } catch (error) {
+        console.log(error);
         setLoading(false);
+        setLoadingAuth(false);
+        if (error.code?.includes("auth")) {
+          localStorage.removeItem("accessToken");
+        }
         if (
           error.code?.includes("argument") ||
           error.code?.includes("internal")
@@ -128,6 +130,7 @@ const Register = () => {
                   name="email"
                   type="email"
                   value={email}
+                  autoComplete="email"
                   className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
                   placeholder="Enter email address"
                 />
@@ -165,9 +168,7 @@ const Register = () => {
                   name="ward"
                   className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
                 >
-                  <option value="" selected disabled hidden>
-                    Choose here
-                  </option>
+                  <option defaultValue="">Choose here</option>
                   {Object.keys(wardsList)?.map((key) => (
                     <option key={key} value={wardsList[key]}>
                       {wardsList[key]}

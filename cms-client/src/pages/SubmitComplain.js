@@ -177,26 +177,26 @@ const SubmitComplain = () => {
             initialFiles={imgs}
             useChipsForPreview={true}
           />
-          <div class="flex border-2 justify-between bg-gray-100 hover:shadow rounded-lg  py-3">
-            <div class="flex items-center mx-2">
+          <div className="flex border-2 justify-between bg-gray-100 hover:shadow rounded-lg  py-3">
+            <div className="flex items-center mx-2">
               <input
                 id="inline-checkbox"
                 type="checkbox"
                 name="publicSubmit"
                 checked={publicSubmit}
-                class="w-4 h-4 bg-gray-100 rounded border-gray-300  dark:bg-gray-700 dark:border-gray-600"
+                className="w-4 h-4 bg-gray-100 rounded border-gray-300  dark:bg-gray-700 dark:border-gray-600"
                 onChange={handleCheckbox}
               />
               <label
                 htmlFor="inline-checkbox"
-                class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-800"
+                className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-800"
               >
                 Complain as Public
               </label>
             </div>
 
             <div
-              class={`flex items-center mx-2 ${
+              className={`flex items-center mx-2 ${
                 publicSubmit ? "block" : "hidden"
               }`}
             >
@@ -205,13 +205,13 @@ const SubmitComplain = () => {
                 type="checkbox"
                 name="anonymous"
                 checked={anonymous}
-                class="w-4 h-4 bg-gray-100 rounded border-gray-300  dark:bg-gray-700 dark:border-gray-600"
+                className="w-4 h-4 bg-gray-100 rounded border-gray-300  dark:bg-gray-700 dark:border-gray-600"
                 onChange={handleCheckbox}
               />
               <label
                 title="Your name will remain hidden"
                 htmlFor="inline-2-checkbox"
-                class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-800"
+                className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-800"
               >
                 Remain Anonymous
               </label>

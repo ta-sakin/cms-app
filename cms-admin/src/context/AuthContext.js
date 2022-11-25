@@ -15,6 +15,7 @@ import Loading from "../components/shared/Loading";
 import jwt_decode from "jwt-decode";
 import auth from "../utils/firebase.init";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AuthContext = React.createContext();
 
@@ -23,14 +24,19 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoadingAuth] = useState(true);
   const [currentUser, setCurrentUser] = useState();
   const provider = new GoogleAuthProvider();
   const navigate = useNavigate();
+
+  axios.defaults.headers.common[
+    "Authorization"
+  ] = `Bearer ${localStorage.getItem("accessToken")}`;
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
-      setLoading(false);
+      setLoadingAuth(false);
     });
     return unsubscribe;
   }, []);
@@ -49,6 +55,7 @@ export function AuthProvider({ children }) {
     setCurrentUser({
       ...user,
     });
+    return user;
   }
 
   // login function
@@ -88,6 +95,8 @@ export function AuthProvider({ children }) {
     logout,
     login,
     resetPassword,
+    axios,
+    setLoadingAuth,
     // token,
   };
 

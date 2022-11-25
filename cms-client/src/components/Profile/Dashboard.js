@@ -28,6 +28,7 @@ const Dashboard = ({ userId }) => {
   if (loading) {
     return <Loading />;
   }
+
   return (
     <div className="my-10 max-w-3xl mx-auto">
       <div className="grid grid-cols-2 sm:grid-cols-4 place-items-center gap-8">

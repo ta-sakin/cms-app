@@ -1,9 +1,9 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
 import DeleteUser from "../../components/Dashboard/ManageUser/DeleteUser";
 import Row from "../../components/Dashboard/ManageUser/Row";
 import Spin from "../../components/shared/Spin";
+import axios from "axios";
 
 const ManageUser = () => {
   const [loading, setLoading] = useState(true);
@@ -22,6 +22,7 @@ const ManageUser = () => {
       // <ServerError error={error}/>
     }
   });
+  
   if (isLoading) {
     return <Spin />;
   }

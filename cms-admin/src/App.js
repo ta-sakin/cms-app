@@ -54,6 +54,7 @@ function App() {
         hideProgressBar={true}
         closeOnClick={true}
         transition={Zoom}
+        theme="colored"
       />
     </div>
   );

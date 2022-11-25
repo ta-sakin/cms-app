@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Category from "../../components/Dashboard/HomeStats/Category";
 import ComplainType from "../../components/Dashboard/HomeStats/ComplainType";
@@ -6,6 +5,7 @@ import Status from "../../components/Dashboard/HomeStats/Status";
 import Summary from "../../components/Dashboard/HomeStats/Summary";
 import ServerError from "../../components/shared/ServerError";
 import Spin from "../../components/shared/Spin";
+import axios from "axios";
 
 const Home = () => {
   const [count, setCount] = useState({

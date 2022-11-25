@@ -80,7 +80,21 @@ const createNewComplain = async ({
 const findUserByComplain = async (uid) => {
   return await citizensCollection.findOne({ _id: ObjectId(uid) });
 };
-
+const findComplainsByWard = async (ward, filter = {}) => {
+  if (filter?.complainType === "public") {
+    let complains = [];
+    const public = await complainsCollection
+      .find({ $and: [{ ward }, filter] })
+      .toArray();
+    filter = { ...filter, complainType: "public-anonymous" };
+    const publicAno = await complainsCollection
+      .find({ $and: [{ ward }, filter] })
+      .toArray();
+    complains = public.concat(publicAno);
+    return complains;
+  }
+  return await complainsCollection.find({ $and: [{ ward }, filter] }).toArray();
+};
 const findComplainsByUserId = (id) => {
   return complainsCollection
     .find({ citizen_id: ObjectId(id) })
@@ -110,9 +124,10 @@ const getComplainsCount = async (ward) => {
 
 const countComplainsByStatus = async (key, value) => {
   const searchBy = { [key]: value };
-  if (!ward) {
+  if (!key) {
     searchBy = {};
   }
+
   const label = "status";
   const countByStatus = await turnObjPairingCount(label, searchBy);
   return countByStatus;
@@ -178,4 +193,5 @@ module.exports = {
   countComplainsByStatus,
   countComplainByCategory,
   countComplainByType,
+  findComplainsByWard,
 };

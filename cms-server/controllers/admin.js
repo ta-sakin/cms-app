@@ -6,12 +6,18 @@ const {
   countComplainByType,
   findComplainsByUserId,
   findComplainsByWard,
+  findComplainByProperty,
+  findUserByComplain,
 } = require("../service/complainsFunc");
 const {
   getCommentsByComplainId,
   getVotesByComplainId,
   findCommentsPerComplain,
 } = require("../service/reactionsDbOp");
+const {
+  postStatusDetails,
+  findStatusDetails,
+} = require("../service/statusDetails");
 const {
   getUsers,
   getUsersCount,
@@ -102,8 +108,10 @@ const userDetails = async (req, res, next) => {
 
 const getComplainsByUserId = async (req, res, next) => {
   const id = req.params.id;
+  const { ward } = req.user;
   try {
-    const data = await findComplainsByUserId(id);
+    let complains = await findComplainsByUserId(id);
+    const data = complains.filter((complain) => complain.ward === ward);
     res.status(200).json(data);
   } catch (error) {
     console.log(error);
@@ -146,6 +154,39 @@ const loadComplains = async (req, res, next) => {
   }
 };
 
+const complainDetails = async (req, res, next) => {
+  try {
+    const { cid } = req.params;
+    const complain = await findComplainByProperty("_id", cid);
+    const user = await findUserByComplain(complain.citizen_id);
+    res.status(200).json([complain, user]);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const assignComplain = async (req, res, next) => {
+  try {
+    const data = req.body;
+    console.log(data);
+    const response = await postStatusDetails(data);
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
+};
+const getStatusDetails = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const response = await findStatusDetails(id);
+    if (!response) {
+      res.status(200).json({});
+    }
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports = {
   getCurrentUser,
   getDataCount,
@@ -157,4 +198,7 @@ module.exports = {
   getComments,
   getTotalReact,
   loadComplains,
+  complainDetails,
+  assignComplain,
+  getStatusDetails,
 };

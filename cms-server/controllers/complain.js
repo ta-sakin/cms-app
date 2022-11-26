@@ -11,10 +11,12 @@ const {
 const natural = require("natural");
 const { findCommentsPerComplain } = require("../service/reactionsDbOp");
 const { complainsCollection } = require("../model/Users");
+const { findUserByProperty } = require("../service/user");
 
 const submitComplain = async (req, res, next) => {
   let { address, ward, description, imgUrls, type, phone } = req.body;
-  const user = req.user;
+  const user = await findUserByProperty("phone", phone);
+
   if (!imgUrls) imgUrls = [];
   if (!address || !ward || !description) {
     return res.status(400).json({ message: "Invalid information" });

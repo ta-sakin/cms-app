@@ -16,7 +16,6 @@ const useToken = () => {
         if (user?.email) {
           const { data } = await axios.get(`/auth/token?email=${user.email}`);
           if (data) {
-            console.log("usetoken", data);
             localStorage.setItem("accessToken", data.token);
             setToken(data.token);
           }

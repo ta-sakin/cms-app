@@ -11,5 +11,8 @@ router.get("/complains/:id", adminControllers.getComplainsByUserId);
 router.get("/comment/:id", adminControllers.getComments);
 router.get("/react/total", adminControllers.getTotalReact);
 router.get("/mcomplains", adminControllers.loadComplains);
+router.get("/mcomplains/:cid", adminControllers.complainDetails);
+router.post("/assign", adminControllers.assignComplain);
+router.get("/assign/:id", adminControllers.getStatusDetails);
 
 module.exports = router;

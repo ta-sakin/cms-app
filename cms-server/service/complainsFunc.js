@@ -4,7 +4,7 @@ const { citizensCollection } = require("../model/Users");
 
 const findComplainByProperty = async (key, value) => {
   if (key === "_id") {
-    return await citizensCollection.findOne({ [key]: ObjectId(value) });
+    return await complainsCollection.findOne({ [key]: ObjectId(value) });
   }
 
   return await citizensCollection.findOne({ [key]: value });

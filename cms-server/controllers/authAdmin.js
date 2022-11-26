@@ -23,7 +23,6 @@ const createAdmin = async (req, res, next) => {
     const token = jwt.sign(payLoad, process.env.JWT_SECRET_KEY_ADMIN, {
       expiresIn: "1d",
     });
-    console.log("create admin", token);
 
     res.status(200).json({ token });
   } catch (error) {

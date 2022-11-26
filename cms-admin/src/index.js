@@ -8,9 +8,18 @@ import { AuthProvider } from "./context/AuthContext";
 import axios from "axios";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-const queryClient = new QueryClient();
-
-// console.log("access token index", localStorage.getItem("accessToken"));
+const twentyFourHoursInMs = 1000 * 60 * 60 * 24;
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnmount: false,
+      refetchOnReconnect: false,
+      retry: false,
+      staleTime: twentyFourHoursInMs,
+    },
+  },
+});
 axios.defaults.baseURL = "http://localhost:5000/api";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

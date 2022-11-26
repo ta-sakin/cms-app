@@ -49,6 +49,7 @@ const Votes = ({ complain }) => {
             },
           }
         );
+
         setVotes(data?.citizen_id && data);
       } catch (error) {
         toast.error("Something went wrong", { theme: "colored" });
@@ -93,6 +94,7 @@ const Votes = ({ complain }) => {
           },
         }
       );
+      response && console.log("response", response);
     } catch (error) {
       console.error(error);
     }

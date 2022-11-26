@@ -2,14 +2,14 @@ import axios from "axios";
 import React from "react";
 import { FaUserCircle } from "react-icons/fa";
 
-const UserProfile = ({ details, refetch }) => {
+const UserProfile = ({ details, setRefetch }) => {
   const handleStatus = async () => {
     try {
       const { data } = await axios.patch(`/admin/userstatus/${details._id}`, {
         status: details?.status === "active" ? "blocked" : "active",
       });
       if (data.acknowledged) {
-        refetch();
+        setRefetch((prevState) => !prevState);
       }
     } catch (error) {
       console.log(error);
@@ -41,7 +41,7 @@ const UserProfile = ({ details, refetch }) => {
         <div className="flex flex-col items-center">
           <FaUserCircle className="w-48 h-48 border-2 rounded-md border-gray-500 p-4 text-gray-500" />
         </div>
-        <div className="grow md:max-w-lg w-full px-6 mt-4 md:mt-0 md:px-0">
+        <div className="grow sm:max-w-sm md:max-w-lg w-full px-6 mt-4 md:mt-0 md:px-0">
           <form className="">
             <div className="md:flex md:items-center mb-4">
               <div className="md:w-1/3">

@@ -11,6 +11,7 @@ import PageNotFound from "./components/shared/PageNotFound";
 import ManageUser from "./Pages/Dashboard/ManageUser";
 import ManageComplains from "./Pages/Dashboard/ManageComplains";
 import UserDetails from "./Pages/Dashboard/UserDetails";
+import ComplainDetails from "./Pages/Dashboard/ComplainDetails";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
           <Route path="/muser" element={<ManageUser />}></Route>
           <Route path="/muser/:id" element={<UserDetails />}></Route>
           <Route path="/mcomplains" element={<ManageComplains />}></Route>
+          <Route path="/mcomplains/:id" element={<ComplainDetails />}></Route>
         </Route>
         <Route path="*" element={<PageNotFound />}></Route>
       </Routes>

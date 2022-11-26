@@ -5,43 +5,46 @@ import Spin from "../../components/shared/Spin";
 import axios from "axios";
 import UserProfile from "../../components/Dashboard/ManageUser/UserProfile";
 import Complains from "../../components/Dashboard/ManageUser/Complains";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 
 const UserDetails = () => {
   const { id } = useParams();
-  // const [details, setDetails] = useState({});
-  // const [loading, setLoading] = useState(true);
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       const { data } = await axios.get(`admin/userdetails/${id}`);
-  //       setDetails(data);
-  //       setLoading(false);
-  //     } catch (error) {
-  //       setLoading(false);
-  //       console.log(error);
-  //     }
-  //   })();
-  // }, [id]);
-  const {
-    data: details,
-    isLoading,
-    refetch,
-  } = useQuery("details", async () => {
-    try {
-      const { data } = await axios.get(`admin/userdetails/${id}`);
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
-  });
-  if (isLoading) {
+  const [refetch, setRefetch] = useState(false);
+  const [details, setDetails] = useState({});
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await axios.get(`admin/userdetails/${id}`);
+        setDetails(data);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
+    })();
+  }, [id, refetch]);
+
+  // const {
+  //   data: details,
+  //   isLoading,
+  //   refetch,
+  //   error,
+  // } = useQuery("details", async () => {
+  //   const { data } = await axios.get(`admin/userdetails/${id}`);
+  //   return data;
+  // });
+
+  if (loading) {
     return <Spin />;
   }
+  // if (error) {
+  //   console.log(error);
+  // }
   return (
     <div>
-      <UserProfile details={details} refetch={refetch} />
-      <Complains details={details} />
+      {details && <UserProfile details={details} setRefetch={setRefetch} />}
+      {details && <Complains details={details} />}
     </div>
   );
 };

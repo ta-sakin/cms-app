@@ -34,7 +34,6 @@ const complainService = async ({
         })
       );
     }
-    // const user = await findComplainByProperty("phone", phone);
     if (attachment) {
       return await createNewComplain({
         citizen_id,

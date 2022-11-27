@@ -1,4 +1,5 @@
 const { ObjectId } = require("mongodb");
+const { datesCollection } = require("../model/Admin");
 const { complainsCollection, votesCollection } = require("../model/Users");
 const { citizensCollection } = require("../model/Users");
 
@@ -73,6 +74,11 @@ const createNewComplain = async ({
       { $set: { total_complaints: countOfComplains } }
     );
 
+    await datesCollection.insertOne({
+      complain_id: result.insertedId.toString(),
+      submission: new Date(),
+    });
+
     return result;
   }
 };
@@ -80,6 +86,7 @@ const createNewComplain = async ({
 const findUserByComplain = async (uid) => {
   return await citizensCollection.findOne({ _id: ObjectId(uid) });
 };
+
 const findComplainsByWard = async (ward, filter = {}) => {
   if (filter?.complainType === "public") {
     let complains = [];
@@ -95,6 +102,7 @@ const findComplainsByWard = async (ward, filter = {}) => {
   }
   return await complainsCollection.find({ $and: [{ ward }, filter] }).toArray();
 };
+
 const findComplainsByUserId = (id) => {
   return complainsCollection
     .find({ citizen_id: ObjectId(id) })
@@ -180,6 +188,13 @@ const turnObjPairingCount = async (label, search) => {
   return obj;
 };
 
+const updateComplainStatus = async (complain_id, status) => {
+  return await complainsCollection.updateOne(
+    { _id: ObjectId(complain_id) },
+    { $set: { status } }
+  );
+};
+
 module.exports = {
   createNewComplain,
   findComplainByProperty,
@@ -194,4 +209,5 @@ module.exports = {
   countComplainByCategory,
   countComplainByType,
   findComplainsByWard,
+  updateComplainStatus,
 };

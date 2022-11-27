@@ -1,4 +1,8 @@
+const { ObjectId } = require("mongodb");
+const { datesCollection } = require("../model/Admin");
+const { complainsCollection } = require("../model/Users");
 const { findAdminByProperty } = require("../service/authAdmin");
+const { updateStatusDate } = require("../service/statusDates");
 const {
   getComplainsCount,
   countComplainsByStatus,
@@ -8,6 +12,7 @@ const {
   findComplainsByWard,
   findComplainByProperty,
   findUserByComplain,
+  updateComplainStatus,
 } = require("../service/complainsFunc");
 const {
   getCommentsByComplainId,
@@ -17,6 +22,7 @@ const {
 const {
   postStatusDetails,
   findStatusDetails,
+  putAssignedComplain,
 } = require("../service/statusDetails");
 const {
   getUsers,
@@ -168,8 +174,15 @@ const complainDetails = async (req, res, next) => {
 const assignComplain = async (req, res, next) => {
   try {
     const data = req.body;
-    console.log(data);
     const response = await postStatusDetails(data);
+    const result = await updateStatusDate(
+      data.complain_id,
+      "in verification start"
+    );
+    const updateResponse = await updateComplainStatus(
+      data.complain_id,
+      "in verification"
+    );
     res.status(200).json(response);
   } catch (error) {
     next(error);
@@ -187,6 +200,19 @@ const getStatusDetails = async (req, res, next) => {
     next(error);
   }
 };
+const updateAssignedComplain = async (req, res, next) => {
+  try {
+    const data = req.body;
+    const response = await putAssignedComplain(data);
+    if (!response) {
+      res.status(200).json({});
+    }
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getCurrentUser,
   getDataCount,
@@ -201,4 +227,5 @@ module.exports = {
   complainDetails,
   assignComplain,
   getStatusDetails,
+  updateAssignedComplain,
 };

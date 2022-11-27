@@ -8,4 +8,13 @@ const postStatusDetails = async (data) => {
 const findStatusDetails = async (id) => {
   return await statusDetailsCollection.findOne({ complain_id: id });
 };
-module.exports = { postStatusDetails, findStatusDetails };
+
+const putAssignedComplain = async (data) => {
+  const { _id, ...rest } = data;
+  return await statusDetailsCollection.updateOne(
+    { _id: ObjectId(_id) },
+    { $set: rest }
+  );
+};
+
+module.exports = { postStatusDetails, findStatusDetails, putAssignedComplain };

@@ -14,5 +14,6 @@ router.get("/mcomplains", adminControllers.loadComplains);
 router.get("/mcomplains/:cid", adminControllers.complainDetails);
 router.post("/assign", adminControllers.assignComplain);
 router.get("/assign/:id", adminControllers.getStatusDetails);
+router.put("/assign", adminControllers.updateAssignedComplain);
 
 module.exports = router;

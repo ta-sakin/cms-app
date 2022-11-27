@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
+import InVerification from "../../components/Dashboard/ManageComplains/InVerification";
 import PendingApproval from "../../components/Dashboard/ManageComplains/PendingApproval";
 import Complain from "../../components/Dashboard/ManageUser/Complain";
 import Spin from "../../components/shared/Spin";
@@ -33,7 +34,12 @@ const ComplainDetails = () => {
       <div key={complain._id} className="sm:max-w-lg max-w-sm ">
         <Complain complain={complain[0]} details={complain[1]} manage={true} />
       </div>
-      <PendingApproval complain={complain[0]} />
+      {complain[0].status === "pending approval" && (
+        <PendingApproval complain={complain[0]} />
+      )}
+      {complain[0].status?.toLowerCase() === "in verification" && (
+        <InVerification />
+      )}
     </div>
   );
 };

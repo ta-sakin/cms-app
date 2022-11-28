@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
+import BackDrop from "../../components/Dashboard/Drawer/Backdrop";
+import SlideDrawer from "../../components/Dashboard/Drawer/SlideDrawer";
 import InVerification from "../../components/Dashboard/ManageComplains/InVerification";
 import PendingApproval from "../../components/Dashboard/ManageComplains/PendingApproval";
 import Complain from "../../components/Dashboard/ManageUser/Complain";
@@ -13,6 +15,8 @@ const ComplainDetails = () => {
   const [complain, setComplain] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expand, setExpand] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   useEffect(() => {
     (async () => {
       try {
@@ -29,17 +33,41 @@ const ComplainDetails = () => {
     return <Spin />;
   }
 
+  const handleOpenDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
+  const handleBackdropClick = () => {
+    setDrawerOpen(false);
+  };
+
   return (
-    <div className="flex gap-x-10 md:justify-center md:items-start items-center md:flex-row flex-col my-10">
-      <div key={complain._id} className="sm:max-w-lg max-w-sm ">
-        <Complain complain={complain[0]} details={complain[1]} manage={true} />
+    <div className="my-10">
+      <div className="flex justify-start mb-4">
+        <SlideDrawer show={drawerOpen} />
+        {drawerOpen && <BackDrop closeDrawer={handleBackdropClick} />}
+        <button
+          onClick={handleOpenDrawer}
+          className="border-[1px] border-black text-black py-1 px-2 rounded-lg font-semibold hover:bg-black hover:text-white"
+        >
+          Assigned History
+        </button>
       </div>
-      {complain[0].status === "pending approval" && (
-        <PendingApproval complain={complain[0]} />
-      )}
-      {complain[0].status?.toLowerCase() === "in verification" && (
-        <InVerification />
-      )}
+      <div className="flex gap-x-10 md:justify-center md:items-start items-center md:flex-row flex-col">
+        <div key={complain._id} className="sm:max-w-lg max-w-sm ">
+          <Complain
+            complain={complain[0]}
+            details={complain[1]}
+            manage={true}
+          />
+        </div>
+        {complain[0].status === "pending approval" && (
+          <PendingApproval complain={complain[0]} />
+        )}
+        {complain[0].status?.toLowerCase() === "in verification" && (
+          <InVerification />
+        )}
+      </div>
     </div>
   );
 };

@@ -6,9 +6,20 @@ import { useParams } from "react-router-dom";
 import BackDrop from "../../components/Dashboard/Drawer/Backdrop";
 import SlideDrawer from "../../components/Dashboard/Drawer/SlideDrawer";
 import InVerification from "../../components/Dashboard/ManageComplains/InVerification";
+// import InVerification from "../../components/Dashboard/ManageComplains/InVerification";
 import PendingApproval from "../../components/Dashboard/ManageComplains/PendingApproval";
 import Complain from "../../components/Dashboard/ManageUser/Complain";
 import Spin from "../../components/shared/Spin";
+
+const statusList = [
+  "pending approval",
+  "in verification",
+  "in hold",
+  "in hold",
+  "in progress",
+  "rejected",
+  "closed",
+];
 
 const ComplainDetails = () => {
   const { id } = useParams();
@@ -44,17 +55,23 @@ const ComplainDetails = () => {
   return (
     <div className="my-10">
       <div className="flex justify-start mb-4">
-        <SlideDrawer show={drawerOpen} />
+        <SlideDrawer
+          show={drawerOpen}
+          setDrawerOpen={setDrawerOpen}
+          complain={complain[0]}
+        />
         {drawerOpen && <BackDrop closeDrawer={handleBackdropClick} />}
-        <button
-          onClick={handleOpenDrawer}
-          className="border-[1px] border-black text-black py-1 px-2 rounded-lg font-semibold hover:bg-black hover:text-white"
-        >
-          Assigned History
-        </button>
+        {complain[0].status !== "pending approval" && (
+          <button
+            onClick={handleOpenDrawer}
+            className="border-[1px] border-black text-black py-1 px-2 rounded-lg font-semibold hover:bg-black hover:text-white"
+          >
+            Assigned History
+          </button>
+        )}
       </div>
       <div className="flex gap-x-10 md:justify-center md:items-start items-center md:flex-row flex-col">
-        <div key={complain._id} className="sm:max-w-lg max-w-sm ">
+        <div key={complain[0]._id} className="sm:max-w-lg max-w-sm ">
           <Complain
             complain={complain[0]}
             details={complain[1]}
@@ -65,7 +82,7 @@ const ComplainDetails = () => {
           <PendingApproval complain={complain[0]} />
         )}
         {complain[0].status?.toLowerCase() === "in verification" && (
-          <InVerification />
+          <InVerification complain={complain[0]} />
         )}
       </div>
     </div>

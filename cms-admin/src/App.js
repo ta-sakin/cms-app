@@ -2,7 +2,6 @@ import { Route, Routes } from "react-router-dom";
 import Register from "./Pages/Register";
 import { ToastContainer, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Login from "./Pages/Login";
 import PublicRoute from "./components/Auth/PublicRoute";
 import PrivateRoute from "./components/Auth/PrivateRoute";
 import Home from "./Pages/Dashboard/Home";
@@ -12,6 +11,7 @@ import ManageUser from "./Pages/Dashboard/ManageUser";
 import ManageComplains from "./Pages/Dashboard/ManageComplains";
 import UserDetails from "./Pages/Dashboard/UserDetails";
 import ComplainDetails from "./Pages/Dashboard/ComplainDetails";
+import Login from "./Pages/login";
 
 function App() {
   return (
@@ -63,4 +63,3 @@ function App() {
 }
 
 export default App;
-

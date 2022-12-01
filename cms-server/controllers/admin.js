@@ -175,13 +175,10 @@ const assignComplain = async (req, res, next) => {
   try {
     const data = req.body;
     const response = await postStatusDetails(data);
-    const result = await updateStatusDate(
-      data.complain_id,
-      "in verification start"
-    );
+    const result = await updateStatusDate(data.complain_id, data.date_status);
     const updateResponse = await updateComplainStatus(
       data.complain_id,
-      "in verification"
+      data.complain_status
     );
     res.status(200).json(response);
   } catch (error) {

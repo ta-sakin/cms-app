@@ -11,6 +11,7 @@
   box-shadow: 1px 0px 7px rgba(0, 0, 0, 0.5);
   transform: translateX(100%);
   /* transform: translateX(0%); */
+  overflow-y: scroll;
   transition: transform 0.3s ease-out;
 }
 .side-drawer.open {

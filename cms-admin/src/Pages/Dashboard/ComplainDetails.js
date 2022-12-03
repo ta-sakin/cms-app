@@ -8,6 +8,7 @@ import SlideDrawer from "../../components/Dashboard/Drawer/SlideDrawer";
 import InVerification from "../../components/Dashboard/ManageComplains/InVerification";
 // import InVerification from "../../components/Dashboard/ManageComplains/InVerification";
 import PendingApproval from "../../components/Dashboard/ManageComplains/PendingApproval";
+import VerificationCompleted from "../../components/Dashboard/ManageComplains/VerificationCompleted";
 import Complain from "../../components/Dashboard/ManageUser/Complain";
 import Spin from "../../components/shared/Spin";
 
@@ -27,6 +28,7 @@ const ComplainDetails = () => {
   const [loading, setLoading] = useState(true);
   const [expand, setExpand] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [refetchComplain, setRefetchComplain] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -38,7 +40,7 @@ const ComplainDetails = () => {
         setLoading(false);
       }
     })();
-  }, [id]);
+  }, [id, refetchComplain]);
 
   if (loading) {
     return <Spin />;
@@ -59,6 +61,7 @@ const ComplainDetails = () => {
           show={drawerOpen}
           setDrawerOpen={setDrawerOpen}
           complain={complain[0]}
+          setRefetchComplain={setRefetchComplain}
         />
         {drawerOpen && <BackDrop closeDrawer={handleBackdropClick} />}
         {complain[0].status !== "pending approval" && (
@@ -79,10 +82,16 @@ const ComplainDetails = () => {
           />
         </div>
         {complain[0].status === "pending approval" && (
-          <PendingApproval complain={complain[0]} />
+          <PendingApproval
+            complain={complain[0]}
+            
+          />
         )}
         {complain[0].status?.toLowerCase() === "in verification" && (
-          <InVerification complain={complain[0]} />
+          <InVerification
+            complain={complain[0]}
+            
+          />
         )}
       </div>
     </div>

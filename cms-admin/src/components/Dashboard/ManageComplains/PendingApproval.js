@@ -18,7 +18,7 @@ const defaultValue = {
   remarks: "",
 };
 
-const PendingApproval = ({ complain, drawer = false }) => {
+const PendingApproval = ({ complain, drawer = false, setRefetchComplain }) => {
   const [expand, setExpand] = useState(true);
   const [loading, setLoading] = useState(false);
   const [assign, setAssign] = useState(defaultValue);
@@ -31,7 +31,9 @@ const PendingApproval = ({ complain, drawer = false }) => {
     (async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(`/admin/assign/${complain._id}`);
+        const { data } = await axios.get(
+          `/admin/assign?cid=${complain._id}&status=verification`
+        );
         if (Object.keys(data).length < 1) {
           setAssign(defaultValue);
           setUpdated(true);
@@ -59,7 +61,7 @@ const PendingApproval = ({ complain, drawer = false }) => {
         const { data } = await axios.post("/admin/assign", {
           complain_id: complain._id,
           status_type: "verification",
-          date_status: "in verification start",
+          date_status_start: "in verification start",
           complain_status: "in verification",
           ...assign,
         });
@@ -84,6 +86,7 @@ const PendingApproval = ({ complain, drawer = false }) => {
           setRefetch(!refetch);
         }
       }
+      setRefetchComplain((prevState) => !prevState);
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -91,7 +94,11 @@ const PendingApproval = ({ complain, drawer = false }) => {
   };
 
   return (
-    <div className={`w-full max-w-sm ${drawer && "mx-auto"}`}>
+    <div
+      className={`w-full rounded-lg bg-gray-100 max-w-sm ${
+        drawer && "mx-auto"
+      }`}
+    >
       <div
         className="cursor-pointer bg-gray-500 rounded-lg px-4 hover:bg-gray-600 flex justify-between items-center h-fit"
         onClick={() => setExpand(!expand)}
@@ -104,9 +111,9 @@ const PendingApproval = ({ complain, drawer = false }) => {
         />
       </div>
       {/* {expand && ( */}
-      <div className="bg-gray-100 pb-8" hidden={!expand}>
+      <div className=" pb-8" hidden={!expand}>
         {assigned ? (
-          <p className="text-center font-bold py-4 text-purple-700">
+          <p className="text-center font-bold py-4">
             Assigned For Verification To:
           </p>
         ) : (

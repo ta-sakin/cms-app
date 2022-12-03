@@ -3,6 +3,7 @@ import "./SlideDrawer.css";
 import ReactDom from "react-dom";
 import { VscChromeClose } from "react-icons/vsc";
 import PendingApproval from "../ManageComplains/PendingApproval";
+import InVerification from "../ManageComplains/InVerification";
 
 const statusList = [
   "pending approval",
@@ -14,7 +15,7 @@ const statusList = [
   "closed",
 ];
 
-const SlideDrawer = ({ show, setDrawerOpen, complain }) => {
+const SlideDrawer = ({ show, setDrawerOpen, complain, setRefetchComplain }) => {
   let drawerClasses = show ? "side-drawer open" : "side-drawer";
 
   return ReactDom.createPortal(
@@ -28,8 +29,21 @@ const SlideDrawer = ({ show, setDrawerOpen, complain }) => {
         <VscChromeClose className="text-2xl m-2 text-gray-500" />
       </div>
       <div className="mt-10">
-        {complain.status !== "pending approval" && (
-          <PendingApproval complain={complain} drawer={true} />
+        {complain.status === "in verification" && (
+          <PendingApproval
+            complain={complain}
+            drawer={true}
+            setRefetchComplain={setRefetchComplain}
+          />
+        )}
+        {(complain.status.includes("hold") ||
+          complain.status.includes("progress") ||
+          complain.status.includes("rejected")) && (
+          <InVerification
+            complain={complain}
+            drawer={true}
+            setRefetchComplain={setRefetchComplain}
+          />
         )}
       </div>
     </div>,

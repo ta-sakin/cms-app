@@ -13,7 +13,8 @@ router.get("/react/total", adminControllers.getTotalReact);
 router.get("/mcomplains", adminControllers.loadComplains);
 router.get("/mcomplains/:cid", adminControllers.complainDetails);
 router.post("/assign", adminControllers.assignComplain);
-router.get("/assign/:id", adminControllers.getStatusDetails);
+router.get("/assign", adminControllers.getStatusDetails);
 router.put("/assign", adminControllers.updateAssignedComplain);
+router.get("/statusdate/:cid", adminControllers.getStatusDate);
 
 module.exports = router;

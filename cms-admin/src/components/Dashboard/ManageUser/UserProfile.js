@@ -2,14 +2,15 @@ import axios from "axios";
 import React from "react";
 import { FaUserCircle } from "react-icons/fa";
 
-const UserProfile = ({ details, setRefetch }) => {
+const UserProfile = ({ details, refetch }) => {
   const handleStatus = async () => {
     try {
       const { data } = await axios.patch(`/admin/userstatus/${details._id}`, {
         status: details?.status === "active" ? "blocked" : "active",
       });
       if (data.acknowledged) {
-        setRefetch((prevState) => !prevState);
+        // setRefetch((prevState) => !prevState);
+        refetch();
       }
     } catch (error) {
       console.log(error);

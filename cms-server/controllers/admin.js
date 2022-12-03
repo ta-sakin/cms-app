@@ -2,7 +2,10 @@ const { ObjectId } = require("mongodb");
 const { datesCollection } = require("../model/Admin");
 const { complainsCollection } = require("../model/Users");
 const { findAdminByProperty } = require("../service/authAdmin");
-const { updateStatusDate } = require("../service/statusDates");
+const {
+  updateStatusDate,
+  getStatusDateByCID,
+} = require("../service/statusDates");
 const {
   getComplainsCount,
   countComplainsByStatus,
@@ -175,7 +178,12 @@ const assignComplain = async (req, res, next) => {
   try {
     const data = req.body;
     const response = await postStatusDetails(data);
-    const result = await updateStatusDate(data.complain_id, data.date_status);
+
+    const result = await updateStatusDate(
+      data.complain_id,
+      data.date_status_start,
+      data.date_status_end
+    );
     const updateResponse = await updateComplainStatus(
       data.complain_id,
       data.complain_status
@@ -187,10 +195,11 @@ const assignComplain = async (req, res, next) => {
 };
 const getStatusDetails = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const response = await findStatusDetails(id);
+    const { cid, status } = req.query;
+    const response = await findStatusDetails(cid, status);
+
     if (!response) {
-      res.status(200).json({});
+      return res.status(200).json({});
     }
     res.status(200).json(response);
   } catch (error) {
@@ -205,6 +214,16 @@ const updateAssignedComplain = async (req, res, next) => {
       res.status(200).json({});
     }
     res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getStatusDate = async (req, res, next) => {
+  try {
+    const { cid } = req.params;
+    const data = await getStatusDateByCID(cid);
+    res.status(200).json(data);
   } catch (error) {
     next(error);
   }
@@ -225,4 +244,5 @@ module.exports = {
   assignComplain,
   getStatusDetails,
   updateAssignedComplain,
+  getStatusDate,
 };

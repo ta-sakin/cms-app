@@ -38,11 +38,11 @@ const Row = ({ user, i, refetch, setDeleteUser }) => {
           </button>
         </td>
       )}
-      <td>
+      {/* <td>
         <label htmlFor="my-modal-6" className="cursor-pointer">
           <MdDelete className="text-2xl" onClick={() => setDeleteUser(user)} />
         </label>
-      </td>
+      </td> */}
       <td>
         <button
           className="btn btn-link"

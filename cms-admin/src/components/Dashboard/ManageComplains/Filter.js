@@ -17,16 +17,16 @@ const FilterStatus = ({ handleChange }) => {
           label="complainType"
           onChange={handleChange}
           name="complainType"
-          defaultValue={"select"}
+          defaultValue={"public"}
           className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
         >
-          <option value="select" disabled hidden>
+          {/* <option value="select" disabled hidden>
             Filter By Complain Type
-          </option>
-          <option value="select">All Complains</option>
+          </option> */}
+          {/* <option value="select">All Complains</option> */}
           {complainType?.map((item, i) => (
             <option key={i} value={item}>
-              {item}
+              {item} Complains
             </option>
           ))}
         </select>

@@ -34,7 +34,7 @@ const Navbar = ({ className }) => {
     //         <li>
     //           <Link to="/">
     //             <span className="cursor-pointer text-lg font-semibold">
-    //               CMS App
+    //               CCC App
     //             </span>
     //           </Link>
     //           <hr />
@@ -63,7 +63,7 @@ const Navbar = ({ className }) => {
     //     </div>
     //     <Link to="/" className="sm:flex hidden">
     //       <span className="cursor-pointer normal-case text-xl font-semibold">
-    //         CMS App
+    //         CCC App
     //       </span>
     //     </Link>
     //   </div>
@@ -114,7 +114,7 @@ const Navbar = ({ className }) => {
           </ul>
         </div>
         <NavLink to="" className="btn btn-ghost normal-case text-xl">
-          CMS App
+          CCC App
         </NavLink>
       </div>
       <div className="navbar-center hidden lg:flex">

@@ -76,7 +76,13 @@ const Dashboard = () => {
                 <FaUserCircle /> Manage User
               </NavLink>
             </li>
-            <ul className={`${!expand && ""}`}>
+            <li>
+              <NavLink to="mcomplains" className="font-semibold  h-10 ">
+                <HiDocumentDuplicate className="text-xl" />
+                Manage Complains
+              </NavLink>
+            </li>
+            {/* <ul className={`${!expand && ""}`}>
               <li className="">
                 <NavLink
                   to="mcomplains"
@@ -115,7 +121,7 @@ const Dashboard = () => {
                   </li>
                 </ul>
               )}
-            </ul>
+            </ul> */}
             <li>
               <NavLink
                 onClick={() => setExpand(false)}

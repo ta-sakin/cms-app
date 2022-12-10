@@ -1,5 +1,6 @@
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import axios from "axios";
+import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import { toast } from "react-toastify";
@@ -8,7 +9,7 @@ import PDFTemplate from "./PDFTemplate";
 import VerificationCompleted from "./VerificationCompleted";
 import VerificationStatus from "./VerificationStatus";
 
-const statusList = ["in progress", "in hold", "rejected"];
+const statusList = ["in progress", "closed"];
 
 const defaultValue = {
   name: "",
@@ -18,7 +19,7 @@ const defaultValue = {
   remarks: "",
 };
 
-const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
+const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
   const [expand, setExpand] = useState(true);
   const [loading, setLoading] = useState(false);
   const [assign, setAssign] = useState(defaultValue);
@@ -26,7 +27,7 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
   const [assigned, setAssigned] = useState(false);
   const [updated, setUpdated] = useState(false);
   const [refetch, setRefetch] = useState(false);
-  const [holdOrRejected, setHoldOrRejected] = useState("");
+  const [closed, setClosed] = useState("");
   const [statusType, setStatusType] = useState("");
   const [assignedStatus, setAssignedStatus] = useState({});
 
@@ -38,7 +39,7 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
         if (complain?.status?.includes(" ")) {
           status = complain.status.split(" ")[1];
         } else {
-          status = "rejected";
+          status = "closed";
         }
         const { data } = await axios.get(
           `/admin/assign?cid=${complain._id}&status=${status}`
@@ -49,14 +50,13 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
           setUpdated(true);
           setLoading(false);
         }
-        // else if (data.status_type === "verification") {
+        // else if (data.status_type === "hold") {
         //   setAssign(defaultValue);
         //   setUpdated(true);
-        //   console.log("refetch");
         //   // setAssignedStatus(data);
         //   const response = await axios.get(`/admin/statusdate/${complain._id}`);
         //   if (response) {
-        //     console.log(response);
+        //     console.log("response", response);
         //     setAssignedStatus({ ...data, ...response.data });
         //   }
         //   setLoading(false);
@@ -70,7 +70,7 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
             data.status_type.includes("hold") ||
             data.status_type.includes("rejected")
           ) {
-            setHoldOrRejected(data.status_type);
+            setClosed(data.status_type);
           }
         }
       } catch (error) {}
@@ -85,17 +85,13 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
   const handleSelectStatus = (e) => {
     const { value } = e.target;
     setUpdated(true);
-    if (value === "in hold") {
-      console.log("select hold", value);
-      setHoldOrRejected(value);
-      setStatusType("hold");
-    } else if (value === "rejected") {
-      console.log("select reject", value);
-      setHoldOrRejected(value);
-      setStatusType("rejected");
-    } else {
-      setHoldOrRejected("");
+    if (value === "in progress") {
+      setClosed("");
       setStatusType("progress");
+    } else if (value === "closed") {
+      console.log("select reject", value);
+      setClosed(value);
+      setStatusType("closed");
     }
   };
 
@@ -109,9 +105,9 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
           complain_id: complain._id,
           status_type: statusType,
           date_status_start: "in " + statusType + " start",
-          date_status_end: "in verification end",
+          date_status_end: "in hold end",
           complain_status:
-            statusType === "rejected" ? "rejected" : "in " + statusType,
+            statusType === "closed" ? "closed" : "in " + statusType,
           ...assign,
         });
         if (data.acknowledged) {
@@ -142,16 +138,13 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
       console.log(error);
     }
   };
+
+  console.log(assignedStatus);
   return (
     <div className={`w-full max-w-sm ${drawer && "mx-auto"}`}>
       {!drawer && (
         <div className="mb-4">
-          <VerificationStatus
-            complain={complain}
-            // assigned={assignedStatus}
-            // datestart={assignedStatus["in verification start"]}
-            drawer={true}
-          />
+          <VerificationStatus complain={complain} drawer={true} />
         </div>
       )}
       <div
@@ -163,9 +156,7 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
           className="cursor-pointer bg-gray-500 px-4 hover:bg-gray-600 flex justify-between items-center rounded-lg h-fit"
           onClick={() => setExpand(!expand)}
         >
-          <p className="text-white font-semibold py-2">
-            Verificaiton Completed?
-          </p>
+          <p className="text-white font-semibold py-2">In Hold Details </p>
           <IoIosArrowForward
             className={`duration-200 text-white ${
               expand && "transition-transform mb-2 origin-left rotate-90"
@@ -180,6 +171,19 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
               </p>
             </di>
           )}
+          <div className="pt-4 px-3 pb-4">
+            <p>
+              <span className="font-semibold">In hold since: </span>
+              {moment(assignedStatus["in hold start"]).format(
+                "D MMM, YYYY hh:mm a"
+              )}
+            </p>
+            <p>
+              <span className="font-semibold">Admin Remarks: </span>
+              {assignedStatus.remarks}
+            </p>
+            <div className="border-b-2 pt-4"></div>
+          </div>
           <div
             className={`flex justify-center items-center gap-2 mx-3 pt-4 ${
               drawer && "hidden"
@@ -210,7 +214,7 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
           <div className="mx-6">
             <form onSubmit={handleSubmit}>
               <div className="flex flex-col space-y-5">
-                <label htmlFor="name" hidden={holdOrRejected}>
+                <label htmlFor="name" hidden={closed}>
                   <p className="text-sm text-slate-700 pb-1">Full Name</p>
                   <input
                     onChange={handleChange}
@@ -223,7 +227,7 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
                     placeholder="Enter email address"
                   />
                 </label>
-                <label htmlFor="email" hidden={holdOrRejected}>
+                <label htmlFor="email" hidden={closed}>
                   <p className="text-sm text-slate-700 pb-1">Email</p>
                   <input
                     onChange={handleChange}
@@ -236,7 +240,7 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
                     placeholder="Email address"
                   />
                 </label>
-                <label htmlFor="contact" hidden={holdOrRejected}>
+                <label htmlFor="contact" hidden={closed}>
                   <p className="text-sm text-slate-700 pb-1">Contact</p>
                   <input
                     onChange={handleChange}
@@ -248,7 +252,7 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
                     placeholder="Phone number"
                   />
                 </label>
-                <label htmlFor="designation" hidden={holdOrRejected}>
+                <label htmlFor="designation" hidden={closed}>
                   <p className="text-sm text-slate-700 pb-1">Designation</p>
                   <input
                     onChange={handleChange}
@@ -317,4 +321,4 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
   );
 };
 
-export default InVerification;
+export default InHold;

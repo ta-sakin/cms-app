@@ -3,15 +3,22 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 
-const VerificationCompleted = ({
-  complain,
-  assigned,
-  datestart,
-  dateend,
-  drawer = false,
-}) => {
+const VerificationStatus = ({ complain, drawer }) => {
+  const [assigned, setAssigned] = useState({});
   const [expand, setExpand] = useState(false);
-  console.log("assigned", assigned);
+  useEffect(() => {
+    (async () => {
+      const { data } = await axios.get(
+        `/admin/assign?cid=${complain._id}&status=verification`
+      );
+      const response = await axios.get(`/admin/statusdate/${complain._id}`);
+      if (response) {
+        console.log("response", response);
+        setAssigned({ ...data, ...response.data });
+      }
+    })();
+  }, [complain._id]);
+
   return (
     <div
       className={`rounded-lg bg-gray-100 w-full max-w-sm ${
@@ -32,14 +39,18 @@ const VerificationCompleted = ({
       <div className="pb-8 pt-4 px-3">
         <p>
           <span className="font-semibold">Assigned for verification on: </span>
-          {moment(datestart).format("D MMM, YYYY hh:mm a")}
+          {moment(assigned["in verification start"]).format(
+            "D MMM, YYYY hh:mm a"
+          )}
         </p>
         {(complain?.status === "in hold" ||
           complain?.status === "in progress" ||
           complain?.status === "closed") && (
           <p>
             <span className="font-semibold">Verification end on: </span>
-            {moment(dateend).format("D MMM, YYYY hh:mm a")}
+            {moment(assigned["in verification end"]).format(
+              "D MMM, YYYY hh:mm a"
+            )}
           </p>
         )}
         <p className="font-bold py-2">Assigned To:</p>
@@ -64,4 +75,4 @@ const VerificationCompleted = ({
   );
 };
 
-export default VerificationCompleted;
+export default VerificationStatus;

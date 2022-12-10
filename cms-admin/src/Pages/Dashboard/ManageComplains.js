@@ -10,6 +10,8 @@ const ManageComplains = () => {
   const [filter, setFilter] = useState({});
   const [complains, setComplains] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [privateComplain, setPrivateComplain] = useState("");
+
   useEffect(() => {
     (async () => {
       try {
@@ -34,6 +36,11 @@ const ManageComplains = () => {
       delete filter[e.target.name];
       setFilter({ ...filter });
     } else {
+      if (e.target.value === "private") {
+        setPrivateComplain("private");
+      } else {
+        setPrivateComplain("");
+      }
       setFilter({ ...filter, [e.target.name]: e.target.value.toLowerCase() });
     }
   };
@@ -57,7 +64,6 @@ const ManageComplains = () => {
         <div className="bg-gray-100 rounded-lg p-2 w-fit my-4 font-semibold">
           <p>Total Complains: {complains?.length || 0}</p>
         </div>
-
         <div className="overflow-x-auto">
           <table className="table w-full">
             <thead>
@@ -65,7 +71,9 @@ const ManageComplains = () => {
                 <th></th>
                 <th>Submission Date</th>
                 <th>Category</th>
-                <th>Upvote</th>
+                <th className={`${privateComplain === "private" && "hidden"}`}>
+                  Upvote
+                </th>
                 <th>Location</th>
                 <th>Actions</th>
                 <th></th>

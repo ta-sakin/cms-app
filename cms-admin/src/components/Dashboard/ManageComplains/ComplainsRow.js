@@ -11,7 +11,7 @@ const ComplainsRow = ({ complain, i }) => {
 
       <td>{moment(complain.submission_date).format("D MMM, YYYY")}</td>
       <td className="capitalize">{complain.category}</td>
-      <td>{complain.total_upvotes}</td>
+      {complain.complainType !== "private" && <td>{complain.total_upvotes}</td>}
       <td>{complain.address}</td>
       {/* <td className="capitalize">{complain.status}</td> */}
       {/* {user.status === "active" ? (

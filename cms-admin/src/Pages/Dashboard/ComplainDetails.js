@@ -5,6 +5,7 @@ import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import BackDrop from "../../components/Dashboard/Drawer/Backdrop";
 import SlideDrawer from "../../components/Dashboard/Drawer/SlideDrawer";
+import InHold from "../../components/Dashboard/ManageComplains/InHold";
 import InVerification from "../../components/Dashboard/ManageComplains/InVerification";
 // import InVerification from "../../components/Dashboard/ManageComplains/InVerification";
 import PendingApproval from "../../components/Dashboard/ManageComplains/PendingApproval";
@@ -82,16 +83,13 @@ const ComplainDetails = () => {
           />
         </div>
         {complain[0].status === "pending approval" && (
-          <PendingApproval
-            complain={complain[0]}
-            
-          />
+          <PendingApproval complain={complain[0]} />
         )}
         {complain[0].status?.toLowerCase() === "in verification" && (
-          <InVerification
-            complain={complain[0]}
-            
-          />
+          <InVerification complain={complain[0]} />
+        )}
+        {complain[0].status?.toLowerCase() === "in hold" && (
+          <InHold complain={complain[0]} />
         )}
       </div>
     </div>

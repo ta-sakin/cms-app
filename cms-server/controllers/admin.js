@@ -206,6 +206,7 @@ const getStatusDetails = async (req, res, next) => {
     next(error);
   }
 };
+
 const updateAssignedComplain = async (req, res, next) => {
   try {
     const data = req.body;

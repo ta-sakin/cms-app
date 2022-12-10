@@ -22,7 +22,7 @@ const ManageUser = () => {
       // <ServerError error={error}/>
     }
   });
-  
+
   if (isLoading) {
     return <Spin />;
   }
@@ -42,7 +42,7 @@ const ManageUser = () => {
               <th>Complaints</th>
               <th>Status</th>
               <th>Actions</th>
-              <th>Delete</th>
+              {/* <th>Delete</th> */}
               <th></th>
             </tr>
           </thead>
@@ -59,13 +59,13 @@ const ManageUser = () => {
           </tbody>
         </table>
       </div>
-      {deleteUser && (
+      {/* {deleteUser && (
         <DeleteUser
           setDeleteUser={setDeleteUser}
           deleteUser={deleteUser}
           refetch={refetch}
         />
-      )}
+      )} */}
     </section>
   );
 };

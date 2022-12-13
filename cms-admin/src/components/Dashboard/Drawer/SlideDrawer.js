@@ -37,8 +37,7 @@ const SlideDrawer = ({ show, setDrawerOpen, complain, setRefetchComplain }) => {
           />
         )}
         {(complain.status.includes("hold") ||
-          complain.status.includes("progress") ||
-          complain.status.includes("rejected")) && (
+          complain.status.includes("progress")) && (
           <InVerification
             complain={complain}
             drawer={true}

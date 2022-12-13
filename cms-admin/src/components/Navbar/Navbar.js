@@ -32,7 +32,7 @@ const Navbar = ({ className, user }) => {
           </ul>
         </div>
         <Link to="/dashboard" className="btn btn-ghost normal-case text-xl">
-          CCC App
+          CCC Admin Panel
         </Link>
       </div>
       <div className="navbar-center hidden lg:flex">

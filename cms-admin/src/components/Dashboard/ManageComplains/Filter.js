@@ -8,6 +8,7 @@ const statusList = [
   "Rejected",
   "Closed",
 ];
+
 const complainType = ["Public", "Private"];
 const FilterStatus = ({ handleChange }) => {
   return (

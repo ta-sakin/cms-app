@@ -18,7 +18,7 @@ const defaultValue = {
   remarks: "",
 };
 
-const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
+const InVerification = ({ complain, drawer = false, setRefetchComplain,refetchComplain }) => {
   const [expand, setExpand] = useState(true);
   const [loading, setLoading] = useState(false);
   const [assign, setAssign] = useState(defaultValue);
@@ -27,7 +27,7 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
   const [updated, setUpdated] = useState(false);
   const [refetch, setRefetch] = useState(false);
   const [holdOrRejected, setHoldOrRejected] = useState("");
-  const [statusType, setStatusType] = useState("");
+  const [statusType, setStatusType] = useState("progress");
   const [assignedStatus, setAssignedStatus] = useState({});
 
   useEffect(() => {
@@ -48,20 +48,12 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
           setAssign(defaultValue);
           setUpdated(true);
           setLoading(false);
-        }
-        // else if (data.status_type === "verification") {
-        //   setAssign(defaultValue);
-        //   setUpdated(true);
-        //   console.log("refetch");
-        //   // setAssignedStatus(data);
-        //   const response = await axios.get(`/admin/statusdate/${complain._id}`);
-        //   if (response) {
-        //     console.log(response);
-        //     setAssignedStatus({ ...data, ...response.data });
-        //   }
-        //   setLoading(false);
-        // }
-        else {
+        } else if (data.status_type === "verification") {
+          setAssign(defaultValue);
+          setUpdated(true);
+          setAssignedStatus(data);
+          setLoading(false);
+        } else {
           setLoading(false);
           setAssign(data);
           setAssigned(true);
@@ -86,11 +78,9 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
     const { value } = e.target;
     setUpdated(true);
     if (value === "in hold") {
-      console.log("select hold", value);
       setHoldOrRejected(value);
       setStatusType("hold");
     } else if (value === "rejected") {
-      console.log("select reject", value);
       setHoldOrRejected(value);
       setStatusType("rejected");
     } else {
@@ -103,7 +93,6 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
     e.preventDefault();
     try {
       if (!assigned) {
-        console.log("inside post");
         setLoading(true);
         const { data } = await axios.post("/admin/assign", {
           complain_id: complain._id,
@@ -120,23 +109,23 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
           toast.success("Complain assigned successfully", {
             toastId: "success",
           });
-          setRefetch(!refetch);
+          setRefetch((prevState) => !prevState);
         }
       } else if (assigned && updated) {
-        console.log("put fetch");
         setLoading(true);
         const { data } = await axios.put("/admin/assign", {
           ...assign,
         });
         if (data.acknowledged) {
           setLoading(false);
-          toast.success("Complain assigned successfully", {
+          toast.success("Updated successfully", {
             toastId: "success",
           });
-          setRefetch(!refetch);
+          setRefetch((prevState) => !prevState);
         }
       }
       setRefetchComplain((prevState) => !prevState);
+      // window.location.reload();
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -148,6 +137,9 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
         <div className="mb-4">
           <VerificationStatus
             complain={complain}
+            refetch={refetch}
+            setRefetchComplain={setRefetchComplain}
+            refetchComplain={refetchComplain}
             // assigned={assignedStatus}
             // datestart={assignedStatus["in verification start"]}
             drawer={true}
@@ -203,7 +195,9 @@ const InVerification = ({ complain, drawer = false, setRefetchComplain }) => {
             </label>
           </div>
           {assigned ? (
-            <p className="text-center font-bold py-4">Verification Details</p>
+            <p className="text-center font-bold py-4">
+              Complain Status Details
+            </p>
           ) : (
             <p className="text-center font-semibold py-4">Assign To:</p>
           )}

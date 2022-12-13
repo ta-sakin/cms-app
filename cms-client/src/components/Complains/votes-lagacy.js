@@ -94,7 +94,6 @@ const Votes = ({ complain }) => {
           },
         }
       );
-      response && console.log("response", response);
     } catch (error) {
       console.error(error);
     }

@@ -61,13 +61,17 @@ const PDFTemplate = ({ complain, assign }) => {
         </Text>
         <Text style={styles.text}>Complain No: {complain._id}</Text>
         <Text style={styles.text}>Admin Remarks: {assign.remarks}</Text>
-        <Text style={styles.textTitle}>
-          The complain should be verified by:
-        </Text>
-        <Text style={styles.text}>Full Name: {assign.name}</Text>
-        <Text style={styles.text}>Email: {assign.email}</Text>
-        <Text style={styles.text}>Phone: {assign.contact}</Text>
-        <Text style={styles.text}>Designation: {assign.designation}</Text>
+        {assign?.name && (
+          <>
+            <Text style={styles.textTitle}>
+              The complain should be verified by:
+            </Text>
+            <Text style={styles.text}>Full Name: {assign.name}</Text>
+            <Text style={styles.text}>Email: {assign.email}</Text>
+            <Text style={styles.text}>Phone: {assign.contact}</Text>
+            <Text style={styles.text}>Designation: {assign.designation}</Text>
+          </>
+        )}
       </Page>
     </Document>
   );

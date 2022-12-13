@@ -3,14 +3,13 @@ import React from "react";
 const Status = ({ count }) => {
   const statusList = [
     "Pending approval",
-    "Approval",
     "In verification",
     "In hold",
     "In progress",
     "Rejected",
     "Closed",
   ];
-
+  console.log("status", count);
   return (
     <div className="mt-10 mb-16 max-w-3xl mx-auto">
       <p className="bg-gray-100 flex justify-center rounded-lg font-semibold text-gray-500 my-3 py-1">
@@ -27,11 +26,11 @@ const Status = ({ count }) => {
             className="bg-gray-100 w-44 py-10 text-center rounded-xl"
           >
             <p>
-              {count?.type[status.toLowerCase()]
-                ? count?.type[status.toLowerCase()]
+              {count?.status[status.toLowerCase()]
+                ? count?.status[status.toLowerCase()]
                 : 0}
             </p>
-            <p>{status}</p>
+            <p className="capitalized">{status}</p>
           </div>
         ))}
 

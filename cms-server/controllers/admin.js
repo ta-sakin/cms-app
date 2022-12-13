@@ -67,6 +67,7 @@ const getDataCount = async (req, res, next) => {
       status,
       category,
       type,
+      solved: status?.closed ? status.closed : 0,
     });
   } catch (error) {
     console.log(error);

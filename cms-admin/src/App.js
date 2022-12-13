@@ -12,6 +12,7 @@ import ManageComplains from "./Pages/Dashboard/ManageComplains";
 import UserDetails from "./Pages/Dashboard/UserDetails";
 import ComplainDetails from "./Pages/Dashboard/ComplainDetails";
 import Login from "./Pages/login";
+import Reports from "./Pages/Dashboard/Reports";
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
           <Route path="/muser/:id" element={<UserDetails />}></Route>
           <Route path="/mcomplains" element={<ManageComplains />}></Route>
           <Route path="/mcomplains/:id" element={<ComplainDetails />}></Route>
+          <Route path="/reports/" element={<Reports />}></Route>
         </Route>
         <Route path="*" element={<PageNotFound />}></Route>
       </Routes>

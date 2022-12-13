@@ -80,7 +80,7 @@ const PendingApproval = ({ complain, drawer = false, setRefetchComplain }) => {
         });
         if (data.acknowledged) {
           setLoading(false);
-          toast.success("Complain assigned successfully", {
+          toast.success("Updated successfully", {
             toastId: "success",
           });
           setRefetch(!refetch);

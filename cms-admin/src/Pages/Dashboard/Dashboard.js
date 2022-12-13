@@ -7,12 +7,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import { MdSpaceDashboard } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
 import { TbReportAnalytics } from "react-icons/tb";
-import {
-  HiDocument,
-  HiDocumentDuplicate,
-  HiDocumentReport,
-  HiDocumentText,
-} from "react-icons/hi";
+import { HiDocumentDuplicate } from "react-icons/hi";
 
 const Dashboard = () => {
   const [expand, setExpand] = useState(false);
@@ -52,7 +47,7 @@ const Dashboard = () => {
             <Outlet />
           </div>
         </div>
-        <div className="drawer-side ">
+        <div className="drawer-side">
           <label
             htmlFor="dashboard-sidebar "
             className="drawer-overlay"

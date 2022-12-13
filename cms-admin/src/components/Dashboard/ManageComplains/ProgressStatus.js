@@ -3,21 +3,20 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 
-const VerificationStatus = ({ complain, drawer, refetchComplain }) => {
+const ProgressStatus = ({ complain, drawer }) => {
   const [assigned, setAssigned] = useState({});
   const [expand, setExpand] = useState(false);
-
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `/admin/assign?cid=${complain._id}&status=verification`
+        `/admin/assign?cid=${complain._id}&status=progress`
       );
       const response = await axios.get(`/admin/statusdate/${complain._id}`);
       if (response) {
         setAssigned({ ...data, ...response.data });
       }
     })();
-  }, [complain._id, refetchComplain]);
+  }, [complain._id]);
 
   return (
     <div
@@ -29,7 +28,7 @@ const VerificationStatus = ({ complain, drawer, refetchComplain }) => {
         className="cursor-pointer bg-gray-500 rounded-lg px-4 hover:bg-gray-600 flex justify-between items-center h-fit"
         onClick={() => setExpand(!expand)}
       >
-        <p className="text-white font-semibold py-2">Verificaiton Details</p>
+        <p className="text-white font-semibold py-2">Progress Details</p>
         <IoIosArrowForward
           className={`duration-200 text-white ${
             expand && "transition-transform mb-2 origin-left rotate-90"
@@ -38,22 +37,9 @@ const VerificationStatus = ({ complain, drawer, refetchComplain }) => {
       </div>
       <div className="pb-8 pt-4 px-3" hidden={!expand}>
         <p>
-          <span className="font-semibold">Assigned for verification on: </span>
-          {moment(assigned["in verification start"]).format(
-            "D MMM, YYYY hh:mm a"
-          )}
+          <span className="font-semibold">In progress since: </span>
+          {moment(assigned["in progress start"]).format("D MMM, YYYY hh:mm a")}
         </p>
-        {(complain?.status === "in hold" ||
-          complain?.status === "in progress" ||
-          complain?.status === "closed" ||
-          complain?.status === "rejected") && (
-          <p>
-            <span className="font-semibold">Verification ended on: </span>
-            {moment(assigned["in verification end"]).format(
-              "D MMM, YYYY hh:mm a"
-            )}
-          </p>
-        )}
         <p className="font-bold py-2">Assigned To:</p>
         <p>
           <span className="font-semibold">Name:</span> {assigned?.name}
@@ -76,4 +62,4 @@ const VerificationStatus = ({ complain, drawer, refetchComplain }) => {
   );
 };
 
-export default VerificationStatus;
+export default ProgressStatus;

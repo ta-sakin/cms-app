@@ -11,7 +11,6 @@ const VerificationCompleted = ({
   drawer = false,
 }) => {
   const [expand, setExpand] = useState(false);
-  console.log("assigned", assigned);
   return (
     <div
       className={`rounded-lg bg-gray-100 w-full max-w-sm ${

@@ -1,6 +1,7 @@
 import React from "react";
-import img from "../../assets/error-404.png";
-const PageNotFound = () => {
+import img from "../../assets/coming-soon.jpg";
+
+const Reports = () => {
   return (
     <div className="flex justify-center">
       <img className="" src={img} alt="" />
@@ -8,4 +9,4 @@ const PageNotFound = () => {
   );
 };
 
-export default PageNotFound;
+export default Reports;

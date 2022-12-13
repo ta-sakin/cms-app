@@ -5,11 +5,12 @@ import React, { useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import { toast } from "react-toastify";
 import ButtonSpin from "../../shared/ButtonSpin";
+import HoldStatus from "./HoldStatus";
 import PDFTemplate from "./PDFTemplate";
 import VerificationCompleted from "./VerificationCompleted";
 import VerificationStatus from "./VerificationStatus";
 
-const statusList = ["in progress", "closed"];
+const statusList = ["closed"];
 
 const defaultValue = {
   name: "",
@@ -19,16 +20,16 @@ const defaultValue = {
   remarks: "",
 };
 
-const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
+const InProgress = ({ complain, drawer = false, setRefetchComplain }) => {
   const [expand, setExpand] = useState(true);
   const [loading, setLoading] = useState(false);
   const [assign, setAssign] = useState(defaultValue);
-  const { name, email, contact, designation, remarks } = assign;
+  const { remarks } = assign;
   const [assigned, setAssigned] = useState(false);
   const [updated, setUpdated] = useState(false);
   const [refetch, setRefetch] = useState(false);
   const [closed, setClosed] = useState("");
-  const [statusType, setStatusType] = useState("progress");
+  const [statusType, setStatusType] = useState("closed");
   const [assignedStatus, setAssignedStatus] = useState({});
 
   useEffect(() => {
@@ -49,7 +50,7 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
           setAssign(defaultValue);
           setUpdated(true);
           setLoading(false);
-        } else if (data.status_type === "hold") {
+        } else if (data.status_type === "progress") {
           setAssign(defaultValue);
           setUpdated(true);
           // setAssignedStatus(data);
@@ -63,12 +64,6 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
           setAssign(data);
           setAssigned(true);
           setUpdated(false);
-          if (
-            data.status_type.includes("hold") ||
-            data.status_type.includes("rejected")
-          ) {
-            setClosed(data.status_type);
-          }
         }
       } catch (error) {}
     })();
@@ -80,15 +75,8 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
   };
 
   const handleSelectStatus = (e) => {
-    const { value } = e.target;
     setUpdated(true);
-    if (value === "in progress") {
-      setClosed("");
-      setStatusType("progress");
-    } else if (value === "closed") {
-      setClosed(value);
-      setStatusType("closed");
-    }
+    setStatusType("closed");
   };
 
   const handleSubmit = async (e) => {
@@ -100,15 +88,14 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
           complain_id: complain._id,
           status_type: statusType,
           date_status_start: "in " + statusType + " start",
-          date_status_end: "in hold end",
-          complain_status:
-            statusType === "closed" ? "closed" : "in " + statusType,
+          date_status_end: "in progress end",
+          complain_status: statusType,
           ...assign,
         });
         if (data.acknowledged) {
           setLoading(false);
           setAssign(defaultValue);
-          toast.success("Complain assigned successfully", {
+          toast.success("Complain closed successfully", {
             toastId: "success",
           });
           setRefetch(!refetch);
@@ -120,7 +107,7 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
         });
         if (data.acknowledged) {
           setLoading(false);
-          toast.success("Complain assigned successfully", {
+          toast.success("Updated successfully", {
             toastId: "success",
           });
           setRefetch(!refetch);
@@ -137,9 +124,14 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
   return (
     <div className={`w-full max-w-sm ${drawer && "mx-auto"}`}>
       {!drawer && (
-        <div className="mb-4">
-          <VerificationStatus complain={complain} drawer={true} />
-        </div>
+        <>
+          <div className="mb-4">
+            <VerificationStatus complain={complain} drawer={true} />
+          </div>
+          <div className="my-4">
+            <HoldStatus complain={complain} drawer={true} />
+          </div>
+        </>
       )}
       <div
         className={`w-full rounded-lg bg-gray-100 max-w-sm ${
@@ -150,7 +142,7 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
           className="cursor-pointer bg-gray-500 px-4 hover:bg-gray-600 flex justify-between items-center rounded-lg h-fit"
           onClick={() => setExpand(!expand)}
         >
-          <p className="text-white font-semibold py-2">In Hold Details </p>
+          <p className="text-white font-semibold py-2">In Progress Details </p>
           <IoIosArrowForward
             className={`duration-200 text-white ${
               expand && "transition-transform mb-2 origin-left rotate-90"
@@ -165,16 +157,33 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
               </p>
             </di>
           )}
-          <div className="pt-4 px-3 pb-4">
+          <div className="py-4 px-3">
             <p>
-              <span className="font-semibold">In hold since: </span>
-              {moment(assignedStatus["in hold start"]).format(
+              <span className="font-semibold">In progress since: </span>
+              {moment(assignedStatus["in progress start"]).format(
                 "D MMM, YYYY hh:mm a"
               )}
             </p>
+            <p className="font-bold py-2">Assigned To:</p>
             <p>
-              <span className="font-semibold">Admin Remarks: </span>
-              {assignedStatus.remarks}
+              <span className="font-semibold">Name:</span>{" "}
+              {assignedStatus?.name}
+            </p>
+            <p>
+              <span className="font-semibold">Email:</span>{" "}
+              {assignedStatus?.email}
+            </p>
+            <p>
+              <span className="font-semibold">Contact:</span>{" "}
+              {assignedStatus?.contact}
+            </p>
+            <p>
+              <span className="font-semibold">Designation:</span>{" "}
+              {assignedStatus?.designation}
+            </p>
+            <p className="pt-2">
+              <span className="font-bold">Admin Remarks:</span>{" "}
+              {assignedStatus?.remarks}
             </p>
             <div className="border-b-2 pt-4"></div>
           </div>
@@ -189,7 +198,7 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
                 label="status"
                 onChange={handleSelectStatus}
                 name="status"
-                defaultValue={"in progress"}
+                defaultValue={"closed"}
                 className="w-full text-sm py-1 border border-slate-200 rounded-lg px-3 focus:outline-none capitalize focus:border-slate-500 hover:shadow"
               >
                 {statusList?.map((item, i) => (
@@ -210,57 +219,6 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
           <div className="mx-6">
             <form onSubmit={handleSubmit}>
               <div className="flex flex-col space-y-5">
-                <label htmlFor="name" hidden={closed}>
-                  <p className="text-sm text-slate-700 pb-1">Full Name</p>
-                  <input
-                    onChange={handleChange}
-                    id="name"
-                    name="name"
-                    type="name"
-                    value={name}
-                    autoComplete="name"
-                    className="w-full text-sm py-2 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                    placeholder="Enter email address"
-                  />
-                </label>
-                <label htmlFor="email" hidden={closed}>
-                  <p className="text-sm text-slate-700 pb-1">Email</p>
-                  <input
-                    onChange={handleChange}
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={email}
-                    autoComplete="email"
-                    className="w-full text-sm py-2 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                    placeholder="Email address"
-                  />
-                </label>
-                <label htmlFor="contact" hidden={closed}>
-                  <p className="text-sm text-slate-700 pb-1">Contact</p>
-                  <input
-                    onChange={handleChange}
-                    id="contact"
-                    name="contact"
-                    type="contact"
-                    value={contact}
-                    className="w-full text-sm py-2 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                    placeholder="Phone number"
-                  />
-                </label>
-                <label htmlFor="designation" hidden={closed}>
-                  <p className="text-sm text-slate-700 pb-1">Designation</p>
-                  <input
-                    onChange={handleChange}
-                    id="designation"
-                    name="designation"
-                    type="designation"
-                    value={designation}
-                    autoComplete="designation"
-                    className="w-full text-sm py-2 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                    placeholder="Enter email address"
-                  />
-                </label>
                 <label htmlFor="remarks">
                   <p className="text-sm text-slate-700 pb-1">Admin Remarks</p>
                   <textarea
@@ -297,7 +255,7 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
                 {({ loading }) =>
                   loading ? (
                     <button
-                      className="w-full py-2 my-2 font-medium text-white bg-black rounded-lg border-black hover:shadow inline-flex space-x-2 items-center justify-center"
+                      className="w-full py-2 my-2 font-medium text-white bg-black rounded-lg border-black hover:shadow inline-flex space-x-2       items-center justify-center"
                       disabled
                     >
                       <ButtonSpin />
@@ -317,4 +275,4 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
   );
 };
 
-export default InHold;
+export default InProgress;

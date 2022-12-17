@@ -12,6 +12,7 @@ const natural = require("natural");
 const { findCommentsPerComplain } = require("../service/reactionsDbOp");
 const { complainsCollection } = require("../model/Users");
 const { findUserByProperty } = require("../service/user");
+const { getStatusDateByCID } = require("../service/statusDates");
 
 const submitComplain = async (req, res, next) => {
   let { address, ward, description, imgUrls, type, phone } = req.body;
@@ -33,7 +34,7 @@ const submitComplain = async (req, res, next) => {
   }
 
   const classifyComplain = async (description, callback) => {
-    var classifier = new natural.BayesClassifier();
+    let classifier = new natural.BayesClassifier();
     natural.BayesClassifier.load(
       "classifier.json",
       null,
@@ -144,6 +145,18 @@ const getCountComplaintStatus = async (req, res, next) => {
   }
 };
 
+const getStatusDatesByCID = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const data = await getStatusDateByCID(id);
+    console.log(data);
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   submitComplain,
   getAllComplains,
@@ -153,4 +166,5 @@ module.exports = {
   deleteComplain,
   totalComplains,
   getCountComplaintStatus,
+  getStatusDatesByCID,
 };

@@ -1,5 +1,6 @@
 import { Tooltip } from "@mui/material";
 import axios from "axios";
+import moment from "moment";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -16,6 +17,7 @@ const Comment = ({ complain, setTotalComments }) => {
   const { currentUser: user } = useAuth();
   const [userId] = useUser(user?.phoneNumber);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     (async () => {
       try {
@@ -111,7 +113,7 @@ const Comment = ({ complain, setTotalComments }) => {
                 <div>
                   <p className="text-sm font-bold">{comment.name}</p>
                   <p className="text-xs">
-                    Ward: {comment.ward} |{comment.date.split("T")[0]}
+                    {moment(comment.date).fromNow()} | Ward: {comment.ward}
                   </p>
                 </div>
               </div>

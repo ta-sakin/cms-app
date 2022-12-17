@@ -9,6 +9,7 @@ import ButtonSpin from "../components/shared/ButtonSpin";
 import InfiniteScroll from "react-infinite-scroll-component";
 import _ from "lodash";
 import useUser from "../hooks/useUser";
+import { Skeleton } from "@mui/material";
 
 const NUM_OF_DATA_TO_LOAD = 3;
 const Home = () => {

@@ -108,94 +108,95 @@ const SubmitComplain = () => {
   }, [imgs]);
 
   return (
-    <div className="sm:max-w-lg max-w-md mx-auto my-20 bg-white rounded-xl border-2 py-12 px-4 sm:px-10 ">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold ">What's your complain?</h1>
-        <p className="text-gray-600 text-sm">
-          Ensure that you follow our rules and regulations!
-        </p>
-      </div>
-      <form onSubmit={handleSubmit}>
-        <div className="flex flex-col space-y-5">
-          <label htmlFor="address">
-            <p className="text-sm text-slate-700 pb-2">Address</p>
-            <input
-              onChange={handleChange}
-              value={address}
-              name="address"
-              type="address"
-              id="autocomplete"
-              className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow placeholder:text-sm  "
-              placeholder="Enter an address, zipcode, or location"
-            />
-          </label>
-          <label htmlFor="ward">
-            <p className="text-sm text-slate-700 pb-2">Ward</p>
-            <select
-              value={ward}
-              label="ward"
-              onChange={handleChange}
-              name="ward"
-              required
-              className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-            >
-              <option value="" selected disabled hidden>
-                Select your ward
-              </option>
-              {Object.keys(wardsList)?.map((key) => (
-                <option key={key} value={wardsList[key]}>
-                  {wardsList[key]}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label htmlFor="description">
-            <p className="text-sm text-slate-700 pb-2">Description</p>
-            <textarea
-              onChange={handleChange}
-              value={description}
-              name="description"
-              type="description"
-              id="description"
-              className="w-full h-28 text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow placeholder:text-sm "
-              placeholder="Write your complain here..."
-            />
-          </label>
-
-          <DropzoneArea
-            key={debounceKey}
-            acceptedFiles={["image/*"]}
-            dropzoneText={"Drag & drop or browse images (MAX. 3)"}
-            onChange={(files) => setImgs(files)}
-            dropzoneParagraphClass={
-              "!text-base !font-montserrat !text-gray-700"
-            }
-            clearOnUnmount
-            dropzoneClass={"!bg-slate-50"}
-            filesLimit={3}
-            showAlerts={["error"]}
-            initialFiles={imgs}
-            useChipsForPreview={true}
-          />
-          <div className="flex border-2 justify-between bg-gray-100 hover:shadow rounded-lg  py-3">
-            <div className="flex items-center mx-2">
+    <div className="mx-2">
+      <div className="sm:max-w-lg max-w-md mx-auto my-10 bg-white rounded-xl border-2 py-12 px-4 sm:px-10 ">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold ">What's your complain?</h1>
+          <p className="text-gray-600 text-sm">
+            Ensure that you follow our rules and regulations!
+          </p>
+        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="flex flex-col space-y-5">
+            <label htmlFor="address">
+              <p className="text-sm text-slate-700 pb-2">Address</p>
               <input
-                id="inline-checkbox"
-                type="checkbox"
-                name="publicSubmit"
-                checked={publicSubmit}
-                className="w-4 h-4 bg-gray-100 rounded border-gray-300  dark:bg-gray-700 dark:border-gray-600"
-                onChange={handleCheckbox}
+                onChange={handleChange}
+                value={address}
+                name="address"
+                type="address"
+                id="autocomplete"
+                className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow placeholder:text-sm  "
+                placeholder="Enter an address, zipcode, or location"
               />
-              <label
-                htmlFor="inline-checkbox"
-                className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-800"
+            </label>
+            <label htmlFor="ward">
+              <p className="text-sm text-slate-700 pb-2">Ward</p>
+              <select
+                value={ward}
+                label="ward"
+                onChange={handleChange}
+                name="ward"
+                required
+                className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
               >
-                Complain as Public
-              </label>
-            </div>
+                <option value="" selected disabled hidden>
+                  Select your ward
+                </option>
+                {Object.keys(wardsList)?.map((key) => (
+                  <option key={key} value={wardsList[key]}>
+                    {wardsList[key]}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label htmlFor="description">
+              <p className="text-sm text-slate-700 pb-2">Description</p>
+              <textarea
+                onChange={handleChange}
+                value={description}
+                name="description"
+                type="description"
+                id="description"
+                className="w-full h-28 text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow placeholder:text-sm "
+                placeholder="Write your complain here..."
+              />
+            </label>
 
-            <div
+            <DropzoneArea
+              key={debounceKey}
+              acceptedFiles={["image/*"]}
+              dropzoneText={"Drag & drop or browse images (MAX. 3)"}
+              onChange={(files) => setImgs(files)}
+              dropzoneParagraphClass={
+                "!text-base !font-montserrat !text-gray-700"
+              }
+              clearOnUnmount
+              dropzoneClass={"!bg-slate-50"}
+              filesLimit={3}
+              showAlerts={["error"]}
+              initialFiles={imgs}
+              useChipsForPreview={true}
+            />
+            <div className="flex border-2 justify-between bg-gray-100 hover:shadow rounded-lg  py-3">
+              <div className="flex items-center mx-2">
+                <input
+                  id="inline-checkbox"
+                  type="checkbox"
+                  name="publicSubmit"
+                  checked={publicSubmit}
+                  className="w-4 h-4 bg-gray-100 rounded border-gray-300  dark:bg-gray-700 dark:border-gray-600"
+                  onChange={handleCheckbox}
+                />
+                <label
+                  htmlFor="inline-checkbox"
+                  className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-800"
+                >
+                  Complain as Public
+                </label>
+              </div>
+
+              <div
               className={`flex items-center mx-2 ${
                 publicSubmit ? "block" : "hidden"
               }`}
@@ -237,6 +238,7 @@ const SubmitComplain = () => {
         </div>
         {error && <Error error={error} />}
       </form>
+      </div>
     </div>
   );
 };

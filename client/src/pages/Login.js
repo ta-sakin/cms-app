@@ -94,55 +94,58 @@ const Login = () => {
         )}
       </div>
       <div className={`${!show ? "block" : "hidden"}`}>
-        <div className="sm:max-w-md max-w-sm mx-auto my-20 bg-white rounded-xl shadow-lg shadow-slate-300 py-8 px-8 sm:px-16">
-          <h1 className="text-2xl text-center font-bold mb-3">Login</h1>
-          <form onSubmit={handleSubmit}>
-            <div className="flex flex-col space-y-3">
-              <label htmlFor="phone">
-                <p className="text-sm text-slate-700 pb-2">Phone</p>
+        <div className="mx-2">
+          <div className="sm:max-w-md max-w-sm mx-auto my-10 bg-white rounded-xl border-2 py-8 px-8 sm:px-16">
+            <h1 className="text-2xl text-center font-bold mb-1">Citizen Login</h1>
+            <p className="text-xs text-center text-[#334155] mb-10">We will send you an OTP shortly.</p>
+            <form onSubmit={handleSubmit}>
+              <div className="flex flex-col space-y-3">
+                <label htmlFor="phone">
+                  <p className="text-sm text-slate-700 pb-2">Phone Verification</p>
 
-                <PhoneInput
-                  international
-                  defaultCountry="BD"
-                  placeholder="Enter phone number"
-                  value={phone}
-                  onChange={setPhone}
-                  className="border-[1px] p-2 border-gray-400 hover:border-gray-800 rounded-md py-[16px]"
+                  <PhoneInput
+                    international
+                    defaultCountry="BD"
+                    placeholder="Enter phone number"
+                    value={phone}
+                    onChange={setPhone}
+                    className="border-[1px] p-2 border-gray-400 hover:border-gray-800 rounded-md py-[16px]"
                   // style={{ input: { appearance: "none" } }}
-                />
-              </label>
-              <div id="recaptcha-container"></div>
-              {!loading ? (
-                <button
-                  type="submit"
-                  id="sign-in-button"
-                  className="w-full py-2 font-medium text-white bg-black hover:bg-gray-900 rounded-lg border-gray-900 hover:shadow inline-flex space-x-2 items-center justify-center"
-                >
-                  <span>LOGIN</span>
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  className="w-full py-2 font-medium text-white bg-black rounded-lg border-black hover:shadow inline-flex space-x-2 items-center justify-center disabled"
-                  disabled
-                >
-                  <ButtonSpin />
-                </button>
-              )}
-              <p className="text-center text-sm">
-                Don't have an account?{" "}
-                <Link
-                  to="/register"
-                  className="text-black font-medium inline-flex space-x-1 items-center"
-                >
-                  <span className="font-semibold text-sm hover:underline hover:text-indigo-600">
-                    Register{" "}
-                  </span>
-                </Link>
-              </p>
-            </div>
-            {error && <Error error={error} />}
-          </form>
+                  />
+                </label>
+                <div id="recaptcha-container"></div>
+                {!loading ? (
+                  <button
+                    type="submit"
+                    id="sign-in-button"
+                    className="w-full py-2 font-medium text-white bg-black hover:bg-gray-900 rounded-lg border-gray-900 hover:shadow inline-flex space-x-2 items-center justify-center"
+                  >
+                    <span>LOGIN</span>
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    className="w-full py-2 font-medium text-white bg-black rounded-lg border-black hover:shadow inline-flex space-x-2 items-center justify-center disabled"
+                    disabled
+                  >
+                    <ButtonSpin />
+                  </button>
+                )}
+                <p className="text-center text-sm">
+                  Don't have an account?{" "}
+                  <Link
+                    to="/register"
+                    className="text-black font-medium inline-flex space-x-1 items-center"
+                  >
+                    <span className="font-semibold text-sm hover:underline hover:text-indigo-600">
+                      Register Now{" "}
+                    </span>
+                  </Link>
+                </p>
+              </div>
+              {error && <Error error={error} />}
+            </form>
+          </div>
         </div>
       </div>
     </div>

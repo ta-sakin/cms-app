@@ -6,6 +6,16 @@ import { useAuth } from "../../../context/AuthContext";
 const DesktopBar = () => {
   const { currentUser: user, logout } = useAuth();
   const activeLink = "!bg-gray-700 !text-white";
+  let activeStyle = {
+    textDecoration: "underline",
+    textUnderlineOffset: "5px",
+    color: "#000000",
+    backgroundColor: "#e5e7eb"
+  };
+  let activeStyleProfile = {
+    color: "#000000",
+    backgroundColor: "#e5e7eb"
+  };
   return (
     // <>
     //   {user ? (
@@ -38,20 +48,28 @@ const DesktopBar = () => {
     // </>
     <>
       <li className="lg:h-0">
-        <NavLink to="/home">Home</NavLink>
+        <NavLink to="/home" style={({ isActive }) =>
+          isActive ? activeStyle : undefined
+        }>Home</NavLink>
       </li>
       <li className="lg:h-0">
-        <NavLink to="/mycomplain">My Complain</NavLink>
+        <NavLink to="/mycomplain" style={({ isActive }) =>
+          isActive ? activeStyle : undefined
+        }>My Complaints</NavLink>
       </li>
       <li className="lg:h-0">
-        <NavLink to="/submitcomplain">Submit Complain</NavLink>
+        <NavLink to="/submitcomplain" style={({ isActive }) =>
+          isActive ? activeStyle : undefined
+        }>Submit Complaint</NavLink>
       </li>
       <>
         {user ? (
           <>
             <li>
-              <NavLink to="/profile" className="h-12">
-                <div className="flex cursor-pointer items-center rounded-md hover:border-none border-[1px] border-[#570df8] space-x-1 p-1">
+              <NavLink to="/profile" className="h-12" style={({ isActive }) =>
+                isActive ? activeStyleProfile : undefined
+              }>
+                <div className="flex cursor-pointer items-center rounded-md hover:bg-[#d1d3d9] border-[2px] border-[#a1a2a6] space-x-2 py-1 px-2">
                   <p className="sm:p-0 pr-4">
                     {user.displayName.split(" ")[0]}
                   </p>

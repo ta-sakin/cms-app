@@ -117,7 +117,7 @@ const Home = () => {
           </p>
         )
       )}
-      <div className="mt-20">
+      <div className="mt-10">
         <InfiniteScroll
           dataLength={complains?.length}
           next={fetchMoreData}

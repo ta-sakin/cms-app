@@ -398,7 +398,7 @@ const ComplainPage = () => {
                             onChange={(e) => setInputComment(e.target.value)}
                             value={inputComment}
                             className="w-full text-sm py-2 border border-slate-200 rounded-2xl px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                            placeholder="Enter your comment"
+                            placeholder="Write your comment..."
                           />
                         </label>
                       </div>

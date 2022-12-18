@@ -31,10 +31,10 @@ const Complains = ({ details }) => {
     <>
       <div>
         <p
-          className="cursor-pointer text-center bg-gray-500 text-white font-semibold py-2 rounded-lg mx-4 hover:bg-gray-600 mb-10"
+          className="cursor-pointer text-center bg-[#4c4c4c] text-white font-semibold py-2 rounded-lg mx-4 hover:bg-gray-600 mb-10"
           onClick={handleShowComplains}
         >
-          View All Complains ({complains.length})
+          View All Complaints ({complains.length})
         </p>
       </div>
       <div className={`${!show && "hidden"}`}>

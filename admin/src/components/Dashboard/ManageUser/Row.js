@@ -27,14 +27,14 @@ const Row = ({ user, i, refetch, setDeleteUser }) => {
       <td className="capitalize">{user.status}</td>
       {user.status === "active" ? (
         <td>
-          <button className="btn btn-secondary btn-sm" onClick={handleStatus}>
+          <button className="btn btn-secondary btn-sm bg-red-400 border-none" onClick={handleStatus}>
             Block
           </button>
         </td>
       ) : (
         <td>
-          <button className="btn btn-accent btn-sm" onClick={handleStatus}>
-            Active
+          <button className="btn btn-accent btn-sm text-white" onClick={handleStatus}>
+            Activate
           </button>
         </td>
       )}

@@ -43,7 +43,7 @@ const Complain = ({ complain, details, manage = false }) => {
 
   return (
     <>
-      <div className="mb-10 bg-white rounded-xl border-2 py-6 px-4">
+      <div className="mb-10 bg-white rounded-xl border-2 py-4 px-4">
         <div className="">
           <div className="flex gap-2 items-center">
             <div>
@@ -130,14 +130,14 @@ const Complain = ({ complain, details, manage = false }) => {
           </div>
         </div>
         <div className={`${complain.complainType === "private" && "hidden"}`}>
-          <div className="flex items-center gap-1 mt-4">
+          <div className="flex items-center gap-1 mt-5">
             <Votes
               key={complain._id}
               complain={complain}
               total={total?.votes}
             />
             <div
-              className="ml-5 text-2xl cursor-pointer hover:text-blue-500 flex gap-1 items-center"
+              className="ml-5 text-2xl cursor-pointer text-gray-500 hover:text-blue-500 flex gap-1 items-center"
               onClick={() => total.comments && setShowComment(!showComment)}
             >
               <FaRegComment />

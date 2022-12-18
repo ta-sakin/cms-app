@@ -5,7 +5,7 @@ import DesktopBar from "./DesktopBar";
 
 const Navbar = ({ className, user }) => {
   return (
-    <div className="navbar sticky top-0 z-50 bg-gray-200 lg:justify-between px-10 ">
+    <div className="navbar sticky top-0 z-50 bg-gray-200 lg:justify-between">
       <div className="navbar-start">
         <div className="dropdown">
           <label tabIndex="0" className="btn btn-ghost lg:hidden">
@@ -36,7 +36,7 @@ const Navbar = ({ className, user }) => {
         </Link>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal gap-x-1 p-0 ">
+        <ul className="menu menu-horizontal">
           <DesktopBar user={user} />
         </ul>
       </div>

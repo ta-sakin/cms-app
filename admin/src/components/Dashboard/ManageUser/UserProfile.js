@@ -23,7 +23,7 @@ const UserProfile = ({ details, refetch }) => {
         <p></p>
         {details.status === "active" ? (
           <p>
-            <button className="btn btn-secondary btn-sm" onClick={handleStatus}>
+            <button className="btn btn-secondary btn-sm bg-red-400 border-none" onClick={handleStatus}>
               Block {details.name}
             </button>
           </p>

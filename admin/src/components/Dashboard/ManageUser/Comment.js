@@ -30,7 +30,7 @@ const Comment = ({ complain }) => {
       ) : (
         <div className="mt-5">
           {comments?.map((comment, i) => (
-            <div key={comment._id} className="mb-3 border-2 rounded-lg p-2">
+            <div key={comment._id} className="mt-3 border-2 rounded-lg p-2">
               <div className="flex gap-2">
                 <div>
                   <FaUserCircle className="sm:text-3xl text-2xl text-gray-500" />
@@ -42,7 +42,7 @@ const Comment = ({ complain }) => {
                   </p>
                 </div>
               </div>
-              <p className="mt-3 ml-10 text-sm">{comment.comment}</p>
+              <p className="mt-3 ml-9 text-sm">{comment.comment}</p>
             </div>
           ))}
         </div>

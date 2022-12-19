@@ -38,6 +38,7 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
+  //check if recaptcha is already present
   useEffect(() => {
     const captcha = async () => {
       try {
@@ -56,6 +57,7 @@ export function AuthProvider({ children }) {
     captcha();
   }, []);
 
+  //if jwt expires logout user and remove token
   useEffect(() => {
     (async () => {
       if (localStorage.getItem("accessToken")) {

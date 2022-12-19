@@ -9,7 +9,6 @@ const Status = ({ count }) => {
     "Rejected",
     "Closed",
   ];
-  console.log("status", count);
   return (
     <div className="mt-10 mb-16 max-w-3xl mx-auto">
       <p className="bg-gray-100 flex justify-center rounded-lg font-semibold text-gray-500 my-3 py-1">

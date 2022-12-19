@@ -33,7 +33,7 @@ const getUsersCount = async (ward) => {
   return await citizensCollection.countDocuments({ ward });
 };
 const getCitizensByWard = async (ward) => {
-  return await citizensCollection.find({ ward }).toArray();
+  return await citizensCollection.find({ ward }).sort({ _id: -1 }).toArray();
 };
 
 const updateUserStatus = async (id, status) => {
@@ -52,5 +52,6 @@ module.exports = {
   patchUser,
   getUsersCount,
   getCitizensByWard,
-  updateUserStatus,deleteUserById
+  updateUserStatus,
+  deleteUserById,
 };

@@ -7,7 +7,7 @@ const useToken = (phone) => {
     (async () => {
       try {
         const { data } = await axios.post(
-          "https://cms-server-production.up.railway.app/api/user/auth/token",
+          "http://localhost:5000/api/user/auth/token",
           {
             phone: phone,
           }

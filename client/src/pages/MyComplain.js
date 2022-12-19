@@ -18,7 +18,7 @@ const MyComplain = () => {
       try {
         if (!userId) return;
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/complain/${userId}`,
+          `http://localhost:5000/api/user/complain/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -43,7 +43,7 @@ const MyComplain = () => {
       <div></div>
       <div>
         {complains?.map((complain) => (
-          <div className="flex md:flex-row flex-col-reverse">
+          <div className="flex md:flex-row flex-col-reverse items-center sm:items-start">
             <div>
               <Complain
                 key={complain._id}

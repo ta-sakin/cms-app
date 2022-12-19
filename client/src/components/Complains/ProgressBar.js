@@ -1,28 +1,23 @@
-import { Step, StepLabel, Stepper } from "@mui/material";
+import { Box, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import axios from "axios";
+import moment from "moment";
 import React, { useEffect } from "react";
 import { useState } from "react";
-// const statusList = [
-//   "pending approval",
-//   "in verification",
-//   "in hold",
-//   "in hold",
-//   "in progress",
-//   "regected",
-//   "closed",
-// ];
-const statusList = [
-  "submission",
-  "pending approval",
-  "in verification start",
-  "in hold start",
-  "in progress start",
-  "in rejected start",
-  "in closed start",
-];
+import ButtonSpin from "../shared/ButtonSpin";
+
+const StepperSx = {
+  "& .MuiStepConnector-root": {
+    left: "calc(-50% + 20px)",
+    right: "calc(50% + 20px)",
+  },
+  "& .MuiStepConnector-line": {
+    marginTop: "22px", // To position the line lower
+  },
+};
+
 const ProgressBar = ({ complain }) => {
   const [steps, setSteps] = useState(null);
-
+  const [filteredStep, setFilteredStep] = useState([]);
   useEffect(() => {
     (async () => {
       try {
@@ -34,10 +29,25 @@ const ProgressBar = ({ complain }) => {
             },
           }
         );
-        console.log("data", data);
         if (data) {
           const { _id, complain_id, ...rest } = data;
-          setSteps(rest);
+          const stepKeys = Object.keys(rest).filter(
+            (step) => !step.includes("end")
+          );
+          let stepsForUi = {};
+          for (const key of stepKeys) {
+            let splited;
+            if (key === "submission") {
+              stepsForUi = { ...stepsForUi, "Pending Approval": rest[key] };
+            } else if (key.includes("rejected") || key.includes("closed")) {
+              splited = key.split(" ")[1];
+              stepsForUi = { ...stepsForUi, [splited]: rest[key] };
+            } else {
+              splited = key.split("start")[0];
+              stepsForUi = { ...stepsForUi, [splited]: rest[key] };
+            }
+          }
+          setSteps(stepsForUi);
         }
       } catch (error) {
         console.log(error);
@@ -45,27 +55,30 @@ const ProgressBar = ({ complain }) => {
     })();
   }, [complain._id]);
 
-  if (!steps) return;
-  console.log(steps);
+  if (!steps) return <ButtonSpin />;
+
   return (
-    <div>
-      <Stepper alternativeLabel activeStep={1}>
-        {statusList.map((label) => (
+    <Box sx={{ width: "100%" }}>
+      <Stepper
+        activeStep={Object.keys(steps).length - 1}
+        alternativeLabel
+        sx={StepperSx}
+      >
+        {Object.keys(steps).map((label) => (
           <Step key={label}>
-            <StepLabel>{steps[label]}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-      <Stepper activeStep={1} alternativeLabel>
-        {Object.keys(steps)?.map((label) => (
-          <Step key={label}>
-            <StepLabel className="capitalize">
-              {label === "submission" ? "Pending Approval" : label}
+            <Typography align="center">
+              {moment(steps[label]).format("D MMM, YYYY")}
+            </Typography>
+            <StepLabel
+              className="capitalize"
+              error={label === "rejected"}
+            >
+              {label}
             </StepLabel>
           </Step>
         ))}
       </Stepper>
-    </div>
+    </Box>
   );
 };
 

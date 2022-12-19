@@ -24,7 +24,7 @@ const Complain = ({ complain, userId }) => {
     (async () => {
       try {
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/complain/uname?uid=${complain.citizen_id}&cid=${complain._id}`,
+          `http://localhost:5000/api/user/complain/uname?uid=${complain.citizen_id}&cid=${complain._id}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -41,19 +41,21 @@ const Complain = ({ complain, userId }) => {
 
   const deleteComplain = (id) => {
     (async () => {
-      try {
-        const { data } = axios.delete(
-          `https://cms-server-production.up.railway.app/api/user/complain/${id}`,
-          {
-            headers: {
-              authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-          }
-        );
-        setDeleted(data);
-        toast.warning("Complain deleted", { theme: "colored" });
-        window.location.reload();
-      } catch (error) {}
+      if (window.confirm("Are you sure you want to delete?")) {
+        try {
+          const { data } = axios.delete(
+            `http://localhost:5000/api/user/complain/${id}`,
+            {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+              },
+            }
+          );
+          setDeleted(data);
+          toast.warning("Complain deleted", { theme: "colored" });
+          window.location.reload();
+        } catch (error) {}
+      }
     })();
   };
 
@@ -112,7 +114,7 @@ const Complain = ({ complain, userId }) => {
           ))}
         </div>
       </div>
-      <div>
+      <div className={complain.complainType === "private" && "hidden"}>
         <div className="flex items-center gap-1 mt-4">
           <Votes complain={complain} key={complain._id} />
           <Tooltip title="comment" placement="top" arrow>

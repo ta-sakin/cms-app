@@ -1,3 +1,4 @@
+const { findComplainByProperty } = require("../service/complainsFunc");
 const {
   putVotes,
   getVotesByUserId,
@@ -14,18 +15,21 @@ const updateVote = async (req, res, next) => {
     res.status(201).json(result);
   } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
   }
 };
 
 const getTotalVotes = async (req, res, next) => {
   const { cid } = req.query;
   try {
-    const data = await getVotesByComplainId(cid);
-    return res.status(201).json(data);
+    const result = await findComplainByProperty("_id", cid);
+    const { total_upvotes, total_downvotes } = result;
+    // const data = await getVotesByComplainId(cid);
+    return res
+      .status(201)
+      .json({ totalUpvote: total_upvotes, totalDownvote: total_downvotes });
   } catch (error) {
-    next(error)
-
+    next(error);
   }
 };
 
@@ -43,8 +47,7 @@ const getUsersVotes = async (req, res, next) => {
     }
     return res.status(201).json(result);
   } catch (error) {
-    next(error)
-
+    next(error);
   }
 };
 
@@ -55,7 +58,7 @@ const getReactionsByUserId = async (req, res, next) => {
     return res.status(201).json(data);
   } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
   }
 };
 
@@ -68,7 +71,7 @@ const createCommment = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
   }
 };
 
@@ -79,7 +82,7 @@ const getComments = async (req, res, next) => {
     return res.status(201).json(data);
   } catch (error) {
     console.log(error);
-    next(error)
+    next(error);
   }
 };
 

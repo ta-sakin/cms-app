@@ -7,6 +7,8 @@ import { useDebounce } from "use-debounce";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
+import useCurrentUser from "../hooks/useCurrentUser";
+import { AiOutlineExclamationCircle, AiOutlineWarning } from "react-icons/ai";
 
 const defaulValues = {
   address: "",
@@ -25,6 +27,25 @@ const SubmitComplain = () => {
   const { address, ward, description } = userInput;
   const [key, setKey] = useState(0);
   const [debounceKey] = useDebounce(key, 1000);
+  const [blocked, setBlocked] = useState(false);
+
+  useEffect(() => {
+    const getUserFromDb = async () => {
+      try {
+        //get current user from db
+        const { data } = await axios.post(
+          "http://localhost:5000/api/user/current",
+          { phone: currentUser?.phoneNumber }
+        );
+        if (data) {
+          setBlocked(data.status === "blocked");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUserFromDb();
+  }, [currentUser?.phoneNumber]);
 
   const handleChange = (e) => {
     setUserInput({
@@ -47,6 +68,10 @@ const SubmitComplain = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (blocked) {
+      toast.error("User blocked!", { toastId: "error" });
+      return;
+    }
     if (!address || !ward || !description) {
       if (!address) setError("Enter your address");
       if (!ward) setError("Select your ward");
@@ -57,6 +82,7 @@ const SubmitComplain = () => {
       setError("Something went wrong");
       return;
     }
+
     const complain = {
       address,
       ward,
@@ -69,7 +95,7 @@ const SubmitComplain = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "https://cms-server-production.up.railway.app/api/user/complain",
+        "http://localhost:5000/api/user/complain",
         complain,
         {
           headers: {
@@ -109,6 +135,13 @@ const SubmitComplain = () => {
 
   return (
     <div className="sm:max-w-lg max-w-md mx-auto my-20 bg-white rounded-xl border-2 py-12 px-4 sm:px-10 ">
+      {blocked && (
+        <p className="bg-red-300 p-4 rounded-md text-sm flex items-center mb-6">
+          {/* <AiOutlineWarning className="mr-2 text-4xl text-red-700" /> */}
+          Your ability to submit a complaint is restricted due to a temporary
+          block imposed by an authority. Please try again later
+        </p>
+      )}
       <div className="mb-6">
         <h1 className="text-2xl font-bold ">What's your complain?</h1>
         <p className="text-gray-600 text-sm">
@@ -120,6 +153,7 @@ const SubmitComplain = () => {
           <label htmlFor="address">
             <p className="text-sm text-slate-700 pb-2">Address</p>
             <input
+              disabled={blocked}
               onChange={handleChange}
               value={address}
               name="address"
@@ -132,6 +166,7 @@ const SubmitComplain = () => {
           <label htmlFor="ward">
             <p className="text-sm text-slate-700 pb-2">Ward</p>
             <select
+              disabled={blocked}
               value={ward}
               label="ward"
               onChange={handleChange}
@@ -152,6 +187,7 @@ const SubmitComplain = () => {
           <label htmlFor="description">
             <p className="text-sm text-slate-700 pb-2">Description</p>
             <textarea
+              disabled={blocked}
               onChange={handleChange}
               value={description}
               name="description"
@@ -163,6 +199,7 @@ const SubmitComplain = () => {
           </label>
 
           <DropzoneArea
+            disabled={blocked}
             key={debounceKey}
             acceptedFiles={["image/*"]}
             dropzoneText={"Drag & drop or browse images (MAX. 3)"}
@@ -171,7 +208,7 @@ const SubmitComplain = () => {
               "!text-base !font-montserrat !text-gray-700"
             }
             clearOnUnmount
-            dropzoneClass={"!bg-slate-50"}
+            dropzoneClass={`!bg-slate-50 ${blocked ? "disabled" : ""}`}
             filesLimit={3}
             showAlerts={["error"]}
             initialFiles={imgs}
@@ -180,6 +217,7 @@ const SubmitComplain = () => {
           <div className="flex border-2 justify-between bg-gray-100 hover:shadow rounded-lg  py-3">
             <div className="flex items-center mx-2">
               <input
+                disabled={blocked}
                 id="inline-checkbox"
                 type="checkbox"
                 name="publicSubmit"
@@ -201,6 +239,7 @@ const SubmitComplain = () => {
               }`}
             >
               <input
+                disabled={blocked}
                 id="inline-2-checkbox"
                 type="checkbox"
                 name="anonymous"
@@ -221,7 +260,10 @@ const SubmitComplain = () => {
             <button
               type="submit"
               id="sign-in-button"
-              className="w-full mt-4 py-2 font-medium text-white bg-black hover:bg-gray-900 rounded-lg border-gray-900 hover:shadow inline-flex space-x-2 items-center justify-center uppercase"
+              className={`w-full mt-4 py-2 font-medium text-white bg-black hover:bg-gray-900 rounded-lg border-gray-900 hover:shadow inline-flex space-x-2 items-center justify-center uppercase ${
+                blocked && "disabled bg-gray-400 hover:bg-gray-400"
+              }`}
+              disabled={blocked}
             >
               <span>Submit Complain</span>
             </button>

@@ -18,6 +18,9 @@ const submitComplain = async (req, res, next) => {
   let { address, ward, description, imgUrls, type, phone } = req.body;
   const user = await findUserByProperty("phone", phone);
 
+  if (user?.status === "blocked") {
+    return res.status(403).json("User has been blocked");
+  }
   if (!imgUrls) imgUrls = [];
   if (!address || !ward || !description) {
     return res.status(400).json({ message: "Invalid information" });
@@ -148,9 +151,8 @@ const getCountComplaintStatus = async (req, res, next) => {
 const getStatusDatesByCID = async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log(id);
+
     const data = await getStatusDateByCID(id);
-    console.log(data);
     res.status(200).json(data);
   } catch (error) {
     next(error);

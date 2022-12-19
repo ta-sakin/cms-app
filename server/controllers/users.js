@@ -37,4 +37,15 @@ const getAllUsers = async (req, res, next) => {
     next(error);
   }
 };
-module.exports = { getUserById, updateUser, getAllUsers };
+
+const getCurrentUser = async (req, res, next) => {
+  try {
+    const { phone } = req.body;
+    const data = await findUserByProperty("phone", phone);
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+module.exports = { getUserById, updateUser, getAllUsers, getCurrentUser };

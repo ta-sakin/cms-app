@@ -129,15 +129,21 @@ const Complain = ({ complain, details, manage = false }) => {
             ))}
           </div>
         </div>
-        <div className={`${complain.complainType === "private" && "hidden"}`}>
+        <div>
           <div className="flex items-center gap-1 mt-4">
-            <Votes
-              key={complain._id}
-              complain={complain}
-              total={total?.votes}
-            />
+            {complain.complainType === "private" ? (
+              <div></div>
+            ) : (
+              <Votes
+                key={complain._id}
+                complain={complain}
+                total={total?.votes}
+              />
+            )}
             <div
-              className="ml-5 text-2xl cursor-pointer hover:text-blue-500 flex gap-1 items-center"
+              className={"ml-5 text-2xl cursor-pointer hover:text-blue-500 flex gap-1 items-center "`${
+                complain.complainType === "private" && "hidden"
+              }`}
               onClick={() => total.comments && setShowComment(!showComment)}
             >
               <FaRegComment />
@@ -153,7 +159,11 @@ const Complain = ({ complain, details, manage = false }) => {
               </div>
             )}
           </div>
-          {showComment && <Comment key={complain._id} complain={complain} />}
+          {showComment && complain.complainType === "private" ? (
+            <div></div>
+          ) : (
+            <Comment key={complain._id} complain={complain} />
+          )}
         </div>
       </div>
     </>

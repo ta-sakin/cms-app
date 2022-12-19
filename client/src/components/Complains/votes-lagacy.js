@@ -23,7 +23,7 @@ const Votes = ({ complain }) => {
     const userVotes = async () => {
       try {
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/react/votes/total?cid=${complain._id}`,
+          `http://localhost:5000/api/user/react/votes/total?cid=${complain._id}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -42,7 +42,7 @@ const Votes = ({ complain }) => {
     const userVotes = async () => {
       try {
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/react/votes?cid=${complain._id}&uid=${userId}`,
+          `http://localhost:5000/api/user/react/votes?cid=${complain._id}&uid=${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -60,7 +60,7 @@ const Votes = ({ complain }) => {
   const handleUpvote = async (complainId, cid, complain) => {
     try {
       const { data } = await axios.put(
-        "https://cms-server-production.up.railway.app/api/user/react/votes",
+        "http://localhost:5000/api/user/react/votes",
         {
           complain_id: complainId,
           citizen_id: userId,
@@ -76,7 +76,7 @@ const Votes = ({ complain }) => {
       setUpvote(data);
 
       const response = await axios.put(
-        `https://cms-server-production.up.railway.app/api/user/complain`,
+        `http://localhost:5000/api/user/complain`,
         {
           complain_id: complainId,
           total_upvotes: !votes?.upvote
@@ -100,7 +100,7 @@ const Votes = ({ complain }) => {
   const handleDownvote = async (complainId, cid, complain) => {
     try {
       const { data } = await axios.put(
-        "https://cms-server-production.up.railway.app/api/user/react/votes",
+        "http://localhost:5000/api/user/react/votes",
         {
           complain_id: complainId,
           citizen_id: userId,
@@ -115,7 +115,7 @@ const Votes = ({ complain }) => {
       );
       setDownvote(data);
       const response = await axios.put(
-        `https://cms-server-production.up.railway.app/api/user/complain`,
+        `http://localhost:5000/api/user/complain`,
         {
           complain_id: complainId,
           total_downvotes: !votes?.downvote

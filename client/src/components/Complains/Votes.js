@@ -20,10 +20,11 @@ const Votes = ({ complain }) => {
   const [total, setTotal] = useState({});
 
   useEffect(() => {
+    //fetch totalvotes for a complain
     const userVotes = async () => {
       try {
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/react/votes/total?cid=${complain._id}`,
+          `http://localhost:5000/api/user/react/votes/total?cid=${complain._id}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -32,17 +33,20 @@ const Votes = ({ complain }) => {
         );
         setTotal(data);
       } catch (error) {
-        toast.error("Something went wrong", { theme: "colored" });
+        toast.error("Something went wrong", {
+          toastId: "error",
+        });
       }
     };
     userVotes();
   }, [userId, upvote, downvote, complain._id]);
 
   useEffect(() => {
+    //fetch active vote for a user
     const userVotes = async () => {
       try {
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/react/votes?cid=${complain._id}&uid=${userId}`,
+          `http://localhost:5000/api/user/react/votes?cid=${complain._id}&uid=${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -58,6 +62,7 @@ const Votes = ({ complain }) => {
   }, [userId, upvote, downvote, complain._id]);
 
   const handleUpvote = async (complainId, cid, complain) => {
+    //first updating on the client side then on the backend
     setVotes({
       ...votes,
       upvote: votes?.upvote ? !votes?.upvote : true,
@@ -65,21 +70,30 @@ const Votes = ({ complain }) => {
     });
     setTotal({
       ...total,
-      totalUpvote: !votes?.upvote
-        ? total.totalUpvote + 1
-        : total.totalUpvote - 1,
-      totalDownvote: votes?.downvote
-        ? total.totalDownvote - 1
-        : total.totalDownvote,
+      totalUpvote:
+        votes?.upvote && total.totalUpvote > 0
+          ? total.totalUpvote - 1
+          : total.totalUpvote + 1,
+      totalDownvote:
+        votes?.downvote && total.totalDownvote > 0
+          ? total.totalDownvote - 1
+          : total.totalDownvote < 0
+          ? 0
+          : total.totalDownvote,
     });
+
+    //update votes on the backend
+
     try {
+      //update active status
       const { data } = await axios.put(
-        "https://cms-server-production.up.railway.app/api/user/react/votes",
+        "http://localhost:5000/api/user/react/votes",
         {
           complain_id: complainId,
           citizen_id: userId,
           upvote: votes?.upvote ? !votes?.upvote : true,
           downvote: false,
+          vote: "upvote",
           createdAt: new Date(),
         },
         {
@@ -90,16 +104,17 @@ const Votes = ({ complain }) => {
       );
       setUpvote(data);
 
+      //update total up and down vote
       const response = await axios.put(
-        `https://cms-server-production.up.railway.app/api/user/complain`,
+        `http://localhost:5000/api/user/complain`,
         {
           complain_id: complainId,
-          total_upvotes: !votes?.upvote
-            ? complain.total_upvotes + 1
-            : complain.total_upvotes - 1,
+          total_upvotes: votes?.upvote
+            ? total.totalUpvote - 1
+            : total.totalUpvote + 1,
           total_downvotes: votes?.downvote
-            ? complain.total_downvotes - 1
-            : complain.total_downvotes,
+            ? total.totalDownvote - 1
+            : total.totalDownvote,
         },
         {
           headers: {
@@ -113,6 +128,7 @@ const Votes = ({ complain }) => {
   };
 
   const handleDownvote = async (complainId, cid, complain) => {
+    //first updating in the client then on the backend
     setVotes({
       ...votes,
       upvote: false,
@@ -120,19 +136,29 @@ const Votes = ({ complain }) => {
     });
     setTotal({
       ...total,
-      totalDownvote: !votes?.downvote
-        ? total.totalDownvote + 1
-        : total.totalDownvote - 1,
-      totalUpvote: votes?.upvote ? total.totalUpvote - 1 : total.totalUpvote,
+      totalDownvote:
+        votes?.downvote && total.totalDownvote > 0
+          ? total.totalDownvote - 1
+          : total.totalDownvote + 1,
+      totalUpvote:
+        votes?.upvote && total.totalUpvote > 0
+          ? total.totalUpvote - 1
+          : total.totalUpvote < 0
+          ? 0
+          : total.totalUpvote,
     });
+
+    //update votes on the backend
     try {
+      //update active status
       const { data } = await axios.put(
-        "https://cms-server-production.up.railway.app/api/user/react/votes",
+        "http://localhost:5000/api/user/react/votes",
         {
           complain_id: complainId,
           citizen_id: userId,
           upvote: false,
           downvote: votes?.downvote ? !votes?.downvote : true,
+          vote: "downvote",
           createdAt: new Date(),
         },
         {
@@ -142,16 +168,18 @@ const Votes = ({ complain }) => {
         }
       );
       setDownvote(data);
+
+      //update total up and down vote
       const response = await axios.put(
-        `https://cms-server-production.up.railway.app/api/user/complain`,
+        `http://localhost:5000/api/user/complain`,
         {
           complain_id: complainId,
-          total_downvotes: !votes?.downvote
-            ? complain.total_downvotes + 1
-            : complain.total_downvotes - 1,
+          total_downvotes: votes?.downvote
+            ? total.totalDownvote - 1
+            : total.totalDownvote + 1,
           total_upvotes: votes?.upvote
-            ? complain.total_upvotes - 1
-            : complain.total_upvotes,
+            ? total.totalUpvote - 1
+            : total.totalUpvote,
         },
         {
           headers: {
@@ -176,10 +204,8 @@ const Votes = ({ complain }) => {
         <Tooltip title="upvote" placement="top" arrow>
           <div
             className={`p-[2px] rounded-full hover:text-blue-500 cursor-pointer ${
-              votes?.upvote &&
-              // complain.citizen_id === votes?.citizen_id &&
-              "bg-blue-500 hover:text-white text-white"
-            } `}
+              votes?.upvote ? "bg-blue-500 hover:text-white text-white" : ""
+            }`}
           >
             <BiUpvote />
           </div>
@@ -194,7 +220,7 @@ const Votes = ({ complain }) => {
         <Tooltip title="downvote" placement="top" arrow>
           <div
             className={` p-[2px] rounded-full hover:text-blue-500 cursor-pointer ${
-              votes.downvote && " bg-blue-500 hover:text-white text-white"
+              votes.downvote ? "bg-blue-500 hover:text-white text-white" : ""
             } `}
           >
             <BiDownvote />

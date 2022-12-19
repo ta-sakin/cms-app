@@ -22,6 +22,7 @@ const Home = () => {
   const [selected, setSelected] = useState(false);
   const [render, setRender] = useState(false);
   const [userId] = useUser();
+
   useEffect(() => {
     const getComplains = async () => {
       let CancelToken = axios.CancelToken;
@@ -29,7 +30,7 @@ const Home = () => {
       try {
         const { data } = await axios({
           method: "GET",
-          url: "https://cms-server-production.up.railway.app/api/user/complain/all",
+          url: "http://localhost:5000/api/user/complain/all",
           params: {
             filters: filteredData,
             page,
@@ -43,11 +44,13 @@ const Home = () => {
         setLoading(false);
         if (filteredData && Object.keys(filteredData).length > 0) {
           setComplains((prevComplain) => {
-            const uniqueComplain = _.uniq([...prevComplain, ...data], "_id");
+            //remove duplicate complain
+            const uniqueComplain = _.uniqBy([...prevComplain, ...data], "_id");
             return uniqueComplain;
           });
         } else {
           setComplains((prevComplain) => {
+            //remove duplicate complain
             const uniqueComplain = _.uniqBy([...prevComplain, ...data], "_id");
             return uniqueComplain;
           });
@@ -65,7 +68,7 @@ const Home = () => {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        "https://cms-server-production.up.railway.app/api/user/complain/total",
+        "http://localhost:5000/api/user/complain/total",
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem("accessToken")}`,

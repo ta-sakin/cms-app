@@ -11,7 +11,10 @@ import { HiDocumentDuplicate } from "react-icons/hi";
 
 const Dashboard = () => {
   const [expand, setExpand] = useState(false);
-
+  let activeStyle = {
+    color: "#ffffff",
+    backgroundColor: "#4c4c4c",
+  };
   const [user] = useAdmin();
   if (!user?.email) {
     return <Loading />;
@@ -58,6 +61,7 @@ const Dashboard = () => {
                 onClick={() => setExpand(false)}
                 to={"/dashboard"}
                 className="font-semibold h-10"
+                style={({ isActive }) => (isActive ? activeStyle : undefined)}
               >
                 <MdSpaceDashboard /> Dashboard
               </NavLink>
@@ -67,12 +71,18 @@ const Dashboard = () => {
                 onClick={() => setExpand(false)}
                 to="/muser"
                 className="font-semibold h-10"
+                style={({ isActive }) => (isActive ? activeStyle : undefined)}
               >
                 <FaUserCircle /> Manage User
               </NavLink>
             </li>
             <li>
-              <NavLink to="mcomplains" className="font-semibold  h-10 ">
+              {/* <NavLink to="mcomplains" className="font-semibold  h-10 "> */}
+              <NavLink
+                to="mcomplains"
+                className="font-semibold h-10"
+                style={({ isActive }) => (isActive ? activeStyle : undefined)}
+              >
                 <HiDocumentDuplicate className="text-xl" />
                 Manage Complains
               </NavLink>
@@ -122,6 +132,7 @@ const Dashboard = () => {
                 onClick={() => setExpand(false)}
                 to="/reports"
                 className="font-semibold h-10"
+                style={({ isActive }) => (isActive ? activeStyle : undefined)}
               >
                 <TbReportAnalytics className="text-xl" /> Reports
               </NavLink>

@@ -9,7 +9,7 @@ const useUser = (phone) => {
     const getUserId = async () => {
       try {
         const { data } = await axios.post(
-          "https://cms-server-production.up.railway.app/api/user/auth/signin",
+          "http://localhost:5000/api/user/auth/signin",
           { phone: user?.phoneNumber }
         );
         setUserId(data.user._id);

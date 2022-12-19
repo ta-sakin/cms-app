@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "https://cms-server-production.up.railway.app/api",
+  baseURL: "http://localhost:5000/api",
 });
 
 // Alter defaults after instance has been created

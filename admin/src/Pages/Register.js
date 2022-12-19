@@ -103,8 +103,9 @@ const Register = () => {
 
   return (
     <div>
+      <div className="text-center font-bold bg-[#e5e7eb] p-5">WELCOME TO ADMIN PANEL</div>
       <div>
-        <div className="sm:max-w-md max-w-sm mx-auto my-20 bg-white rounded-xl shadow-lg shadow-slate-300 py-8 px-8 sm:px-16">
+        <div className="sm:max-w-md max-w-sm mx-auto my-20 bg-white rounded-xl border-2 py-8 px-8 sm:px-16">
           <h1 className="text-2xl text-center font-bold mb-3">
             Admin Registration
           </h1>

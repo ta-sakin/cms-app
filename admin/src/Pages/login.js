@@ -102,9 +102,10 @@ const Login = () => {
 
   return (
     <div>
-      <div>
-        <div className="sm:max-w-md max-w-sm mx-auto my-20 bg-white rounded-xl shadow-lg shadow-slate-300 py-8 px-8 sm:px-16">
-          <h1 className="text-2xl text-center font-bold mb-3">Admin Login</h1>
+      <div className="text-center font-bold bg-[#e5e7eb] p-5">WELCOME TO ADMIN PANEL</div>
+      <div className="mx-2">
+        <div className="sm:max-w-md max-w-sm mx-auto my-20 bg-white rounded-xl border-2 py-8 px-8 sm:px-16">
+          <h1 className="text-2xl text-center font-bold mb-5">Admin Login</h1>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col space-y-5">
               <label htmlFor="email">
@@ -165,7 +166,7 @@ const Login = () => {
                   className="text-black font-medium inline-flex space-x-1 items-center"
                 >
                   <span className="font-semibold text-sm hover:underline hover:text-indigo-600 ">
-                    Register{" "}
+                    Register Now{" "}
                   </span>
                 </Link>
               </p>

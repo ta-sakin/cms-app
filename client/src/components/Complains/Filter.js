@@ -14,7 +14,7 @@ const Filter = ({ handleChange, handleSubmit }) => {
   const categories = ["Water", "Mosquitos", "Roads", "Others"];
 
   return (
-    <div className="sm:w-96 md:sticky block md:self-start self-auto left-10 top-20 my-20 bg-white rounded-xl px-6 md:px-10">
+    <div className="sm:w-96 md:sticky block md:self-start self-auto left-10 top-20 mt-10 bg-white rounded-xl px-6 md:px-10">
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col space-y-5">
           <label htmlFor="ward">
@@ -27,7 +27,7 @@ const Filter = ({ handleChange, handleSubmit }) => {
               <option defaultValue="" selected disabled hidden>
                 Select a ward
               </option>
-              <option value="select">--Select--</option>
+              <option value="select">All</option>
 
               {Object.keys(wardsList)?.map((key, i) => (
                 <option key={i} value={wardsList[key]}>
@@ -44,9 +44,9 @@ const Filter = ({ handleChange, handleSubmit }) => {
               className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
             >
               <option defaultValue="" selected disabled hidden>
-                Select complain status
+                Select complaint status
               </option>
-              <option value="select">--Select--</option>
+              <option value="select">All</option>
 
               {statusList?.map((item, i) => (
                 <option key={i} value={item}>
@@ -63,9 +63,9 @@ const Filter = ({ handleChange, handleSubmit }) => {
               className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
             >
               <option defaultValue="" selected disabled hidden>
-                Select complain category
+                Select complaint category
               </option>
-              <option value="select">--Select--</option>
+              <option value="select">All</option>
 
               {categories?.map((category, i) => (
                 <option key={i} value={category}>

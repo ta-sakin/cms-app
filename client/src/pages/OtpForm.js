@@ -112,7 +112,7 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
   };
 
   return (
-    <div className="mt-20 max-w-sm sm:max-w-lg py-10 rounded-lg  shadow-lg mx-auto">
+    <div className="mt-20 max-w-sm sm:max-w-lg py-10 rounded-lg border-2 mx-auto">
       <h4 className="text-2xl text-center mt-5">Enter Verification Code</h4>
       <p className="text-center text-gray-600 text-sm">
         OTP has been sent to this phone number {userData?.phone || phone}

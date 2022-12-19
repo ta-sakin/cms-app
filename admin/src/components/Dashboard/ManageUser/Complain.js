@@ -43,7 +43,7 @@ const Complain = ({ complain, details, manage = false }) => {
 
   return (
     <>
-      <div className="mb-10 bg-white rounded-xl border-2 py-6 px-4">
+      <div className="mb-10 bg-white rounded-xl border-2 py-4 px-4">
         <div className="">
           <div className="flex gap-2 items-center">
             <div>

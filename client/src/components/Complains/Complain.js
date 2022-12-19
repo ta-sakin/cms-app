@@ -60,7 +60,7 @@ const Complain = ({ complain, userId }) => {
   };
 
   return (
-    <div className="sm:max-w-lg max-w-sm mb-10 bg-white rounded-xl border-2 py-6 px-4 mx-6 sm:mx-10">
+    <div className="sm:max-w-lg max-w-sm mb-10 bg-white rounded-xl border-2 py-4 px-4 mx-3">
       <div className="flex justify-between">
         <div className="flex gap-2">
           <div>
@@ -119,7 +119,7 @@ const Complain = ({ complain, userId }) => {
           <Votes complain={complain} key={complain._id} />
           <Tooltip title="comment" placement="top" arrow>
             <div
-              className="ml-5 text-2xl cursor-pointer hover:text-blue-500 flex gap-1 items-center"
+              className="ml-5 text-2xl cursor-pointer text-gray-500 hover:text-blue-500 flex gap-1 items-center"
               onClick={() => setShowComment(!showComment)}
             >
               <FaRegComment />

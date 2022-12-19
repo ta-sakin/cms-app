@@ -123,8 +123,8 @@ const Register = () => {
       </div>
 
       <div className={`${!show ? "block" : "hidden"}`}>
-        <div className="sm:max-w-md max-w-sm mx-auto my-20 bg-white rounded-xl shadow-lg shadow-slate-300 py-8 px-8 sm:px-16">
-          <h1 className="text-2xl text-center font-bold mb-3">Register</h1>
+        <div className="sm:max-w-md max-w-sm mx-auto my-10 bg-white rounded-xl border-2 py-8 px-8 sm:px-16">
+          <h1 className="text-2xl text-center font-bold mb-3">Create an Account</h1>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col space-y-5">
               <label htmlFor="name">
@@ -136,7 +136,7 @@ const Register = () => {
                   type="name"
                   value={name}
                   className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                  placeholder="Enter email address"
+                  placeholder="Enter your fullname"
                 />
               </label>
               <label htmlFor="email">
@@ -174,7 +174,7 @@ const Register = () => {
                   className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
                 >
                   <option value="" selected disabled hidden>
-                    Choose here
+                    Select here
                   </option>
                   {Object.keys(wardsList)?.map((key) => (
                     <option value={wardsList[key]}>{wardsList[key]}</option>

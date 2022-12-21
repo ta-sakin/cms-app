@@ -51,29 +51,16 @@ const Home = () => {
           cancelToken: new CancelToken((c) => (cancel = c)),
         });
         setLoading(false);
+        //remove duplicate complain
+        const uniqueComplain = removeDuplicate(complains, data);
         if (filteredData && Object.keys(filteredData).length > 0) {
-          if (sort) {
-            const uniqueComplain = removeDuplicate(complains, data);
-            sortBy(uniqueComplain, sort);
-          } else {
-            setComplains((prevComplain) => {
-              //remove duplicate complain
-              const uniqueComplain = removeDuplicate(prevComplain, data);
-              return uniqueComplain;
-            });
-          }
+          setComplains(uniqueComplain);
         } else {
-          if (sort) {
-            const uniqueComplain = removeDuplicate(complains, data);
-
-            sortBy(uniqueComplain, sort);
-          } else {
-            setComplains((prevComplain) => {
-              //remove duplicate complain
-              const uniqueComplain = removeDuplicate(prevComplain, data);
-              return uniqueComplain;
-            });
-          }
+          setComplains(uniqueComplain);
+        }
+        //if sort is selected then apply sort with filter
+        if (sort) {
+          sortBy(uniqueComplain, sort);
         }
       } catch (error) {
         if (axios.isCancel(error)) return;
@@ -144,13 +131,11 @@ const Home = () => {
         (upvote, downvote) => downvote.total_upvotes - upvote.total_upvotes
       );
       setComplains([...sortByUpvote]);
-      console.log("complains upvote", sortByUpvote);
     } else if (value === "downvote") {
       const sortByDownvote = sortComplains.sort(
         (upvote, downvote) => downvote.total_downvotes - upvote.total_downvotes
       );
       setComplains([...sortByDownvote]);
-      console.log("complains downvote", sortByDownvote);
     }
   };
 

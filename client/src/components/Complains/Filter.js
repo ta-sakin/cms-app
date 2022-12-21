@@ -11,7 +11,18 @@ const Filter = ({ handleChange, handleSubmit }) => {
     "Closed",
   ];
 
-  const categories = ["Water", "Mosquitos", "Roads", "Others"];
+  // const categories = ["Water", "Mosquitos", "Roads", "Others"];
+  const categories = [
+    "water",
+    "mosquitos",
+    "roads",
+    "wastes",
+    "illegal_construction",
+    "noise_pollution",
+    "air_pollution",
+    "food_safety",
+    "others",
+  ];
 
   return (
     <div className="sm:w-96 md:sticky block md:self-start self-auto left-10 top-20 mt-10 bg-white rounded-xl px-6 md:px-10">
@@ -50,7 +61,7 @@ const Filter = ({ handleChange, handleSubmit }) => {
 
               {statusList?.map((item, i) => (
                 <option key={i} value={item}>
-                  {item}
+                  {item.includes("_") ? item.split("_").join(" ") : item}
                 </option>
               ))}
             </select>
@@ -68,8 +79,10 @@ const Filter = ({ handleChange, handleSubmit }) => {
               <option value="select">All</option>
 
               {categories?.map((category, i) => (
-                <option key={i} value={category}>
-                  {category}
+                <option key={i} value={category} className="capitalize">
+                  {category.includes("_")
+                    ? category.split("_").join(" ")
+                    : category}
                 </option>
               ))}
             </select>

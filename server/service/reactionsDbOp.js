@@ -7,11 +7,11 @@ const {
 } = require("../model/Users");
 
 const putVotes = async (data) => {
-  const { complain_id, citizen_id, upvote, downvote, createdAt } = data;
+  const { complain_id, citizen_id, upvote, downvote, vote, createdAt } = data;
 
   const filter = { $and: [{ complain_id }, { citizen_id }] };
   const update = {
-    $set: { complain_id, citizen_id, upvote, downvote, createdAt },
+    $set: { complain_id, citizen_id, upvote, downvote, vote, createdAt },
   };
   return await votesCollection.updateOne(filter, update, { upsert: true });
 };

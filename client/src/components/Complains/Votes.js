@@ -1,6 +1,6 @@
 import { Tooltip } from "@mui/material";
 import axios from "axios";
-import React from "react";
+import React, { useCallback } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
@@ -11,79 +11,138 @@ import useUser from "../../hooks/useUser";
 import Loading from "../shared/Loading";
 
 const Votes = ({ complain }) => {
-  const { currentUser: user } = useAuth();
-  const [upvote, setUpvote] = useState(false);
-  const [downvote, setDownvote] = useState(false);
+  const { userId } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [userId] = useUser(user?.phoneNumber);
+  // const [userId] = useUser(user?.phoneNumber);
+  const [refetch, setRefetch] = useState(false);
   const [votes, setVotes] = useState({});
   const [total, setTotal] = useState({});
 
-  useEffect(() => {
-    //fetch totalvotes for a complain
-    const userVotes = async () => {
-      try {
-        const { data } = await axios.get(
-          `http://localhost:5000/api/user/react/votes/total?cid=${complain._id}`,
-          {
-            headers: {
-              authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-          }
-        );
-        setTotal(data);
-      } catch (error) {
-        toast.error("Something went wrong", {
-          toastId: "error",
-        });
-      }
-    };
-    userVotes();
-  }, [userId, upvote, downvote, complain._id]);
+  // useEffect(() => {
+  //   //fetch totalvotes for a complain
+  //   const userVotes = async () => {
+  //     try {
+  //       const { data } = await axios.get(
+  //         `http://localhost:5000/api/user/react/votes/total?cid=${complain._id}`,
+  //         {
+  //           headers: {
+  //             authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+  //           },
+  //         }
+  //       );
+  //       setTotal(data);
+  //     } catch (error) {
+  //       toast.error("Something went wrong", {
+  //         toastId: "error",
+  //       });
+  //     }
+  //   };
+  //   userVotes();
+  // }, [userId, upvote, downvote, complain._id]);
 
+  // useEffect(() => {
+  //   //fetch active vote for a user
+  //   const userVotes = async () => {
+  //     try {
+  //       const { data } = await axios.get(
+  //         `http://localhost:5000/api/user/react/votes?cid=${complain._id}&uid=${userId}`,
+  //         {
+  //           headers: {
+  //             authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+  //           },
+  //         }
+  //       );
+  //       setVotes(data?.citizen_id && data);
+  //     } catch (error) {
+  //       toast.error("Something went wrong", { toastId: "error" });
+  //     }
+  //   };
+  //   userVotes();
+  // }, [userId, upvote, downvote, complain._id]);
   useEffect(() => {
-    //fetch active vote for a user
-    const userVotes = async () => {
+    //if data is already fetched don't fetch again
+    const CancelToken = axios.CancelToken;
+    let cancel;
+
+    const fetchData = async () => {
       try {
-        const { data } = await axios.get(
-          `http://localhost:5000/api/user/react/votes?cid=${complain._id}&uid=${userId}`,
-          {
-            headers: {
-              authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-          }
-        );
-        setVotes(data?.citizen_id && data);
+        const [totalVotes, userVotes] = await Promise.all([
+          axios.get(
+            `http://localhost:5000/api/user/react/votes/total?cid=${complain._id}`,
+            {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+              },
+              cancelToken: new CancelToken((c) => {
+                cancel = c;
+              }),
+            }
+          ),
+          axios.get(
+            `http://localhost:5000/api/user/react/votes?cid=${complain._id}&uid=${userId}`,
+            {
+              headers: {
+                authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+              },
+              cancelToken: new CancelToken((c) => {
+                cancel = c;
+              }),
+            }
+          ),
+        ]);
+        setTotal(totalVotes.data);
+        setVotes(userVotes.data?.citizen_id && userVotes.data);
       } catch (error) {
-        toast.error("Something went wrong", { theme: "colored" });
+        if (axios.isCancel(error)) {
+          console.log("Request canceled", error.message);
+        }
+        // toast.error("Something went wrong", { toastId: "error" });
       }
     };
-    userVotes();
-  }, [userId, upvote, downvote, complain._id]);
+    fetchData();
+    return () => cancel();
+  }, [userId, refetch, complain._id]);
 
   const handleUpvote = async (complainId, cid, complain) => {
     //first updating on the client side then on the backend
+    // setVotes({
+    //   ...votes,
+    //   upvote: votes?.upvote ? !votes?.upvote : true,
+    //   downvote: false,
+    // });
+    // setTotal({
+    //   ...total,
+    //   totalUpvote:
+    //     votes?.upvote && total.totalUpvote > 0
+    //       ? total.totalUpvote - 1
+    //       : total.totalUpvote + 1,
+    //   totalDownvote:
+    //     votes?.downvote && total.totalDownvote > 0
+    //       ? total.totalDownvote - 1
+    //       : total.totalDownvote < 0
+    //       ? 0
+    //       : total.totalDownvote,
+    // });
+
+    const { vote } = votes;
     setVotes({
       ...votes,
-      upvote: votes?.upvote ? !votes?.upvote : true,
-      downvote: false,
+      vote: vote === "upvote" ? null : "upvote",
     });
+
     setTotal({
-      ...total,
       totalUpvote:
-        votes?.upvote && total.totalUpvote > 0
+        vote === "upvote" && total.totalUpvote > 0
           ? total.totalUpvote - 1
           : total.totalUpvote + 1,
       totalDownvote:
-        votes?.downvote && total.totalDownvote > 0
+        vote === "downvote" && total.totalDownvote > 0
           ? total.totalDownvote - 1
           : total.totalDownvote < 0
           ? 0
           : total.totalDownvote,
     });
-
     //update votes on the backend
-
     try {
       //update active status
       const { data } = await axios.put(
@@ -93,7 +152,7 @@ const Votes = ({ complain }) => {
           citizen_id: userId,
           upvote: votes?.upvote ? !votes?.upvote : true,
           downvote: false,
-          vote: "upvote",
+          vote: vote === "upvote" ? null : "upvote",
           createdAt: new Date(),
         },
         {
@@ -102,19 +161,16 @@ const Votes = ({ complain }) => {
           },
         }
       );
-      setUpvote(data);
 
       //update total up and down vote
       const response = await axios.put(
         `http://localhost:5000/api/user/complain`,
         {
           complain_id: complainId,
-          total_upvotes: votes?.upvote
-            ? total.totalUpvote - 1
-            : total.totalUpvote + 1,
-          total_downvotes: votes?.downvote
-            ? total.totalDownvote - 1
-            : total.totalDownvote,
+          total_upvotes:
+            vote === "upvote" ? total.totalUpvote - 1 : total.totalUpvote + 1,
+          total_downvotes:
+            vote === "downvote" ? total.totalDownvote - 1 : total.totalDownvote,
         },
         {
           headers: {
@@ -122,6 +178,9 @@ const Votes = ({ complain }) => {
           },
         }
       );
+      if (data && response) {
+        setRefetch(data);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -129,25 +188,41 @@ const Votes = ({ complain }) => {
 
   const handleDownvote = async (complainId, cid, complain) => {
     //first updating in the client then on the backend
+    // setVotes({
+    //   ...votes,
+    //   upvote: false,
+    //   downvote: votes?.downvote ? !votes?.downvote : true,
+    // });
+    // setTotal({
+    //   ...total,
+    //   totalDownvote:
+    //     votes?.downvote && total.totalDownvote > 0
+    //       ? total.totalDownvote - 1
+    //       : total.totalDownvote + 1,
+    //   totalUpvote:
+    //     votes?.upvote && total.totalUpvote > 0
+    //       ? total.totalUpvote - 1
+    //       : total.totalUpvote < 0
+    //       ? 0
+    //       : total.totalUpvote,
+    // });
+    const { vote } = votes;
     setVotes({
       ...votes,
-      upvote: false,
-      downvote: votes?.downvote ? !votes?.downvote : true,
+      vote: vote === "downvote" ? null : "downvote",
     });
     setTotal({
-      ...total,
       totalDownvote:
-        votes?.downvote && total.totalDownvote > 0
+        vote === "downvote" && total.totalDownvote > 0
           ? total.totalDownvote - 1
           : total.totalDownvote + 1,
       totalUpvote:
-        votes?.upvote && total.totalUpvote > 0
+        vote === "upvote" && total.totalUpvote > 0
           ? total.totalUpvote - 1
           : total.totalUpvote < 0
           ? 0
           : total.totalUpvote,
     });
-
     //update votes on the backend
     try {
       //update active status
@@ -158,7 +233,7 @@ const Votes = ({ complain }) => {
           citizen_id: userId,
           upvote: false,
           downvote: votes?.downvote ? !votes?.downvote : true,
-          vote: "downvote",
+          vote: votes.vote === "downvote" ? null : "downvote",
           createdAt: new Date(),
         },
         {
@@ -167,19 +242,17 @@ const Votes = ({ complain }) => {
           },
         }
       );
-      setDownvote(data);
-
       //update total up and down vote
       const response = await axios.put(
         `http://localhost:5000/api/user/complain`,
         {
           complain_id: complainId,
-          total_downvotes: votes?.downvote
-            ? total.totalDownvote - 1
-            : total.totalDownvote + 1,
-          total_upvotes: votes?.upvote
-            ? total.totalUpvote - 1
-            : total.totalUpvote,
+          total_downvotes:
+            vote === "downvote"
+              ? total.totalDownvote - 1
+              : total.totalDownvote + 1,
+          total_upvotes:
+            vote === "upvote" ? total.totalUpvote - 1 : total.totalUpvote,
         },
         {
           headers: {
@@ -187,11 +260,13 @@ const Votes = ({ complain }) => {
           },
         }
       );
+      if (data && response) {
+        setRefetch(data);
+      }
     } catch (error) {
       console.log(error);
     }
   };
-
   return (
     <>
       <div
@@ -204,7 +279,9 @@ const Votes = ({ complain }) => {
         <Tooltip title="upvote" placement="top" arrow>
           <div
             className={`p-[2px] rounded-full hover:text-blue-500 cursor-pointer ${
-              votes?.upvote ? "bg-blue-500 hover:text-white text-white" : ""
+              votes?.vote === "upvote"
+                ? "bg-blue-500 hover:text-white text-white"
+                : ""
             }`}
           >
             <BiUpvote />
@@ -220,7 +297,9 @@ const Votes = ({ complain }) => {
         <Tooltip title="downvote" placement="top" arrow>
           <div
             className={` p-[2px] rounded-full hover:text-blue-500 cursor-pointer ${
-              votes.downvote ? "bg-blue-500 hover:text-white text-white" : ""
+              votes.vote === "downvote"
+                ? "bg-blue-500 hover:text-white text-white"
+                : ""
             } `}
           >
             <BiDownvote />

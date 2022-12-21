@@ -1,3 +1,5 @@
+const { ObjectId } = require("mongodb");
+const { votesCollection } = require("../model/Users");
 const { findComplainByProperty } = require("../service/complainsFunc");
 const {
   putVotes,
@@ -86,6 +88,39 @@ const getComments = async (req, res, next) => {
   }
 };
 
+// const modifyVotes = async (req, res, next) => {
+//   try {
+//     console.log("hitting");
+//     const votes = await votesCollection.find({}).toArray();
+//     for (const vote of votes) {
+//       if (vote.upvote) {
+//         // console.log("upvote", { ...vote, vote: "upvote" });
+//         await votesCollection.updateOne(
+//           { _id: ObjectId(vote._id) },
+//           { $set: { ...vote, vote: "upvote" } },
+//           { upsert: true }
+//         );
+//       } else if (vote.downvote) {
+//         // console.log("downvote", { ...vote, vote: "downvote" });
+//         await votesCollection.updateOne(
+//           { _id: ObjectId(vote._id) },
+//           { $set: { ...vote, vote: "downvote" } },
+//           { upsert: true }
+//         );
+//       } else {
+//         // console.log("null", { ...vote, vote: null });
+
+//         await votesCollection.updateOne(
+//           { _id: ObjectId(vote._id) },
+//           { $set: { ...vote, vote: null } },
+//           { upsert: true }
+//         );
+//       }
+//     }
+//     const modified = await votesCollection.find({}).toArray();
+//     res.json(modified);
+//   } catch (error) {}
+// };
 module.exports = {
   updateVote,
   getReactionsByUserId,
@@ -93,4 +128,5 @@ module.exports = {
   getComments,
   getTotalVotes,
   getUsersVotes,
+  // modifyVotes,
 };

@@ -6,6 +6,7 @@ const useUser = (phone) => {
   const { currentUser: user } = useAuth();
   const [userId, setUserId] = useState("");
   useEffect(() => {
+    // console.log("user id use user", userId);
     const getUserId = async () => {
       try {
         const { data } = await axios.post(

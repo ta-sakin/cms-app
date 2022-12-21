@@ -13,6 +13,7 @@ import auth from "../firebase.init";
 import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 // import useToken from "../hooks/useToken";
 // import auth from "../utils/firebase.init";
@@ -30,6 +31,7 @@ export function AuthProvider({ children }) {
   const [loadCaptcha, setLoadCaptcha] = useState(true);
   const provider = new GoogleAuthProvider();
   const [confirmResponse, setConfirmResponse] = useState();
+  const [userId, setUserId] = useState("");
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
@@ -63,11 +65,12 @@ export function AuthProvider({ children }) {
       if (localStorage.getItem("accessToken")) {
         let token = localStorage.getItem("accessToken");
         const { exp } = jwt_decode(token);
-        const expirationTime = exp * 1000 - 60000;
+        const expirationTime = exp * 1000 - 60000; //exp:22th-11:09pm
         if (Date.now() >= expirationTime) {
           await logout();
           navigate("/login");
           toast.error("Session expired", { theme: "colored" });
+          window.location.reload();
         }
       }
     })();
@@ -89,6 +92,20 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("accessToken");
     return signOut(auth);
   }
+  useEffect(() => {
+    const getUserId = async () => {
+      try {
+        const { data } = await axios.post(
+          "http://localhost:5000/api/user/auth/signin",
+          { phone: currentUser?.phoneNumber }
+        );
+        setUserId(data.user._id);
+      } catch (error) {
+        // console.log(error);
+      }
+    };
+    getUserId();
+  }, [currentUser?.phoneNumber]);
 
   const value = {
     loading,
@@ -99,6 +116,7 @@ export function AuthProvider({ children }) {
     captchaResponse,
     setLoadCaptcha,
     loadCaptcha,
+    userId,
   };
 
   return (

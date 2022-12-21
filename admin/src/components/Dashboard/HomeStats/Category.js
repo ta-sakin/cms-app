@@ -24,7 +24,11 @@ const Category = ({ categories }) => {
             className="bg-gray-100 w-44 py-10 text-center rounded-xl border-2"
           >
             <p>{categories[category] ? categories[category] : 0}</p>
-            <p className="capitalize">{category}</p>
+            <p className="capitalize">
+              {category.includes("_")
+                ? category.split("_").join(" ")
+                : category}
+            </p>
           </div>
         ))}
       </div>

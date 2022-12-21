@@ -9,7 +9,14 @@ import ButtonSpin from "../components/shared/ButtonSpin";
 import InfiniteScroll from "react-infinite-scroll-component";
 import _ from "lodash";
 import useUser from "../hooks/useUser";
-import { Skeleton } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  NativeSelect,
+  Select,
+  Skeleton,
+} from "@mui/material";
 
 const NUM_OF_DATA_TO_LOAD = 3;
 const Home = () => {
@@ -21,12 +28,14 @@ const Home = () => {
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState(false);
   const [render, setRender] = useState(false);
+  const [sort, setSort] = useState("");
   const [userId] = useUser();
 
   useEffect(() => {
+    //if data is already fetched don't fetch again
+    let CancelToken = axios.CancelToken;
+    let cancel;
     const getComplains = async () => {
-      let CancelToken = axios.CancelToken;
-      let cancel;
       try {
         const { data } = await axios({
           method: "GET",
@@ -43,17 +52,28 @@ const Home = () => {
         });
         setLoading(false);
         if (filteredData && Object.keys(filteredData).length > 0) {
-          setComplains((prevComplain) => {
-            //remove duplicate complain
-            const uniqueComplain = _.uniqBy([...prevComplain, ...data], "_id");
-            return uniqueComplain;
-          });
+          if (sort) {
+            const uniqueComplain = removeDuplicate(complains, data);
+            sortBy(uniqueComplain, sort);
+          } else {
+            setComplains((prevComplain) => {
+              //remove duplicate complain
+              const uniqueComplain = removeDuplicate(prevComplain, data);
+              return uniqueComplain;
+            });
+          }
         } else {
-          setComplains((prevComplain) => {
-            //remove duplicate complain
-            const uniqueComplain = _.uniqBy([...prevComplain, ...data], "_id");
-            return uniqueComplain;
-          });
+          if (sort) {
+            const uniqueComplain = removeDuplicate(complains, data);
+
+            sortBy(uniqueComplain, sort);
+          } else {
+            setComplains((prevComplain) => {
+              //remove duplicate complain
+              const uniqueComplain = removeDuplicate(prevComplain, data);
+              return uniqueComplain;
+            });
+          }
         }
       } catch (error) {
         if (axios.isCancel(error)) return;
@@ -63,6 +83,7 @@ const Home = () => {
       return () => cancel();
     };
     getComplains();
+    return () => cancel();
   }, [filteredData, page, render]);
 
   useEffect(() => {
@@ -79,16 +100,8 @@ const Home = () => {
     })();
   }, []);
 
-  const handleChange = (e) => {
-    setSelected(true);
-
-    //if --select-- option selected load all data
-    if (e.target.value === "select") {
-      delete filters[e.target.name];
-      setFilters({ ...filters });
-    } else {
-      setFilters({ ...filters, [e.target.name]: e.target.value.toLowerCase() });
-    }
+  const fetchMoreData = async () => {
+    setPage((prevPage) => prevPage + NUM_OF_DATA_TO_LOAD);
   };
 
   const handleSubmit = (e) => {
@@ -102,8 +115,43 @@ const Home = () => {
     }
   };
 
-  const fetchMoreData = async () => {
-    setPage((prevPage) => prevPage + NUM_OF_DATA_TO_LOAD);
+  const handleChange = (e) => {
+    setSelected(true);
+
+    //if --select-- option selected load all data
+    if (e.target.value === "select") {
+      delete filters[e.target.name];
+      setFilters({ ...filters });
+    } else {
+      setFilters({ ...filters, [e.target.name]: e.target.value.toLowerCase() });
+    }
+  };
+
+  const handleSort = (e) => {
+    const { value } = e.target;
+    setSort(value);
+    sortBy(complains, value);
+  };
+
+  const removeDuplicate = (prevComplain, data) => {
+    return _.uniqBy([...prevComplain, ...data], "_id");
+  };
+
+  //sort the complains by upvote or downvote
+  const sortBy = (sortComplains, value) => {
+    if (value === "upvote") {
+      const sortByUpvote = sortComplains.sort(
+        (upvote, downvote) => downvote.total_upvotes - upvote.total_upvotes
+      );
+      setComplains([...sortByUpvote]);
+      console.log("complains upvote", sortByUpvote);
+    } else if (value === "downvote") {
+      const sortByDownvote = sortComplains.sort(
+        (upvote, downvote) => downvote.total_downvotes - upvote.total_downvotes
+      );
+      setComplains([...sortByDownvote]);
+      console.log("complains downvote", sortByDownvote);
+    }
   };
 
   return (
@@ -121,6 +169,25 @@ const Home = () => {
         )
       )}
       <div className="mt-10">
+        {!loading && (
+          <div className="flex justify-end rounded-md">
+            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+              <InputLabel id="demo-select" className="bg-white">
+                Sort By
+              </InputLabel>
+              <Select
+                labelId="demo-select-small"
+                id="demo-select-small"
+                label="Vote"
+                value={sort}
+                onChange={handleSort}
+              >
+                <MenuItem value="upvote">Upvote</MenuItem>
+                <MenuItem value="downvote">Downvote</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        )}
         <InfiniteScroll
           dataLength={complains?.length}
           next={fetchMoreData}

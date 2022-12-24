@@ -150,8 +150,8 @@ const Votes = ({ complain }) => {
         {
           complain_id: complainId,
           citizen_id: userId,
-          upvote: votes?.upvote ? !votes?.upvote : true,
-          downvote: false,
+          // upvote: votes?.upvote ? !votes?.upvote : true,
+          // downvote: false,
           vote: vote === "upvote" ? null : "upvote",
           createdAt: new Date(),
         },
@@ -231,8 +231,8 @@ const Votes = ({ complain }) => {
         {
           complain_id: complainId,
           citizen_id: userId,
-          upvote: false,
-          downvote: votes?.downvote ? !votes?.downvote : true,
+          // upvote: false,
+          // downvote: votes?.downvote ? !votes?.downvote : true,
           vote: votes.vote === "downvote" ? null : "downvote",
           createdAt: new Date(),
         },

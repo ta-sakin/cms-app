@@ -3,6 +3,15 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import Loading from "../shared/Loading";
 
+const statusList = [
+  "Pending approval",
+  "In verification",
+  "In hold",
+  "In progress",
+  "Rejected",
+  "Closed",
+];
+
 const Dashboard = ({ userId }) => {
   const [info, setInfo] = useState({ pendingApproval: 0, totalComplains: 0 });
   const [loading, setLoading] = useState(true);
@@ -18,7 +27,8 @@ const Dashboard = ({ userId }) => {
           }
         );
         setLoading(false);
-        setInfo({ ...data });
+        console.log("data", data);
+        setInfo(data);
       } catch (error) {
         setLoading(false);
       }
@@ -33,37 +43,18 @@ const Dashboard = ({ userId }) => {
     <div className="my-10 max-w-3xl mx-auto">
       <div className="grid grid-cols-2 sm:grid-cols-4 place-items-center gap-8">
         <div className="bg-gray-100 w-44 py-10 text-center">
-          <p>{info?.totalComplains}</p>
+          <p>{Object.keys(info).length ?? 0}</p>
           <p>ALL Complains</p>
         </div>
-        <div className="bg-gray-100 w-44 py-10 text-center">
-          <p>{info?.pendingApproval}</p>
-          <p>Pending Approval</p>
-        </div>
-        <div className="bg-gray-100 w-44 py-10 text-center">
-          <p>0</p>
-          <p>Approval</p>
-        </div>
-        <div className="bg-gray-100 w-44 py-10 text-center">
-          <p>0</p>
-          <p>Rejected</p>
-        </div>
-        <div className="bg-gray-100 w-44 py-10 text-center">
-          <p>0</p>
-          <p>Closed</p>
-        </div>
-        <div className="bg-gray-100 w-44 py-10 text-center">
-          <p>0</p>
-          <p>In Verification</p>
-        </div>
-        <div className="bg-gray-100 w-44 py-10 text-center">
-          <p>0</p>
-          <p>In Progress</p>
-        </div>
-        <div className="bg-gray-100 w-44 py-10 text-center">
-          <p>0</p>
-          <p>In Hold</p>
-        </div>
+        {statusList.map((status, i) => (
+          <div
+            key={i}
+            className="bg-gray-100 w-44 py-10 text-center rounded-xl border-2"
+          >
+            <p>{info[status.toLowerCase()] ? info[status.toLowerCase()] : 0}</p>
+            <p className="capitalized">{status}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

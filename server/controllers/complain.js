@@ -7,12 +7,14 @@ const {
   findComplainsByUserId,
   deleteComplainById,
   getStatusCountByUser,
+  countComplainsByStatus,
 } = require("../service/complainsFunc");
 const natural = require("natural");
 const { findCommentsPerComplain } = require("../service/reactionsDbOp");
 const { complainsCollection } = require("../model/Users");
 const { findUserByProperty } = require("../service/user");
 const { getStatusDateByCID } = require("../service/statusDates");
+const { ObjectId } = require("mongodb");
 
 const submitComplain = async (req, res, next) => {
   let { address, ward, description, imgUrls, type, phone } = req.body;
@@ -139,8 +141,12 @@ const deleteComplain = async (req, res, next) => {
 
 const getCountComplaintStatus = async (req, res, next) => {
   try {
-    const id = req.params;
-    const data = await getStatusCountByUser(id);
+    const { id } = req.params;
+    // const data = findComplainsByUserId(id);
+    // const data = await getStatusCountByUser(id);
+    const objectId = ObjectId(id);
+
+    const data = await countComplainsByStatus("citizen_id", objectId);
     res.status(200).json(data);
   } catch (error) {
     console.log(error);

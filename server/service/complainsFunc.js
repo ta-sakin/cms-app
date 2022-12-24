@@ -107,7 +107,10 @@ const findComplainsByWard = async (ward, filter = {}) => {
     complains = public.concat(publicAno);
     return complains;
   }
-  return await complainsCollection.find({ $and: [{ ward }, filter] }).toArray();
+  return await complainsCollection
+    .find({ $and: [{ ward }, filter] })
+    .sort({ _id: -1 })
+    .toArray();
 };
 
 const findComplainsByUserId = (id) => {
@@ -172,6 +175,7 @@ const turnObjPairingCount = async (label, search) => {
   if (complains.length < 1) {
     return {};
   }
+
   let obj = {};
   for (const complain of complains) {
     let key = complain[label];

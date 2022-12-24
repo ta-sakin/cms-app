@@ -7,11 +7,11 @@ const {
 } = require("../model/Users");
 
 const putVotes = async (data) => {
-  const { complain_id, citizen_id, upvote, downvote, vote, createdAt } = data;
+  const { complain_id, citizen_id, vote, createdAt } = data;
 
   const filter = { $and: [{ complain_id }, { citizen_id }] };
   const update = {
-    $set: { complain_id, citizen_id, upvote, downvote, vote, createdAt },
+    $set: { complain_id, citizen_id, vote, createdAt },
   };
   return await votesCollection.updateOne(filter, update, { upsert: true });
 };
@@ -109,24 +109,27 @@ const getCurrentUsersVote = async (cid, uid) => {
 };
 
 const getVotesByComplainId = async (id) => {
-  const totalUpvote = await votesCollection.countDocuments({
-    $and: [
-      {
-        complain_id: id,
-      },
-      { upvote: true },
-    ],
+  const { total_upvotes, total_downvotes } = complainsCollection.findOne({
+    _id: ObjectId(id),
   });
-  const totalDownvote = await votesCollection.countDocuments({
-    $and: [
-      {
-        complain_id: id,
-      },
-      { downvote: true },
-    ],
-  });
+  // const totalUpvote = await votesCollection.countDocuments({
+  //   $and: [
+  //     {
+  //       complain_id: id,
+  //     },
+  //     { upvote: true },
+  //   ],
+  // });
+  // const totalDownvote = await votesCollection.countDocuments({
+  //   $and: [
+  //     {
+  //       complain_id: id,
+  //     },
+  //     { downvote: true },
+  //   ],
+  // });
 
-  return { totalUpvote, totalDownvote };
+  return { totalUpvote: total_upvotes, totalDownvote: total_downvotes };
 };
 
 module.exports = {

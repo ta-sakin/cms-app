@@ -11,7 +11,6 @@ import Navbar from "./components/shared/Header/Navbar";
 import SubmitComplain from "./pages/SubmitComplain";
 import PublicRoute from "./components/Auth/PublicRoute";
 import PrivateRoute from "./components/Auth/PrivateRoute";
-import ComplainPage from "./pages/ComplainPage";
 import MyComplain from "./pages/MyComplain";
 import Profile from "./pages/Profile";
 
@@ -83,6 +82,8 @@ function App() {
         closeOnClick={true}
         transition={Zoom}
         theme="colored"
+        // className="!h-10"
+        // style={{ height: "20px !important" }}
       />
     </div>
   );

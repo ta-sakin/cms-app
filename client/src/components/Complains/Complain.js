@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import Comment from "./Comment";
 import Votes from "./Votes";
 import moment from "moment";
+import Description from "./Description";
 
 const Complain = ({ complain, userId }) => {
   const [name, setName] = useState("");
@@ -41,9 +42,9 @@ const Complain = ({ complain, userId }) => {
 
   const deleteComplain = (id) => {
     (async () => {
-      if (window.confirm("Are you sure you want to delete?")) {
-        try {
-          const { data } = axios.delete(
+      try {
+        if (window.confirm("Are you sure you want to delete?")) {
+          const { data } = await axios.delete(
             `http://localhost:5000/api/user/complain/${id}`,
             {
               headers: {
@@ -54,8 +55,8 @@ const Complain = ({ complain, userId }) => {
           setDeleted(data);
           toast.warning("Complain deleted", { theme: "colored" });
           window.location.reload();
-        } catch (error) {}
-      }
+        }
+      } catch (error) {}
     })();
   };
 
@@ -105,7 +106,7 @@ const Complain = ({ complain, userId }) => {
         <p className="text-sm mb-4">
           <span className="font-bold">Location:</span> {complain.address}
         </p>
-        <p className="text-sm mb-5">{complain.description}</p>
+        {<Description description={complain.description} />}
         <div className="flex items-center gap-2">
           {complain.attachment.map((image, i) => (
             <div className="flex-1" key={i}>
@@ -114,7 +115,7 @@ const Complain = ({ complain, userId }) => {
           ))}
         </div>
       </div>
-      <div className={complain.complainType === "private" && "hidden"}>
+      <div className={complain.complainType === "private" ? "hidden" : ""}>
         <div className="flex items-center gap-1 mt-4">
           <Votes complain={complain} key={complain._id} />
           <Tooltip title="comment" placement="top" arrow>
@@ -127,6 +128,7 @@ const Complain = ({ complain, userId }) => {
             </div>
           </Tooltip>
         </div>
+
         {showComment && (
           <Comment
             key={complain._id}

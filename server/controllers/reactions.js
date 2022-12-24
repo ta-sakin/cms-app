@@ -43,8 +43,9 @@ const getUsersVotes = async (req, res, next) => {
       result = {
         citizen_id: uid,
         complain_id: cid,
-        downvote: false,
-        upvote: false,
+        // downvote: false,
+        // upvote: false,
+        vote: null,
       };
     }
     return res.status(201).json(result);

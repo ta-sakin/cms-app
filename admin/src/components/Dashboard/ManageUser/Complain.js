@@ -7,11 +7,11 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
+import Description from "./Description";
 
 const Complain = ({ complain, details, manage = false }) => {
   const [showComment, setShowComment] = useState(false);
   // const [totalComments, setTotalComments] = useState(0);
-  const [expand, setExpand] = useState(false);
   const [total, setTotal] = useState({});
 
   useEffect(() => {
@@ -37,9 +37,6 @@ const Complain = ({ complain, details, manage = false }) => {
   // };
 
   // const { data: total } = useQuery("complain", userVotes);
-  const seeMore = () => {
-    setExpand(true);
-  };
 
   return (
     <>
@@ -102,25 +99,7 @@ const Complain = ({ complain, details, manage = false }) => {
           <p className="text-sm mb-4">
             <span className="font-bold">Location:</span> {complain.address}
           </p>
-          <p className="text-sm mb-5">
-            {complain.description.length > 100 ? (
-              <span>
-                {!expand && (
-                  <span>
-                    {complain.description.slice(0, 100)}{" "}
-                    <span
-                      className="font-bold hover:underline"
-                      onClick={seeMore}
-                    >
-                      See more...
-                    </span>
-                  </span>
-                )}
-              </span>
-            ) : (
-              <span>{complain.description}</span>
-            )}
-          </p>
+          <Description description={complain.description} />
           <div className="flex items-center gap-2">
             {complain.attachment.map((image, i) => (
               <div className="flex-1" key={i}>
@@ -141,7 +120,7 @@ const Complain = ({ complain, details, manage = false }) => {
               />
             )}
             <div
-              className={"ml-5 text-2xl cursor-pointer hover:text-blue-500 flex gap-1 items-center "`${
+              className={`ml-5 text-2xl cursor-pointer hover:text-blue-500 flex gap-1 items-center ${
                 complain.complainType === "private" && "hidden"
               }`}
               onClick={() => total.comments && setShowComment(!showComment)}

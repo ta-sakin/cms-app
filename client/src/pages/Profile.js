@@ -16,6 +16,7 @@ const defaulValues = {
   ward: "",
   address: "",
 };
+
 const Profile = () => {
   const [userId] = useUser();
   const [profile, setProfile] = useState(defaulValues);
@@ -64,8 +65,20 @@ const Profile = () => {
   };
   const handleSave = async () => {
     try {
+      if (!name || !email || !ward || !address) {
+        console.log({ name, email, ward, address });
+        toast.error("All fields are required");
+        return;
+      }
+      if (!email.includes("@")) {
+        toast.error("Please enter a valid email");
+        return;
+      }
       setChanged(false);
-      if (_.isEqual(profile, user)) return;
+      if (_.isEqual(profile, user)) {
+        toast.success("You didn't make any changes.");
+        return;
+      }
       const { data } = await axios.patch(
         `http://localhost:5000/api/user/${userId}`,
         { name, email, ward, address },
@@ -75,6 +88,7 @@ const Profile = () => {
           },
         }
       );
+
       setUpdated(data);
       toast.success("Profile updated", { theme: "colored" });
     } catch (error) {}
@@ -107,6 +121,7 @@ const Profile = () => {
               </div>
               <div className="md:w-2/3">
                 <input
+                  required
                   onChange={handleChange}
                   id="name"
                   name="name"
@@ -128,6 +143,7 @@ const Profile = () => {
               </div>
               <div className="md:w-2/3">
                 <input
+                  required
                   onChange={handleChange}
                   id="email"
                   name="email"
@@ -172,6 +188,7 @@ const Profile = () => {
               </div>
               <div className="md:w-2/3">
                 <input
+                  required
                   onChange={handleChange}
                   value={ward}
                   name="ward"
@@ -200,6 +217,7 @@ const Profile = () => {
                   id="address"
                   readOnly={!changed}
                   className="w-full text-sm py-2 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow placeholder:text-sm  "
+                  required
                 />
               </div>
             </div>

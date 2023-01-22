@@ -23,7 +23,10 @@ const UserProfile = ({ details, refetch }) => {
         <p></p>
         {details.status === "active" ? (
           <p>
-            <button className="btn btn-secondary btn-sm bg-red-400 border-none" onClick={handleStatus}>
+            <button
+              className="btn btn-secondary btn-sm bg-red-400 border-none"
+              onClick={handleStatus}
+            >
               Block {details.name}
             </button>
           </p>
@@ -81,7 +84,7 @@ const UserProfile = ({ details, refetch }) => {
                   value={details?.email}
                   disabled
                   className="w-full text-sm py-2 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                  placeholder="Enter email address"
+                  placeholder="Enter email"
                 />
               </div>
             </div>
@@ -102,7 +105,7 @@ const UserProfile = ({ details, refetch }) => {
                   value={details?.phone}
                   disabled
                   className="w-full text-sm py-2 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                  placeholder="Enter email address"
+                  placeholder="Enter phone"
                 />
               </div>
             </div>

@@ -1,16 +1,18 @@
 import React, { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Loading from "../../components/shared/Loading";
 import useAdmin from "../../hooks/useAdmin";
-import { IoIosArrowForward } from "react-icons/io";
 import { MdSpaceDashboard } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
-import { TbReportAnalytics } from "react-icons/tb";
 import { HiDocumentDuplicate } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [expand, setExpand] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
   let activeStyle = {
     color: "#ffffff",
     backgroundColor: "#4c4c4c",
@@ -20,18 +22,19 @@ const Dashboard = () => {
     return <Loading />;
   }
 
+  // Redirect the user to the dashboard if they are on the homepage
+  if (location.pathname === "/") {
+    navigate("/dashboard");
+  }
+
   return (
     <div>
       <Navbar className="lg:px-16 px-8 z-50" user={user} />
       <div className="drawer drawer-mobile">
-        <input
-          id="dashboard-sidebar"
-          type="checkbox"
-          className="drawer-toggle"
-        />
+        <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">
           <div className="ml-3">
-            <label htmlFor="dashboard-sidebar" className="lg:hidden">
+            <label htmlFor="my-drawer-2" className="lg:hidden cursor-pointer ">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 text-purple-500 w-5"
@@ -51,10 +54,7 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="drawer-side">
-          <label
-            htmlFor="dashboard-sidebar "
-            className="drawer-overlay"
-          ></label>
+          <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
           <ul className="menu p-2 cursor-pointer overflow-y-auto w-64 bg-gray-100 text-base-content pt-10 gap-y-1">
             <li>
               <NavLink
@@ -126,7 +126,7 @@ const Dashboard = () => {
                 </ul>
               )}
             </ul> */}
-            <li>
+            {/* <li>
               <NavLink
                 onClick={() => setExpand(false)}
                 to="/reports"
@@ -135,7 +135,7 @@ const Dashboard = () => {
               >
                 <TbReportAnalytics className="text-xl" /> Reports
               </NavLink>
-            </li>
+            </li> */}
             {/* <li>
               <NavLink to="/reports" className="font-semibold">
                 Logout

@@ -24,7 +24,6 @@ const FilterStatus = ({ handleChange }) => {
           {/* <option value="select" disabled hidden>
             Filter By Complain Type
           </option> */}
-          {/* <option value="select">All Complains</option> */}
           {complainType?.map((item, i) => (
             <option key={i} value={item}>
               {item} Complains

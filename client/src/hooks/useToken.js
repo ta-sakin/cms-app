@@ -7,7 +7,7 @@ const useToken = (phone) => {
     (async () => {
       try {
         const { data } = await axios.post(
-          "http://localhost:5000/api/user/auth/token",
+          `https://cms-server.cyclic.app/api/user/auth/token`,
           {
             phone: phone,
           }

@@ -117,6 +117,8 @@ const Complain = ({ complain, details, manage = false }) => {
                 key={complain._id}
                 complain={complain}
                 total={total?.votes}
+                totalDownvote={complain.total_downvotes}
+                totalUpvote={complain.total_upvotes}
               />
             )}
             <div

@@ -24,7 +24,7 @@ const MobileDropDown = () => {
               <NavLink to="/profile" className="h-12">
                 <div className="flex cursor-pointer items-center rounded-md hover:border-none border-[1px] border-[#570df8] space-x-1 p-1">
                   <p className="sm:p-0 pr-4">
-                    {user.displayName.split(" ")[0]}
+                    {user?.displayName?.split(" ")[0]}
                   </p>
                   <FaUserCircle className="text-3xl text-gray-500" />
                 </div>

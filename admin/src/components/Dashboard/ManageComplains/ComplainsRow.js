@@ -4,16 +4,14 @@ import moment from "moment";
 
 const ComplainsRow = ({ complain, i }) => {
   const navigate = useNavigate();
-
   return (
     <tr key={complain._id} className="hover">
       <th>{i + 1}</th>
 
       <td>{moment(complain.submission_date).format("D MMM, YYYY")}</td>
+      <td className="capitalize">{complain.status}</td>
       <td className="capitalize">{complain.category}</td>
-      <td>
-        {complain.complainType === "private" ? "N/A" : complain.total_upvotes}
-      </td>
+      {complain.complainType !== "private" && <td>{complain.total_upvotes}</td>}
       <td>{complain.address}</td>
       {/* <td className="capitalize">{complain.status}</td> */}
       {/* {user.status === "active" ? (

@@ -11,7 +11,7 @@ const DesktopBar = ({ user }) => {
       <li>
         <div className="h-12">
           <div className="flex cursor-pointer items-center rounded-md hover:border-none border-[2px] border-[#a1a2a6] space-x-1 px-3 h-10">
-            <p className="sm:p-0 pr-4">Ward - {user?.ward}</p>
+            <p className="sm:p-0 pr-4">Ward: {user?.ward}</p>
           </div>
         </div>
       </li>

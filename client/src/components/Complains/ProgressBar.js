@@ -22,7 +22,7 @@ const ProgressBar = ({ complain }) => {
     (async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/user/complain/statusdates/${complain._id}`,
+          `https://cms-server.cyclic.app/api/user/complain/statusdates/${complain._id}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -65,15 +65,12 @@ const ProgressBar = ({ complain }) => {
         sx={StepperSx}
       >
         {Object.keys(steps).map((label) => (
-          <Step key={label}>
+          <Step key={label} completed={label === "closed"}>
             <Typography align="center">
               {moment(steps[label]).format("D MMM, YYYY")}
             </Typography>
-            <StepLabel
-              className="capitalize"
-              error={label === "rejected"}
-            >
-              {label}
+            <StepLabel className="capitalize" error={label === "rejected"}>
+              {label === "closed" ? "solved" : label}
             </StepLabel>
           </Step>
         ))}

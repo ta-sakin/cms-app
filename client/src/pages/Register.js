@@ -75,7 +75,7 @@ const Register = () => {
       async function checkUser() {
         try {
           const { data } = await axios.post(
-            "http://localhost:5000/api/user/auth/checkUser",
+            `https://cms-server.cyclic.app/api/user/auth/checkUser`,
             { phone: phone }
           );
           return data;
@@ -118,13 +118,19 @@ const Register = () => {
     <div>
       <div className={`${show ? "block" : "hidden"}`}>
         {confirmResponse && (
-          <OtpForm confirmResponse={confirmResponse} name={userInput.name} />
+          <OtpForm
+            confirmResponse={confirmResponse}
+            name={userInput.name}
+            authState={"register"}
+          />
         )}
       </div>
 
       <div className={`${!show ? "block" : "hidden"}`}>
         <div className="sm:max-w-md max-w-sm mx-auto my-10 bg-white rounded-xl border-2 py-8 px-8 sm:px-16">
-          <h1 className="text-2xl text-center font-bold mb-3">Create an Account</h1>
+          <h1 className="text-2xl text-center font-bold mb-3">
+            Create an Account
+          </h1>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col space-y-5">
               <label htmlFor="name">
@@ -140,7 +146,7 @@ const Register = () => {
                 />
               </label>
               <label htmlFor="email">
-                <p className="text-sm text-slate-700 pb-2">Email address</p>
+                <p className="text-sm text-slate-700 pb-2">Email</p>
                 <input
                   onChange={handleChange}
                   id="email"
@@ -148,11 +154,11 @@ const Register = () => {
                   type="email"
                   value={email}
                   className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                  placeholder="Enter email address"
+                  placeholder="Enter email"
                 />
               </label>
               <label htmlFor="phone">
-                <p className="text-sm text-slate-700 pb-2">Phone number</p>
+                <p className="text-sm text-slate-700 pb-2">Phone</p>
                 <PhoneInput
                   international
                   defaultCountry="BD"

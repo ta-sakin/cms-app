@@ -58,7 +58,7 @@ const getCommentsByComplainId = async (complainId) => {
 
   const comments = await commentsCollection
     .find({ complain_id: complainId })
-    .sort({ _id: -1 })
+    .sort({ createdAt: -1 })
     .toArray();
 
   // for (const comment of comments) {
@@ -88,8 +88,8 @@ const getCommentsByComplainId = async (complainId) => {
         complainId: comment.complain_id,
         citizenId: comment.citizen_id,
         comment: comment.comment,
-        name: citizen.name,
-        ward: citizen.ward,
+        name: citizen?.name,
+        ward: citizen?.ward,
         date: comment.createdAt,
       };
     })

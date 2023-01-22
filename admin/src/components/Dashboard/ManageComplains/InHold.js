@@ -94,6 +94,22 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // if (statusType === "closed") {
+      //   if (!remarks) {
+      //     toast.error("Remarks is required", {
+      //       toastId: "error",
+      //     });
+      //     return;
+      //   }
+      // } else {
+      //   if (!name || !email || !contact || !designation || !remarks) {
+      //     toast.error("All fields are required", {
+      //       toastId: "error",
+      //     });
+      //     return;
+      //   }
+      // }
+
       if (!assigned) {
         setLoading(true);
         const { data } = await axios.post("/admin/assign", {
@@ -218,9 +234,10 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
                     name="name"
                     type="name"
                     value={name}
+                    required
                     autoComplete="name"
                     className="w-full text-sm py-2 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                    placeholder="Enter email address"
+                    placeholder="Enter name"
                   />
                 </label>
                 <label htmlFor="email" hidden={closed}>
@@ -231,9 +248,10 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
                     name="email"
                     type="email"
                     value={email}
+                    required
                     autoComplete="email"
                     className="w-full text-sm py-2 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                    placeholder="Email address"
+                    placeholder="Enter email"
                   />
                 </label>
                 <label htmlFor="contact" hidden={closed}>
@@ -243,6 +261,7 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
                     id="contact"
                     name="contact"
                     type="contact"
+                    required
                     value={contact}
                     className="w-full text-sm py-2 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
                     placeholder="Phone number"
@@ -256,9 +275,10 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
                     name="designation"
                     type="designation"
                     value={designation}
+                    required
                     autoComplete="designation"
                     className="w-full text-sm py-2 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                    placeholder="Enter email address"
+                    placeholder="Enter designation"
                   />
                 </label>
                 <label htmlFor="remarks">
@@ -269,6 +289,7 @@ const InHold = ({ complain, drawer = false, setRefetchComplain }) => {
                     name="remarks"
                     type="remarks"
                     value={remarks}
+                    required
                     autoComplete="remarks"
                     rows={3}
                     className="w-full text-sm py-2 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"

@@ -11,7 +11,7 @@ import { useAuth } from "../context/AuthContext";
 import auth from "../firebase.init";
 import useToken from "../hooks/useToken";
 
-const OtpForm = ({ confirmResponse, name, phone }) => {
+const OtpForm = ({ confirmResponse, name, phone, authState }) => {
   const { getVerificationCode } = useAuth();
   const [response, setResponse] = useState(confirmResponse);
   const userData = JSON.parse(localStorage.getItem("userData"));
@@ -51,7 +51,7 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
           const register = async () => {
             try {
               const response = await axios.post(
-                "http://localhost:5000/api/user/auth/signup",
+                `https://cms-server.cyclic.app/api/user/auth/signup`,
                 userData
               );
               return response;
@@ -72,6 +72,12 @@ const OtpForm = ({ confirmResponse, name, phone }) => {
           toast.success("Welcome!", {
             theme: "colored",
           });
+
+          if (authState === "register") {
+            if (!currentUser?.displayName) {
+              window.location.reload();
+            }
+          }
           navigate("/");
         }
         setLoading(false);

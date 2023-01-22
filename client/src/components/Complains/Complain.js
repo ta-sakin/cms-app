@@ -5,12 +5,13 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { FaRegComment, FaUserCircle } from "react-icons/fa";
 import { FiMoreHorizontal } from "react-icons/fi";
-import { useAsyncError } from "react-router-dom";
+import { Navigate, useAsyncError, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Comment from "./Comment";
 import Votes from "./Votes";
 import moment from "moment";
 import Description from "./Description";
+import EditComplain from "../../pages/EditComplain";
 
 const Complain = ({ complain, userId }) => {
   const [name, setName] = useState("");
@@ -20,12 +21,14 @@ const Complain = ({ complain, userId }) => {
   const [deleted, setDeleted] = useState();
   const [showModal, setShowModal] = useState(false);
   const [showComment, setShowComment] = useState(false);
+  const navigate = useNavigate();
+  const [edit, setEdit] = useState("");
 
   useEffect(() => {
     (async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/user/complain/uname?uid=${complain.citizen_id}&cid=${complain._id}`,
+          `https://cms-server.cyclic.app/api/user/complain/uname?uid=${complain.citizen_id}&cid=${complain._id}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -45,7 +48,7 @@ const Complain = ({ complain, userId }) => {
       try {
         if (window.confirm("Are you sure you want to delete?")) {
           const { data } = await axios.delete(
-            `http://localhost:5000/api/user/complain/${id}`,
+            `https://cms-server.cyclic.app/api/user/complain/${id}`,
             {
               headers: {
                 authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -60,6 +63,9 @@ const Complain = ({ complain, userId }) => {
     })();
   };
 
+  const editComplain = (complain) => {
+    setEdit(complain);
+  };
   return (
     <div className="sm:max-w-lg max-w-sm mb-10 bg-white rounded-xl border-2 py-4 px-4 mx-3">
       <div className="flex justify-between">
@@ -90,9 +96,18 @@ const Complain = ({ complain, userId }) => {
               <FiMoreHorizontal />
             </div>
             {showModal && (
-              <div className="px-8 py-4 justify-center right-0 z-10 absolute bg-white shadow-lg rounded-lg items-center">
+              <div className="pl-4 pr-8 py-4 justify-center right-0 z-10 absolute rounded-lg border-[1px] border-gray-300 items-center bg-gray-100">
+                {complain.status === "pending approval" && (
+                  <label
+                    htmlFor="my-modal-6"
+                    className="btn btn-xs mb-2 !font-medium"
+                    onClick={() => editComplain(complain)}
+                  >
+                    Edit
+                  </label>
+                )}
                 <button
-                  className="btn btn-sm"
+                  className="btn btn-xs !font-medium"
                   onClick={() => deleteComplain(complain._id)}
                 >
                   Delete
@@ -137,6 +152,7 @@ const Complain = ({ complain, userId }) => {
             loading={loading}
           />
         )}
+        {edit && <EditComplain setEdit={setEdit} edit={edit} />}
       </div>
     </div>
   );

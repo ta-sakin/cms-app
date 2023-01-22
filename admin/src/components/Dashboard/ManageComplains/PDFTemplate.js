@@ -60,6 +60,11 @@ const PDFTemplate = ({ complain, assign }) => {
           {moment(new Date()).format("DD-MM-YYYY")}{" "}
         </Text>
         <Text style={styles.text}>Complain No: {complain._id}</Text>
+        <Text style={styles.text}>
+          Complain Description: {complain.description}
+        </Text>
+        <Text style={styles.text}>Location: {complain.address}</Text>
+        <Text style={styles.text}>Complain Category: {complain.category}</Text>
         <Text style={styles.text}>Admin Remarks: {assign.remarks}</Text>
         {assign?.name && (
           <>

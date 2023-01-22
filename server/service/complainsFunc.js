@@ -11,16 +11,56 @@ const findComplainByProperty = async (key, value) => {
   return await citizensCollection.findOne({ [key]: value });
 };
 
-const getComplains = async ({ filters, page, count }) => {
+const getComplains = async ({ filters, page, count, sort }) => {
+  const allFilters = { $and: [{ complainType: { $ne: "private" } }, filters] };
+  //without filter
   if (filters === undefined) {
+    if (sort) {
+      if (sort === "upvote") {
+        return await complainsCollection
+          .find({ complainType: { $ne: "private" } })
+          .sort({ total_upvotes: -1 })
+          .skip(parseInt(page))
+          .limit(parseInt(count))
+          .toArray();
+      } else if (sort === "downvote") {
+        return await complainsCollection
+          .find({ complainType: { $ne: "private" } })
+          .sort({ total_downvotes: -1 })
+          .skip(parseInt(page))
+          .limit(parseInt(count))
+          .toArray();
+      }
+    }
+    //without sort
     return await complainsCollection
       .find({ complainType: { $ne: "private" } })
-      .sort({ _id: -1 })
+      .sort({ submission_date: -1 })
       .skip(parseInt(page))
       .limit(parseInt(count))
       .toArray();
   }
-  return await complainsCollection.find(filters).sort({ _id: -1 }).toArray();
+
+  //with filter and sort
+  if (sort) {
+    if (sort === "upvote") {
+      return await complainsCollection
+        .find(allFilters)
+        .sort({ total_upvotes: -1 })
+        .toArray();
+    }
+    if (sort === "upvote") {
+      return await complainsCollection
+        .find(allFilters)
+        .sort({ total_upvotes: -1 })
+        .toArray();
+    }
+  }
+  //without sort
+  return await complainsCollection
+    .find(allFilters)
+    .sort({ submission_date: -1 })
+    .toArray();
 };
 
 const updateComplainsReactions = async (data) => {
@@ -97,26 +137,26 @@ const findComplainsByWard = async (ward, filter = {}) => {
     let complains = [];
     const public = await complainsCollection
       .find({ $and: [{ ward }, filter] })
-      .sort({ _id: -1 })
+      .sort({ submission_date: -1 })
       .toArray();
     filter = { ...filter, complainType: "public-anonymous" };
     const publicAno = await complainsCollection
       .find({ $and: [{ ward }, filter] })
-      .sort({ _id: -1 })
+      .sort({ submission_date: -1 })
       .toArray();
     complains = public.concat(publicAno);
     return complains;
   }
   return await complainsCollection
     .find({ $and: [{ ward }, filter] })
-    .sort({ _id: -1 })
+    .sort({ submission_date: -1 })
     .toArray();
 };
 
 const findComplainsByUserId = (id) => {
   return complainsCollection
     .find({ citizen_id: ObjectId(id) })
-    .sort({ _id: -1 })
+    .sort({ submission_date: -1 })
     .toArray();
 };
 
@@ -206,6 +246,13 @@ const updateComplainStatus = async (complain_id, status) => {
   );
 };
 
+const editComplainCategory = async (complain_id, category) => {
+  return await complainsCollection.updateOne(
+    { _id: ObjectId(complain_id) },
+    { $set: { category } }
+  );
+};
+
 module.exports = {
   createNewComplain,
   findComplainByProperty,
@@ -221,4 +268,5 @@ module.exports = {
   countComplainByType,
   findComplainsByWard,
   updateComplainStatus,
+  editComplainCategory,
 };

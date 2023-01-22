@@ -9,17 +9,11 @@ import ButtonSpin from "../components/shared/ButtonSpin";
 import InfiniteScroll from "react-infinite-scroll-component";
 import _ from "lodash";
 import useUser from "../hooks/useUser";
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  NativeSelect,
-  Select,
-  Skeleton,
-} from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 const NUM_OF_DATA_TO_LOAD = 3;
 const Home = () => {
+  const { currentUser } = useAuth();
   const [complains, setComplains] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({});
@@ -39,9 +33,10 @@ const Home = () => {
       try {
         const { data } = await axios({
           method: "GET",
-          url: "http://localhost:5000/api/user/complain/all",
+          url: `https://cms-server.cyclic.app/api/user/complain/all`,
           params: {
             filters: filteredData,
+            sort,
             page,
             count: NUM_OF_DATA_TO_LOAD,
           },
@@ -53,10 +48,11 @@ const Home = () => {
         setLoading(false);
         //remove duplicate complain
         const uniqueComplain = removeDuplicate(complains, data);
+
         if (filteredData && Object.keys(filteredData).length > 0) {
-          setComplains(uniqueComplain);
+          setComplains([...uniqueComplain]);
         } else {
-          setComplains(uniqueComplain);
+          setComplains([...uniqueComplain]);
         }
         //if sort is selected then apply sort with filter
         if (sort) {
@@ -71,12 +67,12 @@ const Home = () => {
     };
     getComplains();
     return () => cancel();
-  }, [filteredData, page, render]);
+  }, [filteredData, page, render, sort]);
 
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        "http://localhost:5000/api/user/complain/total",
+        `https://cms-server.cyclic.app/api/user/complain/total`,
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -117,7 +113,6 @@ const Home = () => {
   const handleSort = (e) => {
     const { value } = e.target;
     setSort(value);
-    sortBy(complains, value);
   };
 
   const removeDuplicate = (prevComplain, data) => {
@@ -128,17 +123,23 @@ const Home = () => {
   const sortBy = (sortComplains, value) => {
     if (value === "upvote") {
       const sortByUpvote = sortComplains.sort(
-        (upvote, downvote) => downvote.total_upvotes - upvote.total_upvotes
+        (first, second) => second.total_upvotes - first.total_upvotes
       );
       setComplains([...sortByUpvote]);
     } else if (value === "downvote") {
       const sortByDownvote = sortComplains.sort(
-        (upvote, downvote) => downvote.total_downvotes - upvote.total_downvotes
+        (first, second) => second.total_downvotes - first.total_downvotes
       );
       setComplains([...sortByDownvote]);
     }
   };
-
+  if (!userId) {
+    return (
+      <div className="w-full mt-10 flex justify-center">
+        <ButtonSpin />
+      </div>
+    );
+  }
   return (
     <div className="flex gap-x-10 md:justify-center items-center md:flex-row flex-col">
       <Filter handleChange={handleChange} handleSubmit={handleSubmit} />
@@ -149,13 +150,13 @@ const Home = () => {
       ) : (
         !complains.length && (
           <p className="text-center font-semibold text-gray-500">
-            No complains found!
+            No complaints found!
           </p>
         )
       )}
-      <div className="mt-10">
+      <div className={`mt-10 ${!complains.length ? "hidden" : ""}`}>
         {!loading && (
-          <div className="flex justify-end rounded-md">
+          <div className="flex justify-end rounded-md mr-1">
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
               <InputLabel id="demo-select" className="bg-white">
                 Sort By

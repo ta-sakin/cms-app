@@ -18,7 +18,7 @@ const MyComplain = () => {
       try {
         if (!userId) return;
         const { data } = await axios.get(
-          `http://localhost:5000/api/user/complain/${userId}`,
+          `https://cms-server.cyclic.app/api/user/complain/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -36,6 +36,12 @@ const MyComplain = () => {
 
   if (loading) {
     return <Loading />;
+  }
+
+  if (complains.length === 0) {
+    return (
+      <p className="mt-20 text-center">You didn't submit any complaints yet.</p>
+    );
   }
 
   return (

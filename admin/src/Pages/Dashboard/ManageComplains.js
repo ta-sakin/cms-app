@@ -1,16 +1,14 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useQuery } from "react-query";
-import ComplainsRow from "../../components/Dashboard/ManageComplains/ComplainsRow";
+import ComplainsTable from "../../components/Dashboard/ManageComplains/ComplainsTable";
 import FilterStatus from "../../components/Dashboard/ManageComplains/Filter";
-import Filter from "../../components/Dashboard/ManageComplains/Filter";
 import Spin from "../../components/shared/Spin";
 
 const ManageComplains = () => {
-  const [filter, setFilter] = useState({});
-  const [complains, setComplains] = useState([]);
+  const [filter, setFilter] = useState({ complainType: "public" });
   const [loading, setLoading] = useState(true);
   const [privateComplain, setPrivateComplain] = useState("");
+  const [complains, setComplains] = useState([]);
 
   useEffect(() => {
     (async () => {
@@ -36,7 +34,7 @@ const ManageComplains = () => {
       delete filter[e.target.name];
       setFilter({ ...filter });
     } else {
-      if (e.target.value === "private") {
+      if (e.target.value === "Private") {
         setPrivateComplain("private");
       } else {
         setPrivateComplain("");
@@ -56,7 +54,7 @@ const ManageComplains = () => {
       ) : (
         !complains.length && (
           <p className="text-center mt-10 font-semibold text-gray-500">
-            No complains found!
+            No complaints found!
           </p>
         )
       )}
@@ -65,33 +63,13 @@ const ManageComplains = () => {
           <p>Total Complains: {complains?.length || 0}</p>
         </div>
         <div className="overflow-x-auto">
-          <table className="table w-full">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Submission Date</th>
-                <th>Category</th>
-                <th className={`${privateComplain === "private" && "hidden"}`}>
-                  Upvote
-                </th>
-                <th>Location</th>
-                <th>Actions</th>
-                <th></th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {complains.map((complain, i) => (
-                <ComplainsRow
-                  key={complain._id}
-                  complain={complain}
-                  i={i}
-                  // refetch={refetch}
-                  // setDeleteUser={setDeleteUser}
-                />
-              ))}
-            </tbody>
-          </table>
+          {complains.length && (
+            <ComplainsTable
+              loading={loading}
+              complains={complains}
+              privateComplain={privateComplain}
+            />
+          )}
         </div>
         {/* {deleteUser && (
         <DeleteUser

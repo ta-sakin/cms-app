@@ -31,7 +31,7 @@ const Profile = () => {
       try {
         if (!userId) return;
         const { data } = await axios.get(
-          `http://localhost:5000/api/user/${userId}`,
+          `https://cms-server.cyclic.app/api/user/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -80,7 +80,7 @@ const Profile = () => {
         return;
       }
       const { data } = await axios.patch(
-        `http://localhost:5000/api/user/${userId}`,
+        `https://cms-server.cyclic.app/api/user/${userId}`,
         { name, email, ward, address },
         {
           headers: {
@@ -151,7 +151,7 @@ const Profile = () => {
                   value={email}
                   readOnly={!changed}
                   className="w-full text-sm py-2 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                  placeholder="Enter email address"
+                  placeholder="Enter email"
                 />
               </div>
             </div>

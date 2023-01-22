@@ -47,7 +47,7 @@ const Login = () => {
       async function checkUser() {
         try {
           const { data } = await axios.post(
-            "http://localhost:5000/api/user/auth/signin",
+            `https://cms-server.cyclic.app/api/user/auth/signin`,
             { phone: phone }
           );
           return data;
@@ -90,18 +90,28 @@ const Login = () => {
     <div>
       <div className={`${show ? "block" : "hidden"}`}>
         {confirmResponse && (
-          <OtpForm confirmResponse={confirmResponse} phone={phone} />
+          <OtpForm
+            confirmResponse={confirmResponse}
+            phone={phone}
+            authState={"login"}
+          />
         )}
       </div>
       <div className={`${!show ? "block" : "hidden"}`}>
         <div className="mx-2">
           <div className="sm:max-w-md max-w-sm mx-auto my-10 bg-white rounded-xl border-2 py-8 px-8 sm:px-16">
-            <h1 className="text-2xl text-center font-bold mb-1">Citizen Login</h1>
-            <p className="text-xs text-center text-[#334155] mb-10">We will send you an OTP shortly.</p>
+            <h1 className="text-2xl text-center font-bold mb-1">
+              Citizen Login
+            </h1>
+            <p className="text-xs text-center text-[#334155] mb-10">
+              We will send you an OTP shortly.
+            </p>
             <form onSubmit={handleSubmit}>
               <div className="flex flex-col space-y-3">
                 <label htmlFor="phone">
-                  <p className="text-sm text-slate-700 pb-2">Phone Verification</p>
+                  <p className="text-sm text-slate-700 pb-2">
+                    Phone Verification
+                  </p>
 
                   <PhoneInput
                     international
@@ -110,7 +120,7 @@ const Login = () => {
                     value={phone}
                     onChange={setPhone}
                     className="border-[1px] p-2 border-gray-400 hover:border-gray-800 rounded-md py-[16px]"
-                  // style={{ input: { appearance: "none" } }}
+                    // style={{ input: { appearance: "none" } }}
                   />
                 </label>
                 <div id="recaptcha-container"></div>

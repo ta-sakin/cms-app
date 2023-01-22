@@ -9,6 +9,7 @@ router.get("/all", complainsController.getAllComplains);
 router.get("/total", complainsController.totalComplains);
 router.delete("/:id", complainsController.deleteComplain);
 router.put("/", complainsController.updateComplain);
+router.patch("/:id", complainsController.editCategory);
 router.get("/:id", complainsController.getComplainByUserId);
 router.get("/statusdates/:id", complainsController.getStatusDatesByCID);
 

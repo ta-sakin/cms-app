@@ -24,7 +24,7 @@ const Votes = ({ complain }) => {
     const userVotes = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/user/react/votes/total?cid=${complain._id}`,
+          `https://cms-server.cyclic.app/api/user/react/votes/total?cid=${complain._id}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -46,7 +46,7 @@ const Votes = ({ complain }) => {
     const userVotes = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/user/react/votes?cid=${complain._id}&uid=${userId}`,
+          `https://cms-server.cyclic.app/api/user/react/votes?cid=${complain._id}&uid=${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -86,7 +86,7 @@ const Votes = ({ complain }) => {
     try {
       //update active status
       const { data } = await axios.put(
-        "http://localhost:5000/api/user/react/votes",
+        `https://cms-server.cyclic.app/api/user/react/votes`,
         {
           complain_id: complainId,
           citizen_id: userId,
@@ -105,7 +105,7 @@ const Votes = ({ complain }) => {
 
       //update total up and down vote
       const response = await axios.put(
-        `http://localhost:5000/api/user/complain`,
+        `https://cms-server.cyclic.app/api/user/complain`,
         {
           complain_id: complainId,
           total_upvotes: votes?.upvote
@@ -151,7 +151,7 @@ const Votes = ({ complain }) => {
     try {
       //update active status
       const { data } = await axios.put(
-        "http://localhost:5000/api/user/react/votes",
+        `https://cms-server.cyclic.app/api/user/react/votes`,
         {
           complain_id: complainId,
           citizen_id: userId,
@@ -170,7 +170,7 @@ const Votes = ({ complain }) => {
 
       //update total up and down vote
       const response = await axios.put(
-        `http://localhost:5000/api/user/complain`,
+        `https://cms-server.cyclic.app/api/user/complain`,
         {
           complain_id: complainId,
           total_downvotes: votes?.downvote

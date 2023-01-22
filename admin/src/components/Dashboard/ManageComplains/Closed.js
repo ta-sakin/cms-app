@@ -70,6 +70,12 @@ const Closed = ({ complain, drawer = false, setRefetchComplain }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if(!remarks){
+        toast.error("All fields are required", {
+          toastId: "error",
+        });
+        return
+      }
       if (assigned && updated) {
         setLoading(true);
         const { data } = await axios.put("/admin/assign", {
@@ -140,7 +146,8 @@ const Closed = ({ complain, drawer = false, setRefetchComplain }) => {
                     name="remarks"
                     type="remarks"
                     value={remarks}
-                    autoComplete="remarks"
+                  required
+                  autoComplete="remarks"
                     rows={3}
                     className="w-full text-sm py-2 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
                     placeholder="Admin remarks"

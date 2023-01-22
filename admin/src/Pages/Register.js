@@ -133,7 +133,7 @@ const Register = () => {
                   value={email}
                   autoComplete="email"
                   className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow"
-                  placeholder="Enter email address"
+                  placeholder="Enter email"
                 />
               </label>
               <label htmlFor="password">

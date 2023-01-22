@@ -1,64 +1,17 @@
 import { Tooltip } from "@mui/material";
 import axios from "axios";
-import React, { useCallback } from "react";
+import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
-import { FaRegComment } from "react-icons/fa";
-import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
-import useUser from "../../hooks/useUser";
-import Loading from "../shared/Loading";
 
 const Votes = ({ complain }) => {
   const { userId } = useAuth();
-  const [loading, setLoading] = useState(false);
-  // const [userId] = useUser(user?.phoneNumber);
   const [refetch, setRefetch] = useState(false);
   const [votes, setVotes] = useState({});
   const [total, setTotal] = useState({});
 
-  // useEffect(() => {
-  //   //fetch totalvotes for a complain
-  //   const userVotes = async () => {
-  //     try {
-  //       const { data } = await axios.get(
-  //         `http://localhost:5000/api/user/react/votes/total?cid=${complain._id}`,
-  //         {
-  //           headers: {
-  //             authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-  //           },
-  //         }
-  //       );
-  //       setTotal(data);
-  //     } catch (error) {
-  //       toast.error("Something went wrong", {
-  //         toastId: "error",
-  //       });
-  //     }
-  //   };
-  //   userVotes();
-  // }, [userId, upvote, downvote, complain._id]);
-
-  // useEffect(() => {
-  //   //fetch active vote for a user
-  //   const userVotes = async () => {
-  //     try {
-  //       const { data } = await axios.get(
-  //         `http://localhost:5000/api/user/react/votes?cid=${complain._id}&uid=${userId}`,
-  //         {
-  //           headers: {
-  //             authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-  //           },
-  //         }
-  //       );
-  //       setVotes(data?.citizen_id && data);
-  //     } catch (error) {
-  //       toast.error("Something went wrong", { toastId: "error" });
-  //     }
-  //   };
-  //   userVotes();
-  // }, [userId, upvote, downvote, complain._id]);
   useEffect(() => {
     //if data is already fetched don't fetch again
     const CancelToken = axios.CancelToken;
@@ -68,7 +21,7 @@ const Votes = ({ complain }) => {
       try {
         const [totalVotes, userVotes] = await Promise.all([
           axios.get(
-            `http://localhost:5000/api/user/react/votes/total?cid=${complain._id}`,
+            `https://cms-server.cyclic.app/api/user/react/votes/total?cid=${complain._id}`,
             {
               headers: {
                 authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -79,7 +32,7 @@ const Votes = ({ complain }) => {
             }
           ),
           axios.get(
-            `http://localhost:5000/api/user/react/votes?cid=${complain._id}&uid=${userId}`,
+            `https://cms-server.cyclic.app/api/user/react/votes?cid=${complain._id}&uid=${userId}`,
             {
               headers: {
                 authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -94,9 +47,7 @@ const Votes = ({ complain }) => {
         setVotes(userVotes.data?.citizen_id && userVotes.data);
       } catch (error) {
         if (axios.isCancel(error)) {
-          console.log("Request canceled", error.message);
         }
-        // toast.error("Something went wrong", { toastId: "error" });
       }
     };
     fetchData();
@@ -104,26 +55,6 @@ const Votes = ({ complain }) => {
   }, [userId, refetch, complain._id]);
 
   const handleUpvote = async (complainId, cid, complain) => {
-    //first updating on the client side then on the backend
-    // setVotes({
-    //   ...votes,
-    //   upvote: votes?.upvote ? !votes?.upvote : true,
-    //   downvote: false,
-    // });
-    // setTotal({
-    //   ...total,
-    //   totalUpvote:
-    //     votes?.upvote && total.totalUpvote > 0
-    //       ? total.totalUpvote - 1
-    //       : total.totalUpvote + 1,
-    //   totalDownvote:
-    //     votes?.downvote && total.totalDownvote > 0
-    //       ? total.totalDownvote - 1
-    //       : total.totalDownvote < 0
-    //       ? 0
-    //       : total.totalDownvote,
-    // });
-
     const { vote } = votes;
     setVotes({
       ...votes,
@@ -146,7 +77,7 @@ const Votes = ({ complain }) => {
     try {
       //update active status
       const { data } = await axios.put(
-        "http://localhost:5000/api/user/react/votes",
+        `https://cms-server.cyclic.app/api/user/react/votes`,
         {
           complain_id: complainId,
           citizen_id: userId,
@@ -164,7 +95,7 @@ const Votes = ({ complain }) => {
 
       //update total up and down vote
       const response = await axios.put(
-        `http://localhost:5000/api/user/complain`,
+        `https://cms-server.cyclic.app/api/user/complain`,
         {
           complain_id: complainId,
           total_upvotes:
@@ -187,25 +118,6 @@ const Votes = ({ complain }) => {
   };
 
   const handleDownvote = async (complainId, cid, complain) => {
-    //first updating in the client then on the backend
-    // setVotes({
-    //   ...votes,
-    //   upvote: false,
-    //   downvote: votes?.downvote ? !votes?.downvote : true,
-    // });
-    // setTotal({
-    //   ...total,
-    //   totalDownvote:
-    //     votes?.downvote && total.totalDownvote > 0
-    //       ? total.totalDownvote - 1
-    //       : total.totalDownvote + 1,
-    //   totalUpvote:
-    //     votes?.upvote && total.totalUpvote > 0
-    //       ? total.totalUpvote - 1
-    //       : total.totalUpvote < 0
-    //       ? 0
-    //       : total.totalUpvote,
-    // });
     const { vote } = votes;
     setVotes({
       ...votes,
@@ -227,7 +139,7 @@ const Votes = ({ complain }) => {
     try {
       //update active status
       const { data } = await axios.put(
-        "http://localhost:5000/api/user/react/votes",
+        `https://cms-server.cyclic.app/api/user/react/votes`,
         {
           complain_id: complainId,
           citizen_id: userId,
@@ -244,7 +156,7 @@ const Votes = ({ complain }) => {
       );
       //update total up and down vote
       const response = await axios.put(
-        `http://localhost:5000/api/user/complain`,
+        `https://cms-server.cyclic.app/api/user/complain`,
         {
           complain_id: complainId,
           total_downvotes:

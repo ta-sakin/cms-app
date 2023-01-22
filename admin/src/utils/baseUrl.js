@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: `https://cms-server.cyclic.app/api`,
 });
 
 // Alter defaults after instance has been created

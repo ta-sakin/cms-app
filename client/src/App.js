@@ -13,6 +13,7 @@ import PublicRoute from "./components/Auth/PublicRoute";
 import PrivateRoute from "./components/Auth/PrivateRoute";
 import MyComplain from "./pages/MyComplain";
 import Profile from "./pages/Profile";
+import EditComplain from "./pages/EditComplain";
 
 function App() {
   return (

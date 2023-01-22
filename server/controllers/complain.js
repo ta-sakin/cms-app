@@ -8,6 +8,7 @@ const {
   deleteComplainById,
   getStatusCountByUser,
   countComplainsByStatus,
+  editComplainCategory,
 } = require("../service/complainsFunc");
 const natural = require("natural");
 const { findCommentsPerComplain } = require("../service/reactionsDbOp");
@@ -145,9 +146,11 @@ const getCountComplaintStatus = async (req, res, next) => {
     // const data = findComplainsByUserId(id);
     // const data = await getStatusCountByUser(id);
     const objectId = ObjectId(id);
-
+    const count = await complainsCollection.countDocuments({
+      citizen_id: objectId,
+    });
     const data = await countComplainsByStatus("citizen_id", objectId);
-    res.status(200).json(data);
+    res.status(200).json({ data, count });
   } catch (error) {
     console.log(error);
     next(error);
@@ -164,6 +167,16 @@ const getStatusDatesByCID = async (req, res, next) => {
     next(error);
   }
 };
+const editCategory = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { category } = req.body;
+    const data = await editComplainCategory(id, category);
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   submitComplain,
@@ -175,4 +188,5 @@ module.exports = {
   totalComplains,
   getCountComplaintStatus,
   getStatusDatesByCID,
+  editCategory,
 };

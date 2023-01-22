@@ -4,13 +4,20 @@ const port = process.env.PORT || 5000;
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const morgan = require("morgan");
+const xss = require("xss-clean");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+app.set("trust proxy", 1);
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  })
+);
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
-// const corsOptions = {
-//   origin: "*",
-//   // credentials: true, //access-control-allow-credentials:true
-//   // optionSuccessStatus: 200,
-// };
+app.use(helmet());
+app.use(xss());
 app.use(cors());
 const connectDB = require("./db");
 const uri = require("./dbUri");

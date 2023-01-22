@@ -49,7 +49,7 @@ function App() {
           <Route path="/muser/:id" element={<UserDetails />}></Route>
           <Route path="/mcomplains" element={<ManageComplains />}></Route>
           <Route path="/mcomplains/:id" element={<ComplainDetails />}></Route>
-          <Route path="/reports/" element={<Reports />}></Route>
+          {/* <Route path="/reports/" element={<Reports />}></Route> */}
         </Route>
         <Route path="*" element={<PageNotFound />}></Route>
       </Routes>

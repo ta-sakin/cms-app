@@ -20,12 +20,12 @@ const Filter = ({ handleChange, handleSubmit }) => {
     "illegal_construction",
     "noise_pollution",
     "air_pollution",
-    "food_safety",
+    "public_sanitation",
     "others",
   ];
 
   return (
-    <div className="sm:w-96 md:sticky block md:self-start self-auto left-10 top-20 mt-10 bg-white rounded-xl px-6 md:px-10">
+    <div className="sm:w-96 md:sticky block md:self-start self-auto left-10 top-20 mt-10 md:mt-24 bg-white rounded-xl px-6 md:px-10">
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col space-y-5">
           <label htmlFor="ward">

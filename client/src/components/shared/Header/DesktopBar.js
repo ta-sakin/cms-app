@@ -10,11 +10,11 @@ const DesktopBar = () => {
     textDecoration: "underline",
     textUnderlineOffset: "5px",
     color: "#000000",
-    backgroundColor: "#e5e7eb"
+    backgroundColor: "#e5e7eb",
   };
   let activeStyleProfile = {
     color: "#000000",
-    backgroundColor: "#e5e7eb"
+    backgroundColor: "#e5e7eb",
   };
   return (
     // <>
@@ -48,30 +48,43 @@ const DesktopBar = () => {
     // </>
     <>
       <li className="lg:h-0">
-        <NavLink to="/home" style={({ isActive }) =>
-          isActive ? activeStyle : undefined
-        }>Home</NavLink>
+        <NavLink
+          to="/home"
+          style={({ isActive }) => (isActive ? activeStyle : undefined)}
+        >
+          Home
+        </NavLink>
       </li>
       <li className="lg:h-0">
-        <NavLink to="/mycomplain" style={({ isActive }) =>
-          isActive ? activeStyle : undefined
-        }>My Complaints</NavLink>
+        <NavLink
+          to="/mycomplain"
+          style={({ isActive }) => (isActive ? activeStyle : undefined)}
+        >
+          My Complaints
+        </NavLink>
       </li>
       <li className="lg:h-0">
-        <NavLink to="/submitcomplain" style={({ isActive }) =>
-          isActive ? activeStyle : undefined
-        }>Submit Complaint</NavLink>
+        <NavLink
+          to="/submitcomplain"
+          style={({ isActive }) => (isActive ? activeStyle : undefined)}
+        >
+          Submit Complaint
+        </NavLink>
       </li>
       <>
         {user ? (
           <>
             <li>
-              <NavLink to="/profile" className="h-12" style={({ isActive }) =>
-                isActive ? activeStyleProfile : undefined
-              }>
+              <NavLink
+                to="/profile"
+                className="h-12"
+                style={({ isActive }) =>
+                  isActive ? activeStyleProfile : undefined
+                }
+              >
                 <div className="flex cursor-pointer items-center rounded-md hover:bg-[#d1d3d9] border-[2px] border-[#a1a2a6] space-x-2 py-1 px-2">
                   <p className="sm:p-0 pr-4">
-                    {user.displayName.split(" ")[0]}
+                    {user?.displayName?.split(" ")[0]}
                   </p>
                   <FaUserCircle className="text-3xl text-gray-500" />
                 </div>

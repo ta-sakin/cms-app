@@ -32,6 +32,7 @@ export function AuthProvider({ children }) {
   const provider = new GoogleAuthProvider();
   const [confirmResponse, setConfirmResponse] = useState();
   const [userId, setUserId] = useState("");
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
@@ -96,7 +97,7 @@ export function AuthProvider({ children }) {
     const getUserId = async () => {
       try {
         const { data } = await axios.post(
-          "http://localhost:5000/api/user/auth/signin",
+          `https://cms-server.cyclic.app/api/user/auth/signin`,
           { phone: currentUser?.phoneNumber }
         );
         setUserId(data.user._id);

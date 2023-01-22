@@ -10,6 +10,9 @@
 /dashboard
 # production
 /build
+/.firebase
+.firebaserc
+firebase.json
 src/pages/Signup.js
 
 # misc

@@ -20,7 +20,7 @@ const Dashboard = ({ userId }) => {
     (async () => {
       try {
         const { data } = await axios.get(
-          `https://cms-server.cyclic.app/api/user/complain/count/${userId}`,
+          `https://cms-server-production.up.railway.app/api/user/complain/count/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,

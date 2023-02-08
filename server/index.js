@@ -6,14 +6,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const xss = require("xss-clean");
 const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
 app.set("trust proxy", 1);
-app.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-  })
-);
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(helmet());
@@ -34,8 +27,8 @@ app.use((err, req, res, next) => {
   const client = connectDB(uri);
   await client.connect();
 
-  app.get("/", (req, res) => {
-    res.send("What are you doing in the CMS server!");
+  app.get("/", (_, res) => {
+    res.send("Don't explore here.");
   });
 
   app.listen(port, () => {

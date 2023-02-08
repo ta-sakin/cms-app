@@ -22,7 +22,7 @@ const ProgressBar = ({ complain }) => {
     (async () => {
       try {
         const { data } = await axios.get(
-          `https://cms-server.cyclic.app/api/user/complain/statusdates/${complain._id}`,
+          `https://cms-server-production.up.railway.app/api/user/complain/statusdates/${complain._id}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,

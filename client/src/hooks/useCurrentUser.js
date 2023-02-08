@@ -9,7 +9,7 @@ const useCurrentUser = (phone) => {
       try {
         //get current user from db
         const { data } = await axios.post(
-          `https://cms-server.cyclic.app/api/user/current`,
+          `https://cms-server-production.up.railway.app/api/user/current`,
           { phone: phone }
         );
         setLoggedUser(data);

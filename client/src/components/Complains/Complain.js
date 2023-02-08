@@ -28,7 +28,7 @@ const Complain = ({ complain, userId }) => {
     (async () => {
       try {
         const { data } = await axios.get(
-          `https://cms-server.cyclic.app/api/user/complain/uname?uid=${complain.citizen_id}&cid=${complain._id}`,
+          `https://cms-server-production.up.railway.app/api/user/complain/uname?uid=${complain.citizen_id}&cid=${complain._id}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -37,9 +37,7 @@ const Complain = ({ complain, userId }) => {
         );
         setName(data[0]);
         setTotalComments(data[1]);
-      } catch (error) {
-        toast.error("Something went wrong", { theme: "colored" });
-      }
+      } catch (error) {}
     })();
   }, [complain.citizen_id, complain._id]);
 
@@ -48,7 +46,7 @@ const Complain = ({ complain, userId }) => {
       try {
         if (window.confirm("Are you sure you want to delete?")) {
           const { data } = await axios.delete(
-            `https://cms-server.cyclic.app/api/user/complain/${id}`,
+            `https://cms-server-production.up.railway.app/api/user/complain/${id}`,
             {
               headers: {
                 authorization: `Bearer ${localStorage.getItem("accessToken")}`,

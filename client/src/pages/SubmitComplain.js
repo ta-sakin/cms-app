@@ -34,7 +34,7 @@ const SubmitComplain = () => {
       try {
         //get current user from db
         const { data } = await axios.post(
-          `https://cms-server.cyclic.app/api/user/current`,
+          `https://cms-server-production.up.railway.app/api/user/current`,
           { phone: currentUser?.phoneNumber }
         );
         if (data) {
@@ -95,7 +95,7 @@ const SubmitComplain = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        `https://cms-server.cyclic.app/api/user/complain`,
+        `https://cms-server-production.up.railway.app/api/user/complain`,
         complain,
         {
           headers: {

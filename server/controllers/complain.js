@@ -40,8 +40,8 @@ const submitComplain = async (req, res, next) => {
   }
 
   const classifyComplain = async (description, callback) => {
-    let classifier = new natural.BayesClassifier();
-    natural.BayesClassifier.load(
+    let classifier = new natural.LogisticRegressionClassifier();
+    natural.LogisticRegressionClassifier.load(
       "classifier.json",
       null,
       function (err, classifier) {

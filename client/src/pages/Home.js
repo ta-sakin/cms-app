@@ -33,7 +33,7 @@ const Home = () => {
       try {
         const { data } = await axios({
           method: "GET",
-          url: `https://cms-server.cyclic.app/api/user/complain/all`,
+          url: `https://cms-server-production.up.railway.app/api/user/complain/all`,
           params: {
             filters: filteredData,
             sort,
@@ -72,7 +72,7 @@ const Home = () => {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `https://cms-server.cyclic.app/api/user/complain/total`,
+        `https://cms-server-production.up.railway.app/api/user/complain/total`,
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem("accessToken")}`,

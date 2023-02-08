@@ -18,7 +18,7 @@ const MyComplain = () => {
       try {
         if (!userId) return;
         const { data } = await axios.get(
-          `https://cms-server.cyclic.app/api/user/complain/${userId}`,
+          `https://cms-server-production.up.railway.app/api/user/complain/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -29,7 +29,6 @@ const MyComplain = () => {
         setComplains(data);
       } catch (error) {
         setLoading(false);
-        console.log(error);
       }
     })();
   }, [userId]);
@@ -49,7 +48,10 @@ const MyComplain = () => {
       <div></div>
       <div>
         {complains?.map((complain) => (
-          <div className="flex md:flex-row flex-col-reverse items-center sm:items-start">
+          <div
+            key={complain._id}
+            className="flex md:flex-row flex-col-reverse items-center sm:items-start"
+          >
             <div>
               <Complain
                 key={complain._id}

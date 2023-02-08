@@ -47,7 +47,7 @@ const Login = () => {
       async function checkUser() {
         try {
           const { data } = await axios.post(
-            `https://cms-server.cyclic.app/api/user/auth/signin`,
+            `https://cms-server-production.up.railway.app/api/user/auth/signin`,
             { phone: phone }
           );
           return data;

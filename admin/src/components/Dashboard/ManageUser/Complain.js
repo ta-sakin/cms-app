@@ -22,7 +22,6 @@ const Complain = ({ complain, details, manage = false }) => {
         );
         setTotal(data);
       } catch (error) {
-        toast.error("Something went wrong", { theme: "colored" });
       }
     };
     userVotes();

@@ -31,7 +31,7 @@ const Profile = () => {
       try {
         if (!userId) return;
         const { data } = await axios.get(
-          `https://cms-server.cyclic.app/api/user/${userId}`,
+          `https://cms-server-production.up.railway.app/api/user/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -80,7 +80,7 @@ const Profile = () => {
         return;
       }
       const { data } = await axios.patch(
-        `https://cms-server.cyclic.app/api/user/${userId}`,
+        `https://cms-server-production.up.railway.app/api/user/${userId}`,
         { name, email, ward, address },
         {
           headers: {

@@ -97,7 +97,7 @@ export function AuthProvider({ children }) {
     const getUserId = async () => {
       try {
         const { data } = await axios.post(
-          `https://cms-server.cyclic.app/api/user/auth/signin`,
+          `https://cms-server-production.up.railway.app/api/user/auth/signin`,
           { phone: currentUser?.phoneNumber }
         );
         setUserId(data.user._id);

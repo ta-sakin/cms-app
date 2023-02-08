@@ -51,7 +51,7 @@ const complainService = async ({
 };
 
 // const classifyComplain = (description) => {
-//   natural.BayesClassifier.load(
+//   natural.LogisticRegressionClassifier.load(
 //     "classifier.json",
 //     null,
 //     function (err, classifier) {

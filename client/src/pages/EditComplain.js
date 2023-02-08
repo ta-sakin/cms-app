@@ -21,7 +21,7 @@ const EditComplain = ({ setEdit, edit }) => {
       return;
     }
     const { data } = await axios.patch(
-      `https://cms-server.cyclic.app/api/user/complain/${edit._id}`,
+      `https://cms-server-production.up.railway.app/api/user/complain/${edit._id}`,
       { category },
       {
         headers: {

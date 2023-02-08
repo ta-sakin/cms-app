@@ -75,7 +75,7 @@ const Register = () => {
       async function checkUser() {
         try {
           const { data } = await axios.post(
-            `https://cms-server.cyclic.app/api/user/auth/checkUser`,
+            `https://cms-server-production.up.railway.app/api/user/auth/checkUser`,
             { phone: phone }
           );
           return data;

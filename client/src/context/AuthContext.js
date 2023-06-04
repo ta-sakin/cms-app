@@ -108,7 +108,7 @@ export function AuthProvider({ children }) {
         // console.log(error);
       }
     };
-    getUserId();
+    currentUser && getUserId();
   }, [currentUser?.phoneNumber]);
 
   const value = {

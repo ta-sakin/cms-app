@@ -22,7 +22,7 @@ const useUser = (phone) => {
         console.log(error);
       }
     };
-    getUserId();
+    user && getUserId();
   }, [user]);
   return [userId];
 };

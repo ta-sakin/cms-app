@@ -11,7 +11,7 @@ router.use("/api/user/auth", authRoutes);
 router.use("/api/user", userRoutes);
 router.use("/api/admin/auth", authAdminRoutes);
 router.use("/api/admin", adminAuth, adminRoutes);
-router.use("/api/user/complain", authenticate, complainRoutes);
-router.use("/api/user/react", authenticate, reactionsRoutes);
+router.use("/api/user/complain", complainRoutes);
+router.use("/api/user/react", reactionsRoutes);
 
 module.exports = router;

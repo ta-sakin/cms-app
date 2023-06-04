@@ -134,13 +134,13 @@ const Home = () => {
       setComplains([...sortByDownvote]);
     }
   };
-  if (!userId) {
-    return (
-      <div className="w-full mt-10 flex justify-center">
-        <ButtonSpin />
-      </div>
-    );
-  }
+  // if (!userId) {
+  //   return (
+  //     <div className="w-full mt-10 flex justify-center">
+  //       <ButtonSpin />
+  //     </div>
+  //   );
+  // }
   return (
     <div className="flex gap-x-10 md:justify-center items-center md:flex-row flex-col">
       <Filter handleChange={handleChange} handleSubmit={handleSubmit} />

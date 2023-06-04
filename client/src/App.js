@@ -22,17 +22,17 @@ function App() {
         <Route
           path="/"
           element={
-            <PrivateRoute>
-              <Home />
-            </PrivateRoute>
+            <Home />
+            // <PrivateRoute>
+            // </PrivateRoute>
           }
         ></Route>
         <Route
           path="/home"
           element={
-            <PrivateRoute>
-              <Home />
-            </PrivateRoute>
+            <Home />
+            // <PrivateRoute>
+            // </PrivateRoute>
           }
         ></Route>
         <Route
@@ -62,17 +62,17 @@ function App() {
         <Route
           path="/register"
           element={
-            <PublicRoute>
-              <Register />
-            </PublicRoute>
+            <Register />
+            // <PublicRoute>
+            // </PublicRoute>
           }
         ></Route>
         <Route
           path="/login"
           element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
+            <Login />
+            // <PublicRoute>
+            // </PublicRoute>
           }
         ></Route>
       </Routes>

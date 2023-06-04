@@ -6,13 +6,14 @@ import { useEffect } from "react";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
 import { useAuth } from "../../context/AuthContext";
 import { SERVER_URL } from "../../helper/constant";
+import { useNavigate } from "react-router-dom";
 
 const Votes = ({ complain }) => {
   const { userId } = useAuth();
   const [refetch, setRefetch] = useState(false);
   const [votes, setVotes] = useState({});
   const [total, setTotal] = useState({});
-
+  const navigate = useNavigate();
   useEffect(() => {
     //if data is already fetched don't fetch again
     const CancelToken = axios.CancelToken;
@@ -56,6 +57,10 @@ const Votes = ({ complain }) => {
   }, [userId, refetch, complain._id]);
 
   const handleUpvote = async (complainId, cid, complain) => {
+    if (!userId) {
+      navigate("/login");
+      return;
+    }
     const { vote } = votes;
     setVotes({
       ...votes,
@@ -119,6 +124,10 @@ const Votes = ({ complain }) => {
   };
 
   const handleDownvote = async (complainId, cid, complain) => {
+    if (!userId) {
+      navigate("/login");
+      return;
+    }
     const { vote } = votes;
     setVotes({
       ...votes,
@@ -195,7 +204,7 @@ const Votes = ({ complain }) => {
               votes?.vote === "upvote"
                 ? "bg-blue-500 hover:text-white text-white"
                 : ""
-            }`}
+            } ${!userId && "disabled"}`}
           >
             <BiUpvote />
           </div>

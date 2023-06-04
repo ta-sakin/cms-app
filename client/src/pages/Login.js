@@ -1,12 +1,10 @@
-import { ThemeProvider } from "@emotion/react";
-import { createTheme } from "@mui/material";
 import axios from "axios";
 import { RecaptchaVerifier } from "firebase/auth";
 
 import React, { useEffect, useState } from "react";
 import PhoneInput from "react-phone-number-input";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import ButtonSpin from "../components/shared/ButtonSpin";
 import Error from "../components/shared/Error";
@@ -14,12 +12,6 @@ import { useAuth } from "../context/AuthContext";
 import auth from "../firebase.init";
 import { SERVER_URL } from "../helper/constant";
 import OtpForm from "./OtpForm";
-
-const theme = createTheme({
-  typography: {
-    fontFamily: ["Poppins"].join(","),
-  },
-});
 
 const Login = () => {
   const [phone, setPhone] = useState("");

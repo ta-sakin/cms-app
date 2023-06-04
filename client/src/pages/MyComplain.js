@@ -1,11 +1,9 @@
-import { Step, Stepper, StepLabel } from "@mui/material";
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import Complain from "../components/Complains/Complain";
 import ProgressBar from "../components/Complains/ProgressBar";
 import Loading from "../components/shared/Loading";
-import { useAuth } from "../context/AuthContext";
 import { SERVER_URL } from "../helper/constant";
 import useUser from "../hooks/useUser";
 

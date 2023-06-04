@@ -18,7 +18,6 @@ const StepperSx = {
 
 const ProgressBar = ({ complain }) => {
   const [steps, setSteps] = useState(null);
-  const [filteredStep, setFilteredStep] = useState([]);
   useEffect(() => {
     (async () => {
       try {

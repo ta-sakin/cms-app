@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 // import Signup from "./pages/Signup.js";
@@ -9,7 +8,6 @@ import { ToastContainer, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./components/shared/Header/Navbar";
 import SubmitComplain from "./pages/SubmitComplain";
-import PublicRoute from "./components/Auth/PublicRoute";
 import PrivateRoute from "./components/Auth/PrivateRoute";
 import MyComplain from "./pages/MyComplain";
 import Profile from "./pages/Profile";
@@ -46,9 +44,9 @@ function App() {
         <Route
           path="/submitcomplain"
           element={
-            <PrivateRoute>
-              <SubmitComplain />
-            </PrivateRoute>
+            <SubmitComplain />
+            // <PrivateRoute>
+            // </PrivateRoute>
           }
         ></Route>
         <Route

@@ -1,19 +1,16 @@
 //Lagacy of home page
 
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
-import { FaGalacticSenate, FaRegComment, FaUserCircle } from "react-icons/fa";
-import { GoComment } from "react-icons/go";
+import React, { useEffect, useState } from "react";
+import { FaRegComment, FaUserCircle } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
 import wardsList from "../wardsList";
 import { BiUpvote, BiDownvote } from "react-icons/bi";
 import useUser from "../hooks/useUser";
 import { Tooltip } from "@mui/material";
-import Loading from "../components/shared/Loading";
 import ButtonSpin from "../components/shared/ButtonSpin";
 import { SERVER_URL } from "../helper/constant";
 
-let commentsState = [];
 const ComplainPage = () => {
   const { currentUser: user } = useAuth();
   const [complains, setComplains] = useState([]);

@@ -1,4 +1,3 @@
-import { Button, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { updateProfile } from "firebase/auth";
 import React, { useState } from "react";

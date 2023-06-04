@@ -3,8 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import Filter from "../components/Complains/Filter";
 import Complain from "../components/Complains/Complain";
-import { toast } from "react-toastify";
-import Loading from "../components/shared/Loading";
 import ButtonSpin from "../components/shared/ButtonSpin";
 import InfiniteScroll from "react-infinite-scroll-component";
 import _ from "lodash";
@@ -14,7 +12,6 @@ import { SERVER_URL } from "../helper/constant";
 
 const NUM_OF_DATA_TO_LOAD = 3;
 const Home = () => {
-  const { currentUser } = useAuth();
   const [complains, setComplains] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({});
@@ -134,13 +131,6 @@ const Home = () => {
       setComplains([...sortByDownvote]);
     }
   };
-  // if (!userId) {
-  //   return (
-  //     <div className="w-full mt-10 flex justify-center">
-  //       <ButtonSpin />
-  //     </div>
-  //   );
-  // }
   return (
     <div className="flex gap-x-10 md:justify-center items-center md:flex-row flex-col">
       <Filter handleChange={handleChange} handleSubmit={handleSubmit} />

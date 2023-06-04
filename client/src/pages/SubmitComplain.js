@@ -7,9 +7,8 @@ import { useDebounce } from "use-debounce";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
-import useCurrentUser from "../hooks/useCurrentUser";
-import { AiOutlineExclamationCircle, AiOutlineWarning } from "react-icons/ai";
 import { SERVER_URL } from "../helper/constant";
+import { useNavigate } from "react-router-dom";
 
 const defaulValues = {
   address: "",
@@ -29,7 +28,7 @@ const SubmitComplain = () => {
   const [key, setKey] = useState(0);
   const [debounceKey] = useDebounce(key, 1000);
   const [blocked, setBlocked] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const getUserFromDb = async () => {
       try {
@@ -68,6 +67,10 @@ const SubmitComplain = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
     if (blocked) {
       toast.error("User blocked!", { toastId: "error" });
       return;

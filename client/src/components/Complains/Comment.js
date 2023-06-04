@@ -1,15 +1,14 @@
-import { Tooltip } from "@mui/material";
 import axios from "axios";
 import moment from "moment";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { FaRegComment, FaUserCircle } from "react-icons/fa";
-import { toast } from "react-toastify";
+import { FaUserCircle } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 import { SERVER_URL } from "../../helper/constant";
 import useUser from "../../hooks/useUser";
 import ButtonSpin from "../shared/ButtonSpin";
+import { useNavigate } from "react-router-dom";
 
 const Comment = ({ complain, setTotalComments }) => {
   const [inputComment, setInputComment] = useState("");
@@ -18,7 +17,7 @@ const Comment = ({ complain, setTotalComments }) => {
   const { currentUser: user } = useAuth();
   const [userId] = useUser(user?.phoneNumber);
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
   useEffect(() => {
     (async () => {
       try {
@@ -41,6 +40,10 @@ const Comment = ({ complain, setTotalComments }) => {
 
   const submitComment = (e) => {
     e.preventDefault();
+    if (!user) {
+      navigate("/login");
+      return;
+    }
     (async () => {
       try {
         const { data } = await axios.post(

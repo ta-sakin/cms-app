@@ -4,18 +4,15 @@ import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
-import { FaRegComment } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import { SERVER_URL } from "../../helper/constant";
 import useUser from "../../hooks/useUser";
-import Loading from "../shared/Loading";
 
 const Votes = ({ complain }) => {
   const { currentUser: user } = useAuth();
   const [upvote, setUpvote] = useState(false);
   const [downvote, setDownvote] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [userId] = useUser(user?.phoneNumber);
   const [votes, setVotes] = useState({});
   const [total, setTotal] = useState({});

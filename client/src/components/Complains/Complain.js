@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { FaRegComment, FaUserCircle } from "react-icons/fa";
 import { FiMoreHorizontal } from "react-icons/fi";
-import { Navigate, useAsyncError, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Comment from "./Comment";
 import Votes from "./Votes";
@@ -18,11 +18,9 @@ const Complain = ({ complain, userId }) => {
   const [name, setName] = useState("");
   const [totalComments, setTotalComments] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [comment, setComment] = useState(0);
   const [deleted, setDeleted] = useState();
   const [showModal, setShowModal] = useState(false);
   const [showComment, setShowComment] = useState(false);
-  const navigate = useNavigate();
   const [edit, setEdit] = useState("");
 
   useEffect(() => {

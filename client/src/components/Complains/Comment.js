@@ -7,6 +7,7 @@ import { useState } from "react";
 import { FaRegComment, FaUserCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
+import { SERVER_URL } from "../../helper/constant";
 import useUser from "../../hooks/useUser";
 import ButtonSpin from "../shared/ButtonSpin";
 
@@ -23,7 +24,7 @@ const Comment = ({ complain, setTotalComments }) => {
       try {
         // setLoading(true);
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/react/comment/${complain._id}`,
+          `${SERVER_URL}/api/user/react/comment/${complain._id}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -43,7 +44,7 @@ const Comment = ({ complain, setTotalComments }) => {
     (async () => {
       try {
         const { data } = await axios.post(
-          `https://cms-server-production.up.railway.app/api/user/react/comment`,
+          `${SERVER_URL}/api/user/react/comment`,
           {
             complain_id: complain._id,
             citizen_id: userId,

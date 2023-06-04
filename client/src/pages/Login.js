@@ -12,6 +12,7 @@ import ButtonSpin from "../components/shared/ButtonSpin";
 import Error from "../components/shared/Error";
 import { useAuth } from "../context/AuthContext";
 import auth from "../firebase.init";
+import { SERVER_URL } from "../helper/constant";
 import OtpForm from "./OtpForm";
 
 const theme = createTheme({
@@ -38,6 +39,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!phone) {
       setError("Enter phone number");
       return;
@@ -47,13 +49,24 @@ const Login = () => {
       async function checkUser() {
         try {
           const { data } = await axios.post(
-            `https://cms-server-production.up.railway.app/api/user/auth/signin`,
-            { phone: phone }
+            `${SERVER_URL}/api/user/auth/signin`,
+            {
+              phone: phone,
+            }
           );
           return data;
         } catch (error) {
-          if (error.response.status === 400) {
-            setError(error.response.data.message);
+          if (error.message === "Network Error") {
+            toast.info(
+              "Server is on free tier, might take few seconds to make first request. If you are stuck, please refresh the page.",
+              {
+                theme: "colored",
+                autoClose: 4500,
+              }
+            );
+          }
+          if (error?.response?.status === 400) {
+            setError(error?.response?.data?.message);
           }
           setLoading(false);
           return;

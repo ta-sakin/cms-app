@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ReactDom from "react-dom";
 import { toast } from "react-toastify";
+import { SERVER_URL } from "../helper/constant";
 const classifiedCategories = [
   "roads",
   "wastes",
@@ -21,7 +22,7 @@ const EditComplain = ({ setEdit, edit }) => {
       return;
     }
     const { data } = await axios.patch(
-      `https://cms-server-production.up.railway.app/api/user/complain/${edit._id}`,
+      `${SERVER_URL}/api/user/complain/${edit._id}`,
       { category },
       {
         headers: {

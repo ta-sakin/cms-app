@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import useCurrentUser from "../hooks/useCurrentUser";
 import { AiOutlineExclamationCircle, AiOutlineWarning } from "react-icons/ai";
+import { SERVER_URL } from "../helper/constant";
 
 const defaulValues = {
   address: "",
@@ -33,10 +34,9 @@ const SubmitComplain = () => {
     const getUserFromDb = async () => {
       try {
         //get current user from db
-        const { data } = await axios.post(
-          `https://cms-server-production.up.railway.app/api/user/current`,
-          { phone: currentUser?.phoneNumber }
-        );
+        const { data } = await axios.post(`${SERVER_URL}/api/user/current`, {
+          phone: currentUser?.phoneNumber,
+        });
         if (data) {
           setBlocked(data.status === "blocked");
         }
@@ -95,7 +95,7 @@ const SubmitComplain = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        `https://cms-server-production.up.railway.app/api/user/complain`,
+        `${SERVER_URL}/api/user/complain`,
         complain,
         {
           headers: {

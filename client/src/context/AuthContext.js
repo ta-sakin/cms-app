@@ -14,6 +14,7 @@ import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { SERVER_URL } from "../helper/constant";
 
 // import useToken from "../hooks/useToken";
 // import auth from "../utils/firebase.init";
@@ -97,8 +98,10 @@ export function AuthProvider({ children }) {
     const getUserId = async () => {
       try {
         const { data } = await axios.post(
-          `https://cms-server-production.up.railway.app/api/user/auth/signin`,
-          { phone: currentUser?.phoneNumber }
+          `${SERVER_URL}/api/user/auth/signin`,
+          {
+            phone: currentUser?.phoneNumber,
+          }
         );
         setUserId(data.user._id);
       } catch (error) {

@@ -11,6 +11,7 @@ import useUser from "../hooks/useUser";
 import { Tooltip } from "@mui/material";
 import Loading from "../components/shared/Loading";
 import ButtonSpin from "../components/shared/ButtonSpin";
+import { SERVER_URL } from "../helper/constant";
 
 let commentsState = [];
 const ComplainPage = () => {
@@ -39,7 +40,7 @@ const ComplainPage = () => {
     const getComplains = async () => {
       try {
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/complain/all`,
+          `${SERVER_URL}/api/user/complain/all`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -58,7 +59,7 @@ const ComplainPage = () => {
     const userVotes = async () => {
       try {
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/react/votes/${userId}`,
+          `${SERVER_URL}/api/user/react/votes/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -79,7 +80,7 @@ const ComplainPage = () => {
 
     try {
       const { data } = await axios.put(
-        `https://cms-server-production.up.railway.app/api/user/react/votes`,
+        `${SERVER_URL}/api/user/react/votes`,
         {
           complain_id: complainId,
           citizen_id: userId,
@@ -94,7 +95,7 @@ const ComplainPage = () => {
         }
       );
       const result = await axios.get(
-        `https://cms-server-production.up.railway.app/api/user/react/totalvotes/${complain._id}`,
+        `${SERVER_URL}/api/user/react/totalvotes/${complain._id}`,
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -102,7 +103,7 @@ const ComplainPage = () => {
         }
       );
       const response = await axios.put(
-        `https://cms-server-production.up.railway.app/api/user/complain`,
+        `${SERVER_URL}/api/user/complain`,
         {
           complain_id: complainId,
           total_upvotes: !voted?.upvote
@@ -129,7 +130,7 @@ const ComplainPage = () => {
     const voted = votes?.find((vote) => vote.complain_id === complainId);
     try {
       const { data } = await axios.put(
-        `https://cms-server-production.up.railway.app/api/user/react/votes`,
+        `${SERVER_URL}/api/user/react/votes`,
         {
           complain_id: complainId,
           citizen_id: userId,
@@ -145,7 +146,7 @@ const ComplainPage = () => {
       );
 
       const response = await axios.put(
-        `https://cms-server-production.up.railway.app/api/user/complain`,
+        `${SERVER_URL}/api/user/complain`,
         {
           complain_id: complainId,
           total_downvotes: !voted?.downvote
@@ -170,7 +171,7 @@ const ComplainPage = () => {
 
   const getComments = async (complainId) => {
     const { data } = await axios.get(
-      `https://cms-server-production.up.railway.app/api/user/react/comment/${complainId}`,
+      `${SERVER_URL}/api/user/react/comment/${complainId}`,
       {
         headers: {
           authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -200,7 +201,7 @@ const ComplainPage = () => {
     (async () => {
       try {
         const { result } = await axios.post(
-          `https://cms-server-production.up.railway.app/api/user/react/comment`,
+          `${SERVER_URL}/api/user/react/comment`,
           {
             complain_id: complainId,
             citizen_id: userId,

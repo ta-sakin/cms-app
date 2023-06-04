@@ -10,6 +10,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import _ from "lodash";
 import useUser from "../hooks/useUser";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { SERVER_URL } from "../helper/constant";
 
 const NUM_OF_DATA_TO_LOAD = 3;
 const Home = () => {
@@ -33,7 +34,7 @@ const Home = () => {
       try {
         const { data } = await axios({
           method: "GET",
-          url: `https://cms-server-production.up.railway.app/api/user/complain/all`,
+          url: `${SERVER_URL}/api/user/complain/all`,
           params: {
             filters: filteredData,
             sort,
@@ -72,7 +73,7 @@ const Home = () => {
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `https://cms-server-production.up.railway.app/api/user/complain/total`,
+        `${SERVER_URL}/api/user/complain/total`,
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem("accessToken")}`,

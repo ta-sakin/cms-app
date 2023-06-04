@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useState } from "react";
+import { SERVER_URL } from "../../helper/constant";
 import Loading from "../shared/Loading";
 
 const statusList = [
@@ -20,7 +21,7 @@ const Dashboard = ({ userId }) => {
     (async () => {
       try {
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/complain/count/${userId}`,
+          `${SERVER_URL}/api/user/complain/count/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,

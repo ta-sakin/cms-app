@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { SERVER_URL } from "../helper/constant";
 
 const useUser = (phone) => {
   const { currentUser: user } = useAuth();
@@ -11,8 +12,10 @@ const useUser = (phone) => {
     const getUserId = async () => {
       try {
         const { data } = await axios.post(
-          `https://cms-server-production.up.railway.app/api/user/auth/signin`,
-          { phone: user?.phoneNumber }
+          `${SERVER_URL}/api/user/auth/signin`,
+          {
+            phone: user?.phoneNumber,
+          }
         );
         setUserId(data.user._id);
       } catch (error) {

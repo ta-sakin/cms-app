@@ -12,6 +12,7 @@ import Votes from "./Votes";
 import moment from "moment";
 import Description from "./Description";
 import EditComplain from "../../pages/EditComplain";
+import { SERVER_URL } from "../../helper/constant";
 
 const Complain = ({ complain, userId }) => {
   const [name, setName] = useState("");
@@ -28,7 +29,7 @@ const Complain = ({ complain, userId }) => {
     (async () => {
       try {
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/complain/uname?uid=${complain.citizen_id}&cid=${complain._id}`,
+          `${SERVER_URL}/api/user/complain/uname?uid=${complain.citizen_id}&cid=${complain._id}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -46,7 +47,7 @@ const Complain = ({ complain, userId }) => {
       try {
         if (window.confirm("Are you sure you want to delete?")) {
           const { data } = await axios.delete(
-            `https://cms-server-production.up.railway.app/api/user/complain/${id}`,
+            `${SERVER_URL}/api/user/complain/${id}`,
             {
               headers: {
                 authorization: `Bearer ${localStorage.getItem("accessToken")}`,

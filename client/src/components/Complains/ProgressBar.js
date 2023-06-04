@@ -3,6 +3,7 @@ import axios from "axios";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { useState } from "react";
+import { SERVER_URL } from "../../helper/constant";
 import ButtonSpin from "../shared/ButtonSpin";
 
 const StepperSx = {
@@ -22,7 +23,7 @@ const ProgressBar = ({ complain }) => {
     (async () => {
       try {
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/complain/statusdates/${complain._id}`,
+          `${SERVER_URL}/api/user/complain/statusdates/${complain._id}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,

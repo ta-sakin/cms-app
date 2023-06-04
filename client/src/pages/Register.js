@@ -13,6 +13,7 @@ import ButtonSpin from "../components/shared/ButtonSpin";
 import { toast } from "react-toastify";
 import Error from "../components/shared/Error";
 import axios from "axios";
+import { SERVER_URL } from "../helper/constant";
 
 const defaulValues = {
   name: "",
@@ -75,7 +76,7 @@ const Register = () => {
       async function checkUser() {
         try {
           const { data } = await axios.post(
-            `https://cms-server-production.up.railway.app/api/user/auth/checkUser`,
+            `${SERVER_URL}/api/user/auth/checkUser`,
             { phone: phone }
           );
           return data;

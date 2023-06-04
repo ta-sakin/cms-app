@@ -9,6 +9,7 @@ import ButtonSpin from "../components/shared/ButtonSpin";
 import Error from "../components/shared/Error";
 import { useAuth } from "../context/AuthContext";
 import auth from "../firebase.init";
+import { SERVER_URL } from "../helper/constant";
 import useToken from "../hooks/useToken";
 
 const OtpForm = ({ confirmResponse, name, phone, authState }) => {
@@ -51,7 +52,7 @@ const OtpForm = ({ confirmResponse, name, phone, authState }) => {
           const register = async () => {
             try {
               const response = await axios.post(
-                `https://cms-server-production.up.railway.app/api/user/auth/signup`,
+                `${SERVER_URL}/api/user/auth/signup`,
                 userData
               );
               return response;

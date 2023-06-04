@@ -6,6 +6,7 @@ import Complain from "../components/Complains/Complain";
 import ProgressBar from "../components/Complains/ProgressBar";
 import Loading from "../components/shared/Loading";
 import { useAuth } from "../context/AuthContext";
+import { SERVER_URL } from "../helper/constant";
 import useUser from "../hooks/useUser";
 
 const MyComplain = () => {
@@ -18,7 +19,7 @@ const MyComplain = () => {
       try {
         if (!userId) return;
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/complain/${userId}`,
+          `${SERVER_URL}/api/user/complain/${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,

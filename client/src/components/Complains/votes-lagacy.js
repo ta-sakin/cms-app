@@ -7,6 +7,7 @@ import { BiDownvote, BiUpvote } from "react-icons/bi";
 import { FaRegComment } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
+import { SERVER_URL } from "../../helper/constant";
 import useUser from "../../hooks/useUser";
 import Loading from "../shared/Loading";
 
@@ -24,7 +25,7 @@ const Votes = ({ complain }) => {
     const userVotes = async () => {
       try {
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/react/votes/total?cid=${complain._id}`,
+          `${SERVER_URL}/api/user/react/votes/total?cid=${complain._id}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -46,7 +47,7 @@ const Votes = ({ complain }) => {
     const userVotes = async () => {
       try {
         const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/react/votes?cid=${complain._id}&uid=${userId}`,
+          `${SERVER_URL}/api/user/react/votes?cid=${complain._id}&uid=${userId}`,
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -86,7 +87,7 @@ const Votes = ({ complain }) => {
     try {
       //update active status
       const { data } = await axios.put(
-        `https://cms-server-production.up.railway.app/api/user/react/votes`,
+        `${SERVER_URL}/api/user/react/votes`,
         {
           complain_id: complainId,
           citizen_id: userId,
@@ -105,7 +106,7 @@ const Votes = ({ complain }) => {
 
       //update total up and down vote
       const response = await axios.put(
-        `https://cms-server-production.up.railway.app/api/user/complain`,
+        `${SERVER_URL}/api/user/complain`,
         {
           complain_id: complainId,
           total_upvotes: votes?.upvote
@@ -151,7 +152,7 @@ const Votes = ({ complain }) => {
     try {
       //update active status
       const { data } = await axios.put(
-        `https://cms-server-production.up.railway.app/api/user/react/votes`,
+        `${SERVER_URL}/api/user/react/votes`,
         {
           complain_id: complainId,
           citizen_id: userId,
@@ -170,7 +171,7 @@ const Votes = ({ complain }) => {
 
       //update total up and down vote
       const response = await axios.put(
-        `https://cms-server-production.up.railway.app/api/user/complain`,
+        `${SERVER_URL}/api/user/complain`,
         {
           complain_id: complainId,
           total_downvotes: votes?.downvote

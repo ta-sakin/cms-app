@@ -8,6 +8,7 @@ import useUser from "../hooks/useUser";
 import _ from "lodash";
 import { toast } from "react-toastify";
 import Dashboard from "../components/Profile/Dashboard";
+import { SERVER_URL } from "../helper/constant";
 
 const defaulValues = {
   name: "",
@@ -30,14 +31,11 @@ const Profile = () => {
     (async () => {
       try {
         if (!userId) return;
-        const { data } = await axios.get(
-          `https://cms-server-production.up.railway.app/api/user/${userId}`,
-          {
-            headers: {
-              authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-          }
-        );
+        const { data } = await axios.get(`${SERVER_URL}/api/user/${userId}`, {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
         setProfile(data);
         setUser(data);
         setLoading(false);
@@ -80,7 +78,7 @@ const Profile = () => {
         return;
       }
       const { data } = await axios.patch(
-        `https://cms-server-production.up.railway.app/api/user/${userId}`,
+        `${SERVER_URL}/api/user/${userId}`,
         { name, email, ward, address },
         {
           headers: {

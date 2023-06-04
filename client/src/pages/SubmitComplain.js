@@ -164,6 +164,7 @@ const SubmitComplain = () => {
               id="autocomplete"
               className="w-full text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow placeholder:text-sm  "
               placeholder="Enter an address, zipcode, or location"
+              required
             />
           </label>
           <label htmlFor="ward">
@@ -198,6 +199,7 @@ const SubmitComplain = () => {
               id="description"
               className="w-full h-28 text-sm py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow placeholder:text-sm "
               placeholder="Write your complain here..."
+              required
             />
           </label>
 

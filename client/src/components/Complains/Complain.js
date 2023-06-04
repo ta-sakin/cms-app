@@ -17,7 +17,7 @@ import { SERVER_URL } from "../../helper/constant";
 const Complain = ({ complain, userId }) => {
   const [name, setName] = useState("");
   const [totalComments, setTotalComments] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [deleted, setDeleted] = useState();
   const [showModal, setShowModal] = useState(false);
   const [showComment, setShowComment] = useState(false);

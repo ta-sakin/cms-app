@@ -1,6 +1,5 @@
 import {
   onAuthStateChanged,
-  updateProfile,
   signOut,
   GoogleAuthProvider,
   signInWithPhoneNumber,
@@ -26,12 +25,11 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const navigate = useNavigate();
-  const [captchaResponse, setCaptchaResponse] = useState("");
+  const [captchaResponse] = useState("");
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState();
   const [loadCaptcha, setLoadCaptcha] = useState(true);
-  const provider = new GoogleAuthProvider();
-  const [confirmResponse, setConfirmResponse] = useState();
+  const [confirmResponse] = useState();
   const [userId, setUserId] = useState("");
 
   useEffect(() => {

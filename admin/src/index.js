@@ -20,7 +20,7 @@ const queryClient = new QueryClient({
     },
   },
 });
-axios.defaults.baseURL = `https://cms-server-production.up.railway.app/api`;
+axios.defaults.baseURL = `https://cms-server-zf24.onrender.com/api`;
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

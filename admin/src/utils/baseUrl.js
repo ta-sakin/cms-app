@@ -1,9 +1,9 @@
 import axios from "axios";
-let SERVER_URL = "https://cms-server-production.up.railway.app/api";
-const date = new Date();
-if (date.getDate() > 20) {
-  SERVER_URL = "https://cms-server-zf24.onrender.com/api";
-}
+let SERVER_URL = "https://cms-server-zf24.onrender.com/api";
+// const date = new Date();
+// if (date.getDate() > 20) {
+//   SERVER_URL = "https://cms-server-zf24.onrender.com/api";
+// }
 const instance = axios.create({
   baseURL: SERVER_URL,
 });
